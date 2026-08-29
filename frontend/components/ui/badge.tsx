@@ -24,11 +24,11 @@ const badgeVariants = cva(
         neutral:
           "border-transparent bg-muted text-muted-foreground hover:bg-muted/80",
         rising:
-          "border-transparent bg-primary/10 text-primary hover:bg-primary/20",
+          "border-transparent bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20",
         stable:
-          "border-transparent bg-slate-500/10 text-slate-400 hover:bg-slate-500/20",
+          "border-transparent bg-muted text-muted-foreground hover:bg-muted/80",
         falling:
-          "border-transparent bg-destructive/10 text-destructive hover:bg-destructive/20",
+          "border-transparent bg-rose-500/10 text-rose-500 hover:bg-rose-500/20",
       },
     },
     defaultVariants: {

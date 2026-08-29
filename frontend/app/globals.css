@@ -4,60 +4,85 @@
 
 @layer base {
   :root {
-    /* LIGHT MODE TOKENS */
-    --background: 0 0% 98%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    /* LIGHT MODE TOKENS (Cratos in Daylight) */
+    --background: 84 21.7% 96.7%;      /* #F7F9F4 */
+    --foreground: 148 47.1% 17.1%;     /* #17402A */
+    
+    --card: 0 0% 100%;                 /* #FFFFFF */
+    --card-foreground: 148 47.1% 17.1%;
+    
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 265 89% 65%; /* Electric Violet */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 190 90% 40%; /* Slightly darker cyan for contrast on light */
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 4.8% 92%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 265 89% 65%;
-    --accent-foreground: 0 0% 100%;
+    --popover-foreground: 148 47.1% 17.1%;
+    
+    /* Primary (Lime Accent) */
+    --primary: 72 100% 50%;            /* #CBFF00 */
+    --primary-foreground: 135 18.2% 4.3%; /* #090D0A */
+    
+    /* Secondary (Secondary Green) */
+    --secondary: 133 39.9% 30%;        /* #2E6B3B */
+    --secondary-foreground: 120 11.1% 96.5%; /* #F5F7F5 */
+    
+    --muted: 0 0% 100%;                /* Or slight off white */
+    --muted-foreground: 120 4.7% 42%;  /* #667066 */
+    
+    --accent: 72 100% 50%;             /* #CBFF00 */
+    --accent-foreground: 135 18.2% 4.3%;
+    
     --destructive: 0 84.2% 50.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 88%;
-    --input: 240 5.9% 88%;
-    --ring: 265 89% 65%;
+    --destructive-foreground: 120 11.1% 96.5%;
+    
+    --border: 120 4.7% 85%;
+    --input: 120 4.7% 85%;
+    --ring: 72 100% 50%;
+    
     --radius: 0.75rem;
-    --chart-1: 265 89% 65%;
-    --chart-2: 190 90% 45%;
-    --chart-3: 340 75% 55%;
-    --chart-4: 43 74% 50%;
-    --chart-5: 27 87% 55%;
+    
+    /* Charts */
+    --chart-1: 72 100% 50%;            /* Lime */
+    --chart-2: 133 39.9% 30%;          /* Secondary Green */
+    --chart-3: 148 47.1% 17.1%;        /* Deep Green */
+    --chart-4: 163 23.1% 15.3%;        /* Forest */
+    --chart-5: 120 4.7% 42%;           /* Neutral */
   }
 
   .dark {
-    /* EXISTING DARK MODE TOKENS */
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 265 89% 65%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 190 90% 50%;
-    --secondary-foreground: 0 0% 10%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 265 89% 65%;
-    --accent-foreground: 0 0% 100%;
+    /* DARK MODE TOKENS (Default Cratos Identity) */
+    --background: 135 18.2% 4.3%;      /* #090D0A */
+    --foreground: 120 11.1% 96.5%;     /* #F5F7F5 */
+    
+    --card: 129 17.1% 8%;              /* #111812 */
+    --card-foreground: 120 11.1% 96.5%;
+    
+    --popover: 129 17.1% 8%;
+    --popover-foreground: 120 11.1% 96.5%;
+    
+    /* Primary (Lime Accent) */
+    --primary: 72 100% 50%;            /* #CBFF00 */
+    --primary-foreground: 135 18.2% 4.3%; /* #090D0A */
+    
+    /* Secondary (Deep Green) */
+    --secondary: 148 47.1% 17.1%;      /* #17402A */
+    --secondary-foreground: 120 11.1% 96.5%; /* #F5F7F5 */
+    
+    --muted: 129 17.1% 8%;             /* Subtly elevated from background */
+    --muted-foreground: 136 5.6% 57.1%;/* #8C978F */
+    
+    --accent: 72 100% 50%;             /* #CBFF00 */
+    --accent-foreground: 135 18.2% 4.3%;
+    
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 265 89% 65%;
-    --chart-1: 265 89% 65%;
-    --chart-2: 190 90% 50%;
-    --chart-3: 340 75% 55%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --destructive-foreground: 120 11.1% 96.5%;
+    
+    --border: 163 23.1% 15.3%;         /* #1E302B (Forest) */
+    --input: 163 23.1% 15.3%;
+    --ring: 72 100% 50%;
+    
+    /* Charts */
+    --chart-1: 72 100% 50%;            /* Lime */
+    --chart-2: 133 39.9% 30%;          /* Secondary Green */
+    --chart-3: 148 47.1% 17.1%;        /* Deep Green */
+    --chart-4: 163 23.1% 15.3%;        /* Forest */
+    --chart-5: 120 4.7% 42%;           /* Neutral */
   }
 }
 

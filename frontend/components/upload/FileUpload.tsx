@@ -149,7 +149,7 @@ export function FileUpload({ onAnalyze }: FileUploadProps) {
                   <span>{formatFileSize(selectedFile.size)}</span>
                   {duration && (
                     <>
-                      <span className="w-1 h-1 rounded-full bg-slate-600"></span>
+                      <span className="w-1 h-1 rounded-full bg-muted-foreground/50"></span>
                       <span>{duration}</span>
                     </>
                   )}
@@ -202,7 +202,7 @@ export function FileUpload({ onAnalyze }: FileUploadProps) {
         />
         
         <div className={`w-20 h-20 mb-6 rounded-full flex items-center justify-center border transition-all duration-300
-          ${dragActive ? "bg-primary/20 border-primary scale-110" : "bg-neutral-800 dark:border-white/10 border-black/10 group-hover:scale-105 group-hover:dark:border-white/20 border-black/20"}
+          ${dragActive ? "bg-primary/20 border-primary scale-110" : "bg-card dark:border-white/10 border-black/10 group-hover:scale-105 group-hover:dark:border-white/20 border-black/20"}
         `}>
           <Upload className={`w-8 h-8 transition-colors ${dragActive ? "text-primary" : "text-muted-foreground group-hover:text-primary"}`} />
         </div>
@@ -221,9 +221,9 @@ export function FileUpload({ onAnalyze }: FileUploadProps) {
 
         <div className="flex items-center gap-3 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
           <span>MP4</span>
-          <span className="w-1 h-1 rounded-full bg-slate-700"></span>
+          <span className="w-1 h-1 rounded-full bg-muted-foreground/50"></span>
           <span>MOV</span>
-          <span className="w-1 h-1 rounded-full bg-slate-700"></span>
+          <span className="w-1 h-1 rounded-full bg-muted-foreground/50"></span>
           <span>WebM</span>
         </div>
       </div>

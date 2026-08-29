@@ -65,11 +65,11 @@ export function VideoSummary({ file }: VideoSummaryProps) {
         </h3>
         <div className="flex items-center gap-3 text-sm text-muted-foreground font-medium">
           <span>{file ? formatFileSize(file.size) : "12.4 MB"}</span>
-          <span className="w-1 h-1 rounded-full bg-slate-600"></span>
+          <span className="w-1 h-1 rounded-full bg-muted-foreground/50"></span>
           <span>{file?.type || "video/mp4"}</span>
           {duration && (
             <>
-              <span className="w-1 h-1 rounded-full bg-slate-600"></span>
+              <span className="w-1 h-1 rounded-full bg-muted-foreground/50"></span>
               <span>{duration}</span>
             </>
           )}
