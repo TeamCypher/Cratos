@@ -208,3 +208,98 @@ export const mockTrends: Trend[] = [
     relatedTrendIds: ["t1"]
   }
 ];
+
+export interface AnalysisHistoryItem {
+  id: string;
+  title: string;
+  thumbnail: string;
+  date: string;
+  duration: string;
+  score: number;
+  bestPlatform: string;
+  trendStatus: "rising" | "stable" | "falling";
+  category: "Technology" | "Entertainment" | "Education" | "Lifestyle" | "Business";
+}
+
+export interface HistorySummary {
+  totalAnalyses: number;
+  averageScore: number;
+  risingOpportunities: number;
+  topPlatform: string;
+}
+
+export const mockHistorySummary: HistorySummary = {
+  totalAnalyses: 12,
+  averageScore: 87,
+  risingOpportunities: 5,
+  topPlatform: "YouTube Shorts",
+}
+
+export const mockHistoryItems: AnalysisHistoryItem[] = [
+  {
+    id: "analysis-001",
+    title: "AI Tools Explained",
+    thumbnail: "bg-blue-900/50",
+    date: "Aug 29, 2026",
+    duration: "00:28",
+    score: 91,
+    bestPlatform: "YouTube Shorts",
+    trendStatus: "rising",
+    category: "Technology"
+  },
+  {
+    id: "analysis-002",
+    title: "Coding With AI",
+    thumbnail: "bg-purple-900/50",
+    date: "Aug 27, 2026",
+    duration: "00:34",
+    score: 87,
+    bestPlatform: "Instagram Reels",
+    trendStatus: "stable",
+    category: "Education"
+  },
+  {
+    id: "analysis-003",
+    title: "Monetization Tips 2026",
+    thumbnail: "bg-emerald-900/50",
+    date: "Aug 24, 2026",
+    duration: "00:59",
+    score: 94,
+    bestPlatform: "YouTube Shorts",
+    trendStatus: "rising",
+    category: "Business"
+  },
+  {
+    id: "analysis-004",
+    title: "Why I Quit My Job",
+    thumbnail: "bg-amber-900/50",
+    date: "Aug 20, 2026",
+    duration: "02:15",
+    score: 72,
+    bestPlatform: "TikTok",
+    trendStatus: "falling",
+    category: "Lifestyle"
+  },
+  {
+    id: "analysis-005",
+    title: "The Best New Movies",
+    thumbnail: "bg-rose-900/50",
+    date: "Aug 15, 2026",
+    duration: "01:10",
+    score: 84,
+    bestPlatform: "TikTok",
+    trendStatus: "stable",
+    category: "Entertainment"
+  },
+  {
+    id: "analysis-006",
+    title: "How To Edit Faster",
+    thumbnail: "bg-indigo-900/50",
+    date: "Aug 10, 2026",
+    duration: "00:45",
+    score: 89,
+    bestPlatform: "Instagram Reels",
+    trendStatus: "rising",
+    category: "Education"
+  }
+];
