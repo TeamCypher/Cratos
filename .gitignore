@@ -1,0 +1,15 @@
+# Environments (API Keys & Personal Info)
+.env
+.env.*
+
+# Generated dependencies (Standard exclusions)
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+node_modules/
+
+# OS / IDE
+.DS_Store
+.vscode/
+.idea/
