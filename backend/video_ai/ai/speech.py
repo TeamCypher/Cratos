@@ -72,7 +72,8 @@ def analyze_speech(audio_path: str) -> Dict[str, Any]:
     result = {
         "transcript": "",
         "keywords": [],
-        "topics": []
+        "topics": [],
+        "first_speech_start": None
     }
     
     if not audio_path or not os.path.exists(audio_path):
@@ -84,7 +85,10 @@ def analyze_speech(audio_path: str) -> Dict[str, Any]:
         segments, info = model.transcribe(audio_path, beam_size=1)
         
         transcript_parts = []
+        first_speech_start = None
         for segment in segments:
+            if first_speech_start is None:
+                first_speech_start = segment.start
             transcript_parts.append(segment.text.strip())
             
         full_transcript = " ".join(transcript_parts)
@@ -96,6 +100,7 @@ def analyze_speech(audio_path: str) -> Dict[str, Any]:
         
         result["keywords"] = keywords
         result["topics"] = topics
+        result["first_speech_start"] = first_speech_start
         
     except Exception as e:
         logger.error(f"Error during speech transcription: {e}")

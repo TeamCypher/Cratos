@@ -24,7 +24,8 @@ def analyze_visuals(frame_paths: List[str]) -> Dict[str, Any]:
     result = {
         "ocr_text": [],
         "visual_signals": {
-            "processed_frames": 0
+            "processed_frames": 0,
+            "has_early_text": False
         }
     }
     
@@ -56,6 +57,8 @@ def analyze_visuals(frame_paths: List[str]) -> Dict[str, Any]:
             text = pytesseract.image_to_string(rgb_image).strip()
             if text:
                 unique_texts.add(text)
+                if processed_count == 0:
+                    result["visual_signals"]["has_early_text"] = True
                 
             processed_count += 1
             
