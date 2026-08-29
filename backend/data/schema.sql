@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS recommendations (
     video_id TEXT NOT NULL,
     platform TEXT NOT NULL, -- e.g., 'youtube_shorts', 'instagram_reels'
     best_time TEXT,
+    video_description TEXT,
     hashtags TEXT, -- Store as JSON array string
     caption TEXT,
     title TEXT,

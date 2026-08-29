@@ -151,12 +151,12 @@ class PlatformPredictionRepository:
             conn.close()
 
 class RecommendationRepository:
-    def create_recommendation(self, recommendation_id: str, video_id: str, platform: str, best_time: str, hashtags: str, caption: str, title: str, keywords: str, optimization: str) -> None:
+    def create_recommendation(self, recommendation_id: str, video_id: str, platform: str, best_time: str, video_description: str, hashtags: str, caption: str, title: str, keywords: str, optimization: str) -> None:
         conn = get_db_connection()
         try:
             conn.execute(
-                "INSERT INTO recommendations (id, video_id, platform, best_time, hashtags, caption, title, keywords, optimization) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                (recommendation_id, video_id, platform, best_time, hashtags, caption, title, keywords, optimization)
+                "INSERT INTO recommendations (id, video_id, platform, best_time, video_description, hashtags, caption, title, keywords, optimization) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (recommendation_id, video_id, platform, best_time, video_description, hashtags, caption, title, keywords, optimization)
             )
             conn.commit()
         finally:
