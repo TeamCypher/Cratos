@@ -43,6 +43,70 @@ paths:
       responses:
         '200':
           description: Complete report returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  video_id:
+                    type: string
+                  content_profile:
+                    $ref: '#/components/schemas/ContentProfile'
+                  trend_signal:
+                    type: object
+                    properties:
+                      score:
+                        type: integer
+                      momentum:
+                        type: string
+                      direction:
+                        type: string
+                      source:
+                        type: string
+                      platform:
+                        type: string
+                  predictions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        platform:
+                          type: string
+                        score:
+                          type: integer
+                        confidence:
+                          type: number
+                        reasons:
+                          type: array
+                          items:
+                            type: string
+                  recommendation:
+                    type: object
+                    properties:
+                      platform:
+                        type: string
+                      best_time:
+                        type: string
+                      hashtags:
+                        type: array
+                        items:
+                          type: string
+                      caption:
+                        type: array
+                        items:
+                          type: string
+                      title:
+                        type: array
+                        items:
+                          type: string
+                      keywords:
+                        type: array
+                        items:
+                          type: string
+                      optimization:
+                        type: array
+                        items:
+                          type: string
 
   /api/v1/trends:
     get:
@@ -50,6 +114,27 @@ paths:
       responses:
         '200':
           description: Trends data returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    topic:
+                      type: string
+                    source:
+                      type: string
+                    platform:
+                      type: string
+                    trend_score:
+                      type: integer
+                    momentum:
+                      type: string
+                    direction:
+                      type: string
 
   /api/v1/trends/match:
     get:
@@ -63,6 +148,27 @@ paths:
       responses:
         '200':
           description: Matched trends returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    topic:
+                      type: string
+                    source:
+                      type: string
+                    platform:
+                      type: string
+                    trend_score:
+                      type: integer
+                    momentum:
+                      type: string
+                    direction:
+                      type: string
 
 components:
   schemas:

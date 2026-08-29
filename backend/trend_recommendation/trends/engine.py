@@ -5,12 +5,14 @@ from typing import Dict, Any
 from backend.data.repositories import TrendSignalRepository
 from backend.trend_recommendation.providers.youtube import YouTubeTrendProvider
 from backend.trend_recommendation.providers.twitch import TwitchTrendProvider
+from backend.trend_recommendation.providers.google_trends import GoogleTrendProvider
 
 class TrendEngine:
     def __init__(self):
         self.repo = TrendSignalRepository()
         self.youtube_provider = YouTubeTrendProvider()
         self.twitch_provider = TwitchTrendProvider()
+        self.google_provider = GoogleTrendProvider()
 
     def get_trends_for_topic(self, topic: str) -> Dict[str, Any]:
         """
@@ -40,12 +42,13 @@ class TrendEngine:
         # Fetching new data from providers concurrently (serial for MVP simplicity)
         yt_result = self.youtube_provider.get_trend_signals(topic)
         tw_result = self.twitch_provider.get_trend_signals(topic)
+        go_result = self.google_provider.get_trend_signals(topic)
         
         # Aggregate logic
-        avg_score = int((yt_result.get("score", 50) + tw_result.get("score", 50)) / 2)
+        avg_score = int((yt_result.get("score", 50) + tw_result.get("score", 50) + go_result.get("score", 50)) / 3)
         
         # Aggregate momentum: take highest
-        momentums = [yt_result.get("momentum", "stable"), tw_result.get("momentum", "stable")]
+        momentums = [yt_result.get("momentum", "stable"), tw_result.get("momentum", "stable"), go_result.get("momentum", "stable")]
         if "high" in momentums:
             agg_momentum = "high"
         elif "medium" in momentums:
@@ -54,7 +57,7 @@ class TrendEngine:
             agg_momentum = "stable"
             
         # Aggregate direction
-        directions = [yt_result.get("direction", "stable"), tw_result.get("direction", "stable")]
+        directions = [yt_result.get("direction", "stable"), tw_result.get("direction", "stable"), go_result.get("direction", "stable")]
         if "rising" in directions:
             agg_direction = "rising"
         elif "falling" in directions and "rising" not in directions:
@@ -67,7 +70,7 @@ class TrendEngine:
             "momentum": agg_momentum,
             "direction": agg_direction,
             "source": "aggregated_api",
-            "platform": "youtube_twitch"
+            "platform": "youtube_twitch_google"
         }
         
         # Save to database

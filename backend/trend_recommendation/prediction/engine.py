@@ -59,7 +59,7 @@ class PredictionEngine:
         
         # Calculate a basic confidence metric (heuristic based on having good data)
         confidence = 0.8 # Base confidence
-        if trend_signal.get("source") != "youtube_api":
+        if trend_signal.get("source") not in ["youtube_api", "aggregated_api"]:
             confidence -= 0.1 # Lower confidence if using fallback/cache
         if not content_profile.get("audience"):
             confidence -= 0.1 # Missing some content signals
@@ -75,10 +75,10 @@ class PredictionEngine:
     @staticmethod
     def score_platforms(video_id: str, content_profile: Dict[str, Any], trend_signal: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
-        Scores both Instagram Reels and YouTube Shorts.
+        Scores both YouTube and Twitch based on content profile and trend momentum.
         Returns a list of dictionaries suitable for saving to DB and the API response.
         """
-        platforms = ["youtube_shorts", "instagram_reels"]
+        platforms = ["youtube", "twitch"]
         results = []
         
         for platform in platforms:

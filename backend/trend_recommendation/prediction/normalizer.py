@@ -27,16 +27,17 @@ class FeatureNormalizer:
         pacing = content_profile.get("pacing", "").lower()
         category = content_profile.get("category", "").lower()
         
-        if platform == "youtube_shorts":
-            if pacing == "fast": score += 20
-            elif pacing == "slow": score -= 15
+        if platform == "youtube":
+            if pacing == "medium" or pacing == "slow": score += 15
+            elif pacing == "fast": score += 5
             
-            if category in ["gaming", "comedy", "education"]: score += 15
+            if category in ["education", "gaming", "lifestyle", "tech"]: score += 20
             
-        elif platform == "instagram_reels":
-            if pacing == "medium" or pacing == "fast": score += 10
+        elif platform == "twitch":
+            if pacing == "fast": score += 15
+            elif pacing == "slow": score -= 10
             
-            if category in ["lifestyle", "fashion", "travel", "art"]: score += 20
+            if category in ["gaming", "live", "just chatting", "esports"]: score += 25
             
         return max(0, min(100, score))
 
@@ -48,11 +49,11 @@ class FeatureNormalizer:
         score = 50
         audience = content_profile.get("audience", "").lower()
         
-        if platform == "youtube_shorts":
-            if "gamer" in audience or "young" in audience or "tech" in audience:
+        if platform == "youtube":
+            if "general" in audience or "tech" in audience or "educational" in audience:
                 score += 25
-        elif platform == "instagram_reels":
-            if "millennial" in audience or "aesthetic" in audience or "lifestyle" in audience:
+        elif platform == "twitch":
+            if "gamer" in audience or "young" in audience or "live" in audience:
                 score += 25
                 
         return max(0, min(100, score))
