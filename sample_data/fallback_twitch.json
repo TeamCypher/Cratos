@@ -31,5 +31,15 @@
         "score": 95,
         "momentum": "high",
         "direction": "rising"
+    },
+    "Generative AI": {
+        "score": 75,
+        "momentum": "medium",
+        "direction": "rising"
+    },
+    "SpaceX": {
+        "score": 75,
+        "momentum": "medium",
+        "direction": "rising"
     }
 }

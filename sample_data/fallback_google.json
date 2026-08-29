@@ -1,0 +1,27 @@
+{
+    "minecraft": {
+        "score": 85,
+        "momentum": "high",
+        "direction": "rising"
+    },
+    "python programming": {
+        "score": 92,
+        "momentum": "high",
+        "direction": "rising"
+    },
+    "quantum physics": {
+        "score": 15,
+        "momentum": "stable",
+        "direction": "stable"
+    },
+    "default": {
+        "score": 50,
+        "momentum": "stable",
+        "direction": "stable"
+    },
+    "SpaceX": {
+        "score": 17,
+        "momentum": "medium",
+        "direction": "falling"
+    }
+}
