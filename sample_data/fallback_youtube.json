@@ -23,5 +23,10 @@
         "score": 6,
         "momentum": "stable",
         "direction": "stable"
+    },
+    "Elden Ring": {
+        "score": 45,
+        "momentum": "medium",
+        "direction": "rising"
     }
 }
