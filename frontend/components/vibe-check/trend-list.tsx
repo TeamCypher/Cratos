@@ -16,7 +16,7 @@ export function TrendList({ trends, selectedTrendId, onSelectTrend }: TrendListP
   if (trends.length === 0) {
     return (
       <div className="w-full py-12 flex flex-col items-center justify-center text-center px-4">
-        <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
+        <div className="w-16 h-16 rounded-full dark:bg-white/5 bg-black/5 flex items-center justify-center mb-4">
           <Search className="w-8 h-8 text-muted-foreground opacity-50" />
         </div>
         <h3 className="text-xl font-bold text-foreground mb-2">No trends found</h3>

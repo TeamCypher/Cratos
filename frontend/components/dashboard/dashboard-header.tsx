@@ -24,7 +24,7 @@ export function DashboardHeader({ onAnalyzeAnother }: DashboardHeaderProps) {
         </p>
       </div>
 
-      <Button onClick={onAnalyzeAnother} variant="outline" className="font-semibold shadow-sm hover:bg-white/5 transition-colors">
+      <Button onClick={onAnalyzeAnother} variant="outline" className="font-semibold shadow-sm hover:dark:bg-white/5 bg-black/5 transition-colors">
         <ArrowLeft className="w-4 h-4 mr-2" />
         Analyze Another
       </Button>

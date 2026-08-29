@@ -12,7 +12,7 @@ export interface ScoreOverviewProps {
 
 export function ScoreOverview({ score, insight }: ScoreOverviewProps) {
   return (
-    <Card className="w-full h-full p-8 md:p-12 flex flex-col items-center justify-center bg-card/40 border-white/10 shadow-lg relative overflow-hidden group">
+    <Card className="w-full h-full p-8 md:p-12 flex flex-col items-center justify-center bg-card/40 dark:border-white/10 border-black/10 shadow-lg relative overflow-hidden group">
       {/* Background ambient glow based on score */}
       <div className="absolute inset-0 bg-primary/5 rounded-xl blur-3xl transition-opacity opacity-50 group-hover:opacity-80 pointer-events-none"></div>
       
@@ -25,7 +25,7 @@ export function ScoreOverview({ score, insight }: ScoreOverviewProps) {
           <Score value={score} max={100} size="hero" />
         </div>
         
-        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10">
+        <div className="flex items-center gap-2 px-4 py-2 rounded-full dark:bg-white/5 bg-black/5 border dark:border-white/10 border-black/10">
           <Sparkles className="w-4 h-4 text-primary" />
           <p className="text-sm md:text-base font-medium text-foreground">
             {insight}

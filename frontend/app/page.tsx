@@ -42,7 +42,7 @@ export default function Home() {
         {/* HERO SECTION - Only show if idle */}
         <div className={`transition-all duration-700 ease-in-out ${appState === "idle" ? 'opacity-100 transform translate-y-0 relative' : 'opacity-0 transform -translate-y-10 absolute pointer-events-none'}`}>
           <section className="flex flex-col items-center text-center mb-16 space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full dark:bg-white/5 bg-black/5 border dark:border-white/10 border-black/10 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
               <Sparkles className="w-3.5 h-3.5 text-primary" />
               <span>AI-Powered Content Intelligence</span>
             </div>

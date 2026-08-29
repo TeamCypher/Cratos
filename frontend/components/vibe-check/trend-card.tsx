@@ -21,7 +21,7 @@ export function TrendCard({ trend, isSelected, onClick }: TrendCardProps) {
       className={`p-5 cursor-pointer transition-all duration-200 group relative overflow-hidden ${
         isSelected 
           ? "border-primary bg-primary/10 shadow-md shadow-primary/5" 
-          : "border-white/10 bg-card/50 hover:border-white/20 hover:bg-card/80"
+          : "dark:border-white/10 border-black/10 bg-card/50 hover:dark:border-white/20 border-black/20 hover:bg-card/80"
       }`}
     >
       {isSelected && (

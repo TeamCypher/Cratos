@@ -38,7 +38,7 @@ export function MetricCard({
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">{title}</h3>
           {Icon && (
-            <div className="p-2 rounded-lg bg-white/5 border border-white/5">
+            <div className="p-2 rounded-lg dark:bg-white/5 bg-black/5 border dark:border-white/5 border-black/5">
               <Icon className="w-4 h-4 text-primary" />
             </div>
           )}

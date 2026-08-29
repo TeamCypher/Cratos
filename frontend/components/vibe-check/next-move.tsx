@@ -34,11 +34,11 @@ export function NextMove({ trend }: NextMoveProps) {
           </div>
           
           <div className="grid grid-cols-2 gap-3">
-            <div className="p-3 bg-black/40 rounded-lg border border-white/5 flex flex-col justify-center">
+            <div className="p-3 dark:bg-black/40 bg-black/5 rounded-lg border dark:border-white/5 border-black/5 flex flex-col justify-center">
               <span className="text-[10px] uppercase font-semibold tracking-wider text-muted-foreground mb-1 flex items-center gap-1"><PlayCircle className="w-3 h-3" /> Best Platform</span>
               <span className="font-medium text-sm truncate">{trend.nextMove.platform}</span>
             </div>
-            <div className="p-3 bg-black/40 rounded-lg border border-white/5 flex flex-col justify-center">
+            <div className="p-3 dark:bg-black/40 bg-black/5 rounded-lg border dark:border-white/5 border-black/5 flex flex-col justify-center">
               <span className="text-[10px] uppercase font-semibold tracking-wider text-muted-foreground mb-1 flex items-center gap-1"><TrendIcon className="w-3 h-3" /> Trend Momentum</span>
               <span className="font-medium text-sm capitalize flex items-center gap-2">
                 {trend.momentum}

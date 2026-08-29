@@ -41,8 +41,8 @@ export function VideoSummary({ file }: VideoSummaryProps) {
   }
 
   return (
-    <Card className="w-full overflow-hidden bg-card/50 border-white/10 flex flex-col shadow-sm">
-      <div className="relative w-full aspect-video bg-black flex items-center justify-center border-b border-white/10">
+    <Card className="w-full overflow-hidden bg-card/50 dark:border-white/10 border-black/10 flex flex-col shadow-sm">
+      <div className="relative w-full aspect-video bg-black flex items-center justify-center border-b dark:border-white/10 border-black/10">
         {previewUrl ? (
           <video 
             ref={videoRef}

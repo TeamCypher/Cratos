@@ -16,7 +16,7 @@ export interface TrendDetailProps {
 export function TrendDetail({ trend }: TrendDetailProps) {
   if (!trend) {
     return (
-      <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center text-muted-foreground bg-card/10 rounded-3xl border border-dashed border-white/10 p-8 text-center">
+      <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center text-muted-foreground bg-card/10 rounded-3xl border border-dashed dark:border-white/10 border-black/10 p-8 text-center">
         <Target className="w-12 h-12 mb-4 opacity-20" />
         <h3 className="text-xl font-bold mb-2">Select a Trend</h3>
         <p className="max-w-xs text-sm">Click on a trend from the list to view deep insights, relevance, and content opportunities.</p>
@@ -55,17 +55,17 @@ export function TrendDetail({ trend }: TrendDetailProps) {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <h2 className="text-3xl md:text-5xl font-extrabold text-foreground tracking-tight">{trend.name}</h2>
-            <Badge variant="outline" className="text-xs bg-white/5">{trend.category}</Badge>
+            <Badge variant="outline" className="text-xs dark:bg-white/5 bg-black/5">{trend.category}</Badge>
           </div>
           <p className="text-lg text-muted-foreground">{trend.description}</p>
         </div>
         
-        <div className="flex items-center gap-6 shrink-0 bg-black/40 p-4 rounded-2xl border border-white/5">
+        <div className="flex items-center gap-6 shrink-0 dark:bg-black/40 bg-black/5 p-4 rounded-2xl border dark:border-white/5 border-black/5">
           <div className="flex flex-col items-center">
             <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground mb-1">Score</span>
             <span className="text-3xl font-black text-foreground">{trend.score}</span>
           </div>
-          <div className="w-px h-10 bg-white/10"></div>
+          <div className="w-px h-10 dark:bg-white/10 bg-black/10"></div>
           <div className="flex flex-col items-center">
             <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground mb-1">Opportunity</span>
             <Badge variant={trend.opportunityScore === "HIGH" ? "success" : trend.opportunityScore === "MEDIUM" ? "warning" : "error"} className="px-2 py-1 text-xs font-bold tracking-widest">
@@ -79,7 +79,7 @@ export function TrendDetail({ trend }: TrendDetailProps) {
         
         {/* Momentum & Relevance */}
         <div className="flex flex-col gap-6">
-          <Card className="p-6 bg-card/50 border-white/10 h-48 flex flex-col justify-between group">
+          <Card className="p-6 bg-card/50 dark:border-white/10 border-black/10 h-48 flex flex-col justify-between group">
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="text-sm font-semibold tracking-wide uppercase text-muted-foreground mb-1 flex items-center gap-2">
@@ -87,14 +87,14 @@ export function TrendDetail({ trend }: TrendDetailProps) {
                 </h3>
                 <p className="font-bold text-foreground capitalize text-xl">{trend.direction}</p>
               </div>
-              <Badge variant="outline" className="text-[10px] uppercase bg-black/40">30D</Badge>
+              <Badge variant="outline" className="text-[10px] uppercase dark:bg-black/40 bg-black/5">30D</Badge>
             </div>
             <div className="h-20 w-full px-4 -mb-2 mt-4 opacity-80 group-hover:opacity-100 transition-opacity">
               {renderMomentumChart(trend.direction)}
             </div>
           </Card>
           
-          <Card className="p-6 bg-card/50 border-white/10 h-48 flex flex-col justify-between">
+          <Card className="p-6 bg-card/50 dark:border-white/10 border-black/10 h-48 flex flex-col justify-between">
             <div>
               <h3 className="text-sm font-semibold tracking-wide uppercase text-muted-foreground mb-1 flex items-center gap-2">
                 <Target className="w-4 h-4" /> Content Relevance
@@ -115,14 +115,14 @@ export function TrendDetail({ trend }: TrendDetailProps) {
         </div>
 
         {/* Why it Matters */}
-        <Card className="p-6 bg-card/50 border-white/10 flex flex-col">
+        <Card className="p-6 bg-card/50 dark:border-white/10 border-black/10 flex flex-col">
           <h3 className="text-sm font-semibold tracking-wide uppercase text-muted-foreground mb-4 flex items-center gap-2">
             <AlertCircle className="w-4 h-4" /> Why it matters
           </h3>
           <p className="text-lg text-foreground leading-relaxed font-medium mb-auto">
             {trend.whyItMatters}
           </p>
-          <div className="mt-8 pt-6 border-t border-white/10">
+          <div className="mt-8 pt-6 border-t dark:border-white/10 border-black/10">
             <PlatformRelevance relevance={trend.platformRelevance} />
           </div>
         </Card>

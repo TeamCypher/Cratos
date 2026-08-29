@@ -18,8 +18,8 @@ export function Recommendations({ data }: RecommendationsProps) {
       
       <div className="grid grid-cols-1 gap-4">
         {data.recommendations.map((rec) => (
-          <Card key={rec.id} className="p-5 bg-card/50 border-white/10 flex items-start gap-4 hover:bg-white/5 transition-colors">
-            <div className="shrink-0 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10 text-muted-foreground font-bold text-sm">
+          <Card key={rec.id} className="p-5 bg-card/50 dark:border-white/10 border-black/10 flex items-start gap-4 hover:dark:bg-white/5 bg-black/5 transition-colors">
+            <div className="shrink-0 w-8 h-8 rounded-full dark:bg-white/5 bg-black/5 flex items-center justify-center border dark:border-white/10 border-black/10 text-muted-foreground font-bold text-sm">
               {rec.id}
             </div>
             <div className="flex-1">

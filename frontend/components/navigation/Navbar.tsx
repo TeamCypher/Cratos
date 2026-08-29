@@ -2,8 +2,9 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { Menu, X } from "lucide-react"
+import { Menu, X, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
@@ -16,7 +17,7 @@ export function Navbar() {
         {/* Logo */}
         <div className="flex items-center gap-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold shadow-lg shadow-primary/20">
-            C
+            <Zap className="w-5 h-5" />
           </div>
           <span className="text-xl font-bold tracking-tight text-foreground">Cratos</span>
         </div>
@@ -28,17 +29,21 @@ export function Navbar() {
           <Link href="/history" className="hover:text-foreground transition-colors">History</Link>
         </nav>
 
-        {/* Desktop CTA */}
-        <div className="hidden md:flex items-center">
+        {/* Desktop CTA & Theme Toggle */}
+        <div className="hidden md:flex items-center gap-4">
+          <ThemeToggle />
           <Button variant="default" className="font-semibold shadow-md shadow-primary/10">
             Analyze Video
           </Button>
         </div>
 
-        {/* Mobile Menu Toggle */}
-        <button className="md:hidden p-2 -mr-2 text-muted-foreground hover:text-foreground transition-colors" onClick={toggleMenu}>
-          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        {/* Mobile Menu Toggle & Theme */}
+        <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
+          <Button variant="ghost" size="icon" onClick={toggleMenu} aria-label="Toggle Menu">
+            {isMobileMenuOpen ? <X className="h-6 w-6 text-foreground" /> : <Menu className="h-6 w-6 text-foreground" />}
+          </Button>
+        </div>
       </div>
 
       {/* Mobile Menu Dropdown */}

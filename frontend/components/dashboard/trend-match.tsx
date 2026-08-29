@@ -18,7 +18,7 @@ export function TrendMatch({ data }: TrendMatchProps) {
   return (
     <div className="w-full h-full flex flex-col">
       <SectionHeading title="Trend Match" />
-      <Card className="flex-1 bg-card/50 border-white/10 p-6 shadow-sm flex flex-col justify-between">
+      <Card className="flex-1 bg-card/50 dark:border-white/10 border-black/10 p-6 shadow-sm flex flex-col justify-between">
         <div>
           <div className="flex items-start justify-between mb-6">
             <h3 className="text-4xl font-bold text-foreground">{data.trendMatch}%</h3>
@@ -29,7 +29,7 @@ export function TrendMatch({ data }: TrendMatchProps) {
           </div>
           
           <div className="w-full mb-6">
-            <Progress value={data.trendMatch} className="h-2 bg-black/40" />
+            <Progress value={data.trendMatch} className="h-2 dark:bg-black/40 bg-black/5" />
           </div>
         </div>
         

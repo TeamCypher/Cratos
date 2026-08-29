@@ -29,7 +29,7 @@ export function TrendFilter({
   const categories: TrendCategoryFilter[] = ["All", "Technology", "Entertainment", "Education", "Lifestyle", "Business"]
 
   return (
-    <div className="flex flex-col gap-6 mb-8 p-6 bg-card/30 border border-white/5 rounded-2xl">
+    <div className="flex flex-col gap-6 mb-8 p-6 bg-card/30 border dark:border-white/5 border-black/5 rounded-2xl">
       <div className="relative w-full max-w-md">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <Search className="h-5 w-5 text-muted-foreground" />
@@ -37,7 +37,7 @@ export function TrendFilter({
         <Input
           type="text"
           placeholder="Search trends..."
-          className="pl-10 bg-black/40 border-white/10"
+          className="pl-10 dark:bg-black/40 bg-black/5 dark:border-white/10 border-black/10"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
@@ -53,7 +53,7 @@ export function TrendFilter({
               className={`px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
                 directionFilter === d 
                   ? "bg-primary text-primary-foreground" 
-                  : "bg-white/5 text-muted-foreground hover:bg-white/10"
+                  : "dark:bg-white/5 bg-black/5 text-muted-foreground hover:dark:bg-white/10 bg-black/10"
               }`}
             >
               {d}
@@ -70,7 +70,7 @@ export function TrendFilter({
               className={`px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
                 categoryFilter === c 
                   ? "bg-secondary text-secondary-foreground" 
-                  : "bg-white/5 text-muted-foreground hover:bg-white/10"
+                  : "dark:bg-white/5 bg-black/5 text-muted-foreground hover:dark:bg-white/10 bg-black/10"
               }`}
             >
               {c}

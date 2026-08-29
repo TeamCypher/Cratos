@@ -119,9 +119,9 @@ export function FileUpload({ onAnalyze }: FileUploadProps) {
 
   if (selectedFile && previewUrl) {
     return (
-      <Card className="w-full max-w-3xl mx-auto overflow-hidden bg-card/50 backdrop-blur-sm border-white/10">
+      <Card className="w-full max-w-3xl mx-auto overflow-hidden bg-card/50 backdrop-blur-sm dark:border-white/10 border-black/10">
         <div className="p-6 md:p-8 flex flex-col items-center">
-          <div className="relative w-full max-w-xl aspect-[9/16] md:aspect-video bg-black rounded-xl overflow-hidden border border-white/10 shadow-2xl mb-8">
+          <div className="relative w-full max-w-xl aspect-[9/16] md:aspect-video bg-black rounded-xl overflow-hidden border dark:border-white/10 border-black/10 shadow-2xl mb-8">
             <video 
               ref={videoRef}
               src={previewUrl} 
@@ -131,16 +131,16 @@ export function FileUpload({ onAnalyze }: FileUploadProps) {
             />
             <button 
               onClick={clearFile}
-              className="absolute top-4 right-4 p-2 rounded-full bg-black/60 hover:bg-destructive/80 text-white backdrop-blur-md transition-colors z-10"
+              className="absolute top-4 right-4 p-2 rounded-full dark:bg-black/60 bg-black/10 hover:bg-destructive/80 dark:text-white text-foreground backdrop-blur-md transition-colors z-10"
               aria-label="Remove video"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
           
-          <div className="w-full max-w-xl flex flex-col md:flex-row items-center justify-between gap-6 bg-white/5 p-4 rounded-xl border border-white/5 mb-8">
+          <div className="w-full max-w-xl flex flex-col md:flex-row items-center justify-between gap-6 dark:bg-white/5 bg-black/5 p-4 rounded-xl border dark:border-white/5 border-black/5 mb-8">
             <div className="flex items-center gap-4 w-full overflow-hidden">
-              <div className="p-3 bg-white/10 rounded-lg">
+              <div className="p-3 dark:bg-white/10 bg-black/10 rounded-lg">
                 <FileVideo className="w-6 h-6 text-primary" />
               </div>
               <div className="min-w-0 flex-1">
@@ -202,7 +202,7 @@ export function FileUpload({ onAnalyze }: FileUploadProps) {
         />
         
         <div className={`w-20 h-20 mb-6 rounded-full flex items-center justify-center border transition-all duration-300
-          ${dragActive ? "bg-primary/20 border-primary scale-110" : "bg-neutral-800 border-white/10 group-hover:scale-105 group-hover:border-white/20"}
+          ${dragActive ? "bg-primary/20 border-primary scale-110" : "bg-neutral-800 dark:border-white/10 border-black/10 group-hover:scale-105 group-hover:dark:border-white/20 border-black/20"}
         `}>
           <Upload className={`w-8 h-8 transition-colors ${dragActive ? "text-primary" : "text-muted-foreground group-hover:text-primary"}`} />
         </div>
