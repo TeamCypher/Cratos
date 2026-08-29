@@ -76,7 +76,7 @@ class AnalysisJobRepository:
             if status in ('COMPLETED', 'FAILED'):
                 query = "UPDATE analysis_jobs SET status = ?, progress = ?, error = ?, completed_at = CURRENT_TIMESTAMP WHERE id = ?"
             else:
-                query = "UPDATE analysis_jobs SET status = ?, progress = ?, error = ? WHERE id = ?"
+                query = "UPDATE analysis_jobs SET status = ?, progress = ?, error = ?            WHERE id = ?"
             conn.execute(query, (status, progress, error, job_id))
             conn.commit()
         finally:
@@ -118,6 +118,14 @@ class TrendSignalRepository:
         conn = get_db_connection()
         try:
             cur = conn.execute("SELECT * FROM trend_signals WHERE id = ?", (signal_id,))
+            return cur.fetchone()
+        finally:
+            conn.close()
+
+    def get_latest_signal_by_topic(self, topic: str) -> Optional[sqlite3.Row]:
+        conn = get_db_connection()
+        try:
+            cur = conn.execute("SELECT * FROM trend_signals WHERE topic = ? ORDER BY captured_at DESC LIMIT 1", (topic,))
             return cur.fetchone()
         finally:
             conn.close()
