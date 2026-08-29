@@ -29,17 +29,14 @@ export function TrendList({ trends, selectedTrendId, onSelectTrend }: TrendListP
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-lg font-bold tracking-tight text-foreground px-1 mb-2">Trending Now</h2>
-      <div className="flex flex-col gap-3">
-        {trends.map(trend => (
-          <TrendCard 
-            key={trend.id} 
-            trend={trend} 
-            isSelected={selectedTrendId === trend.id}
-            onClick={onSelectTrend}
-          />
-        ))}
-      </div>
+      {trends.map(trend => (
+        <TrendCard 
+          key={trend.id} 
+          trend={trend} 
+          isSelected={selectedTrendId === trend.id}
+          onClick={onSelectTrend}
+        />
+      ))}
     </div>
   )
 }

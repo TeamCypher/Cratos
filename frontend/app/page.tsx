@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Sparkles } from "lucide-react"
+import { CratosLogo } from "@/components/CratosLogo"
 import { Navbar } from "@/components/navigation/Navbar"
 import { FileUpload } from "@/components/upload/FileUpload"
 import { ProcessingState } from "@/components/upload/ProcessingState"
@@ -42,6 +43,13 @@ export default function Home() {
         {/* HERO SECTION - Only show if idle */}
         <div className={`transition-all duration-700 ease-in-out ${appState === "idle" ? 'opacity-100 transform translate-y-0 relative' : 'opacity-0 transform -translate-y-10 absolute pointer-events-none'}`}>
           <section className="flex flex-col items-center text-center mb-16 space-y-6">
+            <CratosLogo 
+              iconOnly 
+              width={320} 
+              height={320} 
+              imageClassName="w-[180px] h-[180px] md:w-[260px] md:h-[260px] lg:w-[320px] lg:h-[320px] drop-shadow-[0_0_35px_rgba(203,255,0,0.15)] mb-6" 
+            />
+            
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full dark:bg-white/5 bg-black/5 border dark:border-white/10 border-black/10 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
               <Sparkles className="w-3.5 h-3.5 text-primary" />
               <span>AI-Powered Content Intelligence</span>

@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Menu, X, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { CratosLogo } from "@/components/CratosLogo"
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
@@ -15,12 +16,9 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-md">
       <div className="container mx-auto flex h-16 items-center justify-between px-6 max-w-6xl">
         {/* Logo */}
-        <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold shadow-lg shadow-primary/20">
-            <Zap className="w-5 h-5" />
-          </div>
-          <span className="text-xl font-bold tracking-tight text-foreground">Cratos</span>
-        </div>
+        <Link href="/" className="group">
+          <CratosLogo width={36} height={36} imageClassName="rounded-lg shadow-lg shadow-primary/10 transition-transform group-hover:scale-105" />
+        </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
