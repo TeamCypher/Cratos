@@ -3,24 +3,14 @@
 Welcome to the Cratos repository. 
 
 ## Current Status
-**Stage: Initial Project Scaffolding**
+**Stage: Foundation & Data Layer Complete**
 
-The project is currently in the initial setup phase. The directory structure has been created to support a modern web application with a dedicated backend for AI capabilities (specifically video AI and trend recommendation). Codebase initialization (Next.js, backend framework, etc.) is the pending next step.
-
-## Project Structure
-
-- `/frontend` - Frontend web application (UI components, app routing, etc.)
-- `/backend` - Backend API and core services
-  - `/backend/trend_recommendation` - Trend analysis and recommendation engine
-  - `/backend/video_ai` - Video processing and AI analysis models
-- `/contracts` - API contracts (OpenAPI specifications) and data schemas
-- `/docker` - Containerization and deployment configurations
-- `/docs` - Project documentation, architectural decisions, and changelogs
-- `/sample_data` - Mock data for development and testing
-- `/tests` - End-to-end, frontend, and backend test suites
+The project is currently in the active development phase. 
+- The initial directory structure is set.
+- **Backend B** has completed the SQLite database setup, Python repositories (`backend/data/`), and defined the initial API contracts (`contracts/openapi.yaml`).
 
 ## Next Steps
-- Initialize frontend framework (e.g., Next.js/React).
-- Initialize backend environment and framework (e.g., Python/FastAPI).
-- Define initial API contracts in `/contracts/openapi.yaml`.
+- **Frontend (Teammate 1):** Initialize frontend framework (e.g., Next.js/React with Tailwind).
+- **Backend A (Teammate 2):** Initialize FastAPI environment and build the `POST /api/v1/videos` upload flow.
+- **Backend B (Teammate 3):** Implement the YouTube API Trend Provider with local fallback.
 - Set up Docker environment for local development.

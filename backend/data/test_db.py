@@ -22,7 +22,8 @@ def run_tests():
     job_id = str(uuid.uuid4())
     
     print("Testing UserRepository...")
-    user_repo.create_user(user_id, "Test User", "test@example.com")
+    user_email = f"test_{user_id}@example.com"
+    user_repo.create_user(user_id, "Test User", user_email)
     user = user_repo.get_user(user_id)
     assert user is not None and user['name'] == "Test User"
     
