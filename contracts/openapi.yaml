@@ -87,6 +87,8 @@ paths:
                         type: string
                       best_time:
                         type: string
+                      video_description:
+                        type: string
                       hashtags:
                         type: array
                         items:

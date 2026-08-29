@@ -38,5 +38,10 @@
         "score": 29,
         "momentum": "medium",
         "direction": "rising"
+    },
+    "Test Topic Unique Aggregation 12345": {
+        "score": 17,
+        "momentum": "medium",
+        "direction": "rising"
     }
 }

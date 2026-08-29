@@ -56,6 +56,7 @@ class PredictionEngine:
             (engagement_potential * PredictionEngine.WEIGHTS["engagement_potential"]) +
             (timing_score * PredictionEngine.WEIGHTS["timing"])
         )
+        final_score = max(0, min(100, final_score))
         
         # Calculate a basic confidence metric (heuristic based on having good data)
         confidence = 0.8 # Base confidence

@@ -23,5 +23,25 @@
         "score": 17,
         "momentum": "medium",
         "direction": "falling"
+    },
+    "Test Topic Unique Aggregation 12345": {
+        "score": 5,
+        "momentum": "stable",
+        "direction": "stable"
+    },
+    "Test Caching Topic 01af74e1-2dab-4081-b79b-68fe2723ec11": {
+        "score": 14,
+        "momentum": "high",
+        "direction": "rising"
+    },
+    "Minecraft": {
+        "score": 74,
+        "momentum": "medium",
+        "direction": "falling"
+    },
+    "Test Topic Unique Aggregation d109299b-a374-48c4-a758-e2b5d285a33a": {
+        "score": 5,
+        "momentum": "stable",
+        "direction": "stable"
     }
 }

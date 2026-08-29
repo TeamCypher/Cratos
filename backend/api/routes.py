@@ -202,6 +202,7 @@ def get_video_report(video_id: str):
             video_id=video_id,
             platform=top_prediction.get("platform", "youtube_shorts"),
             best_time=top_prediction.get("best_time", "Anytime"),
+            video_description=rec_data.get("video_description", ""),
             hashtags=json.dumps(rec_data.get("hashtags", [])),
             caption=json.dumps(rec_data.get("captions", [])),
             title=json.dumps(rec_data.get("title_variations", [])),
@@ -216,10 +217,6 @@ def get_video_report(video_id: str):
     parsed_recommendation["title"] = json.loads(parsed_recommendation.get("title", "[]"))
     parsed_recommendation["keywords"] = json.loads(parsed_recommendation.get("keywords", "[]"))
     parsed_recommendation["optimization"] = json.loads(parsed_recommendation.get("optimization", "[]"))
-    
-    # We add video_description that Reka returned if we just generated it, otherwise we might not have it in the db schema.
-    # Hackathon workaround: add it to optimization or return directly from live generation if it's new.
-    # To keep it simple, we'll return the parsed fields.
 
     return {
         "video_id": video_id,
