@@ -41,5 +41,10 @@
         "score": 75,
         "momentum": "medium",
         "direction": "rising"
+    },
+    "Minecraft": {
+        "score": 95,
+        "momentum": "high",
+        "direction": "rising"
     }
 }
