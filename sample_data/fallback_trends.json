@@ -1,17 +1,27 @@
 {
-  "minecraft": {
-    "score": 86,
-    "momentum": "high",
-    "direction": "rising"
-  },
-  "diy": {
-    "score": 75,
-    "momentum": "stable",
-    "direction": "stable"
-  },
-  "music": {
-    "score": 90,
-    "momentum": "high",
-    "direction": "rising"
-  }
+    "minecraft": {
+        "score": 86,
+        "momentum": "high",
+        "direction": "rising"
+    },
+    "diy": {
+        "score": 75,
+        "momentum": "stable",
+        "direction": "stable"
+    },
+    "music": {
+        "score": 90,
+        "momentum": "high",
+        "direction": "rising"
+    },
+    "Minecraft": {
+        "score": 100,
+        "momentum": "high",
+        "direction": "rising"
+    },
+    "Quantum Physics": {
+        "score": 6,
+        "momentum": "stable",
+        "direction": "stable"
+    }
 }
