@@ -1,0 +1,83 @@
+openapi: 3.0.3
+info:
+  title: Creator Content Intelligence API
+  version: 1.0.0
+  description: Hackathon MVP API for cross-platform content intelligence.
+paths:
+  /api/v1/health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+          
+  /api/v1/videos:
+    post:
+      summary: Upload video / create analysis job
+      responses:
+        '202':
+          description: Video accepted and job created
+          
+  /api/v1/analysis/{job_id}:
+    get:
+      summary: Get analysis status and result summary
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Job status returned
+
+components:
+  schemas:
+    ContentProfile:
+      type: object
+      description: Normalized output from AI/video analysis. Represents the core understanding of the uploaded video.
+      properties:
+        topic:
+          type: string
+          description: The main subject of the video.
+          example: "Minecraft"
+        subtopic:
+          type: string
+          description: A more specific area within the main topic.
+          example: "Rare Glitch"
+        category:
+          type: string
+          description: Broad content category (e.g., Gaming, Education, Lifestyle).
+          example: "Gaming"
+        keywords:
+          type: array
+          items:
+            type: string
+          description: Extracted keywords from transcript and visual OCR.
+          example: ["Minecraft", "glitch", "speedrun"]
+        emotion:
+          type: string
+          description: Primary emotion or sentiment detected (e.g., surprise, excitement).
+          example: "surprise"
+        audience:
+          type: string
+          description: Estimated target interest group.
+          example: "gaming enthusiasts"
+        hook_score:
+          type: integer
+          description: Score evaluating the strength of the first 3-5 seconds (0-100).
+          example: 87
+        pacing:
+          type: string
+          description: Overall pacing/energy of the video.
+          example: "fast"
+        language:
+          type: string
+          description: Detected language code.
+          example: "en"
+      required:
+        - topic
+        - category
+        - keywords
+        - hook_score
+        - pacing
