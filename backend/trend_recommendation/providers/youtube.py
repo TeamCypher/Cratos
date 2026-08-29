@@ -11,7 +11,7 @@ class YouTubeTrendProvider:
         self.api_key = os.getenv("YOUTUBE_API_KEY")
         
         # Load local fallback data
-        self.fallback_path = os.path.join(os.path.dirname(__file__), '../../../sample_data/fallback_trends.json')
+        self.fallback_path = os.path.join(os.path.dirname(__file__), '../../../sample_data/fallback_youtube.json')
         try:
             with open(self.fallback_path, 'r') as f:
                 self.fallback_data = json.load(f)
