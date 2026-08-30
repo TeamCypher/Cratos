@@ -10,3 +10,5 @@ pytesseract
 Pillow
 pytrends
 google-generativeai
+tenacity
+reka-api
