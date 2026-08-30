@@ -31,7 +31,7 @@ from backend.video_ai.video_processing.extractor import process_video
 from backend.video_ai.ai.speech import analyze_speech
 from backend.video_ai.ai.visual import analyze_visuals
 from backend.video_ai.ai.hook import analyze_hook
-from backend.video_ai.profile_builder import generate_metadata_with_reka
+from backend.video_ai.profile_builder import generate_metadata_with_gemini
 import traceback
 import tempfile
 
@@ -81,7 +81,7 @@ async def process_video_task(job_id: str):
             quality_score = int((hook_score + pacing_score) / 2) # Arbitrary heuristic for quality
 
             job_repo.update_job_progress(job_id, "TREND_ANALYSIS", 70)
-            # 5. Profile Generation via Reka
+            # 5. Profile Generation via Gemini
             transcript = speech_data.get("transcript", "")
             ocr_text = visual_data.get("ocr_text", [])
             keywords = speech_data.get("keywords", [])
@@ -89,7 +89,7 @@ async def process_video_task(job_id: str):
             def progress_callback(status_str: str, pct: int):
                 job_repo.update_job_progress(job_id, status_str, pct)
                 
-            meta = generate_metadata_with_reka(transcript, ocr_text, keywords, progress_callback)
+            meta = generate_metadata_with_gemini(transcript, ocr_text, keywords, progress_callback)
             
             job_repo.update_job_progress(job_id, "SCORING", 85)
             # 6. Save real analysis

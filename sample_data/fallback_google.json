@@ -73,5 +73,10 @@
         "score": 69,
         "momentum": "medium",
         "direction": "falling"
+    },
+    "Time": {
+        "score": 62,
+        "momentum": "medium",
+        "direction": "rising"
     }
 }

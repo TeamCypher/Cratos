@@ -76,5 +76,11 @@
         "momentum": "medium",
         "direction": "rising",
         "trending_descriptions": []
+    },
+    "Time": {
+        "score": 95,
+        "momentum": "high",
+        "direction": "rising",
+        "trending_descriptions": []
     }
 }

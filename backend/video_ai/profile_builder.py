@@ -3,8 +3,15 @@ import json
 import logging
 from typing import Dict, Any
 from dotenv import load_dotenv
+import google.generativeai as genai
 
 logger = logging.getLogger(__name__)
+
+# Configure Gemini
+load_dotenv()
+api_key = os.getenv("GEMINI_API_KEY")
+if api_key:
+    genai.configure(api_key=api_key)
 
 load_dotenv()
 
@@ -61,10 +68,8 @@ def build_content_profile(
     
     return content_profile
 
-import requests
-
-def generate_metadata_with_reka(transcript: str, ocr_text: list, keywords: list, progress_callback=None) -> Dict[str, Any]:
-    """Uses Reka API to infer high-level metadata if available. Includes exponential backoff retry."""
+def generate_metadata_with_gemini(transcript: str, ocr_text: list, keywords: list, progress_callback=None) -> Dict[str, Any]:
+    """Uses Gemini API to infer high-level metadata if available. Includes exponential backoff retry."""
     import time
     
     default_topic = keywords[0].capitalize() if keywords else "General Content"
@@ -79,9 +84,8 @@ def generate_metadata_with_reka(transcript: str, ocr_text: list, keywords: list,
         "keywords": keywords[:5] if keywords else ["video", "content"]
     }
     
-    reka_api_key = os.getenv("REKA_API_KEY")
-    if not reka_api_key or reka_api_key == "your_reka_api_key_here":
-        logger.warning("No valid REKA_API_KEY found, using default metadata extraction.")
+    if not os.getenv("GEMINI_API_KEY") or os.getenv("GEMINI_API_KEY") == "your_gemini_key_here":
+        logger.warning("No valid GEMINI_API_KEY found, using default metadata extraction.")
         return default_meta
         
     prompt = f"""
@@ -103,32 +107,17 @@ def generate_metadata_with_reka(transcript: str, ocr_text: list, keywords: list,
     max_retries = 5
     delay = 2
     
-    url = "https://chat.reka.ai/api/chat" # The typical endpoint for reka chat completions, or https://api.reka.ai/v1/chat/completions
-    # actually, the official reka API endpoint is: https://api.reka.ai/v1/chat
-    url = "https://api.reka.ai/v1/chat"
-    
-    headers = {
-        "Content-Type": "application/json",
-        "X-Api-Key": reka_api_key
-    }
-    
-    payload = {
-        "messages": [
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ],
-        "model": "reka-flash"
-    }
-    
     for attempt in range(max_retries):
         try:
-            response = requests.post(url, headers=headers, json=payload, timeout=30)
-            response.raise_for_status()
+            model = genai.GenerativeModel('gemini-1.5-flash')
+            response = model.generate_content(
+                prompt,
+                generation_config=genai.types.GenerationConfig(
+                    response_mime_type="application/json",
+                )
+            )
             
-            data = response.json()
-            result_text = data.get("responses", [{}])[0].get("message", {}).get("content", "").strip()
+            result_text = response.text
             
             # Parse the JSON string
             if result_text.startswith("```json"):
@@ -148,7 +137,7 @@ def generate_metadata_with_reka(transcript: str, ocr_text: list, keywords: list,
             return result
             
         except Exception as e:
-            logger.error(f"Reka metadata extraction failed on attempt {attempt + 1}: {e}")
+            logger.error(f"Gemini metadata extraction failed on attempt {attempt + 1}: {e}")
             if attempt < max_retries - 1:
                 if progress_callback:
                     progress_callback("RECONNECTING", 50)

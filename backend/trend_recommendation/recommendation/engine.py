@@ -1,8 +1,9 @@
 import os
 import json
-import requests
 from typing import Dict, Any
 from dotenv import load_dotenv
+from google import genai
+from google.genai import types
 
 from .prompts import RECOMMENDATION_SYSTEM_PROMPT
 
@@ -10,15 +11,19 @@ load_dotenv()
 
 class RecommendationEngine:
     def __init__(self):
-        self.api_key = os.getenv("REKA_API_KEY")
+        self.api_key = os.getenv("GEMINI_API_KEY")
+        if self.api_key and self.api_key != "your_gemini_key_here":
+            self.client = genai.Client(api_key=self.api_key)
+        else:
+            self.client = None
 
     def generate_recommendations(self, content_profile: Dict[str, Any], trend_signal: Dict[str, Any], prediction: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Calls the Reka API to generate tailored recommendations.
+        Calls the Gemini API to generate tailored recommendations.
         Falls back to a static heuristic generation if API fails or key is missing.
         """
-        if not self.api_key or self.api_key == "your_reka_api_key_here":
-            print("Warning: Missing Reka API Key. Using local heuristic recommendations.")
+        if not self.client:
+            print("Warning: Missing Gemini API Key. Using local heuristic recommendations.")
             return self._generate_heuristic_fallback(content_profile, prediction)
         
         # Construct the user prompt with the JSON payload context
@@ -34,40 +39,21 @@ class RecommendationEngine:
         max_retries = 5
         delay = 2
         
-        url = "https://api.reka.ai/v1/chat"
-        headers = {
-            "Content-Type": "application/json",
-            "X-Api-Key": self.api_key
-        }
-        payload = {
-            "messages": [
-                {
-                    "role": "user",
-                    "content": f"{RECOMMENDATION_SYSTEM_PROMPT}\n\n{user_prompt}"
-                }
-            ],
-            "model": "reka-flash"
-        }
-        
         for attempt in range(max_retries):
             try:
-                response = requests.post(url, headers=headers, json=payload, timeout=30)
-                response.raise_for_status()
-                
-                data = response.json()
-                result_text = data.get("responses", [{}])[0].get("message", {}).get("content", "").strip()
-                
-                # Parse the JSON string
-                if result_text.startswith("```json"):
-                    result_text = result_text.split("```json")[1].split("```")[0].strip()
-                elif result_text.startswith("```"):
-                    result_text = result_text.split("```")[1].strip()
-                    
-                recommendations = json.loads(result_text)
+                response = self.client.models.generate_content(
+                    model='gemini-3.5-flash',
+                    contents=user_prompt,
+                    config=types.GenerateContentConfig(
+                        system_instruction=RECOMMENDATION_SYSTEM_PROMPT,
+                        response_mime_type="application/json",
+                    ),
+                )
+                recommendations = json.loads(response.text)
                 return recommendations
                     
             except Exception as e:
-                print(f"Reka API Error on attempt {attempt + 1}: {e}")
+                print(f"Gemini API Error on attempt {attempt + 1}: {e}")
                 if attempt < max_retries - 1:
                     time.sleep(delay)
                     delay *= 2
