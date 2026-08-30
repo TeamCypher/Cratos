@@ -13,6 +13,36 @@ import { AnalysisHistoryItem } from "@/lib/mock-data"
 
 type AppState = "idle" | "processing" | "completed"
 
+function TypewriterText({ text }: { text: string }) {
+  const [displayedText, setDisplayedText] = React.useState("")
+  const [isTyping, setIsTyping] = React.useState(true)
+
+  React.useEffect(() => {
+    let currentIndex = 0
+    let timeout: NodeJS.Timeout
+
+    const typeChar = () => {
+      if (currentIndex < text.length) {
+        setDisplayedText(text.substring(0, currentIndex + 1))
+        currentIndex++
+        timeout = setTimeout(typeChar, 80) // 80ms per character
+      } else {
+        setIsTyping(false)
+      }
+    }
+
+    timeout = setTimeout(typeChar, 300)
+    return () => clearTimeout(timeout)
+  }, [text])
+
+  return (
+    <span className="whitespace-nowrap text-[#DFFF00] text-3xl sm:text-4xl md:text-5xl lg:text-7xl">
+      {displayedText}
+      {isTyping && <span className="animate-pulse">|</span>}
+    </span>
+  )
+}
+
 export default function Home() {
   const [appState, setAppState] = React.useState<AppState>("idle")
   const [activeFile, setActiveFile] = React.useState<File | null>(null)
@@ -122,15 +152,12 @@ export default function Home() {
             />
             
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full dark:bg-white/5 bg-black/5 border dark:border-white/10 border-black/10 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-              <Sparkles className="w-3.5 h-3.5 text-primary" />
               <span>AI-Powered Content Intelligence</span>
             </div>
 
             <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-foreground max-w-3xl leading-[1.1]">
-              Your content.<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-accent">
-                ANALYZE TREND REPOST
-              </span>
+              <span className="font-chopin">Your content.</span><br />
+              <TypewriterText text="ANALYZE TREND REPOST" />
             </h1>
 
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed">
@@ -139,7 +166,7 @@ export default function Home() {
           </section>
 
           {/* UPLOAD SECTION */}
-          <section className="w-full flex justify-center pb-24">
+          <section id="upload-section" className="w-full flex justify-center pb-24">
             <div className="w-full">
               {uploadError && (
                 <div className="mb-4 p-4 rounded-lg bg-destructive/10 text-destructive text-center font-medium max-w-3xl mx-auto border border-destructive/20">

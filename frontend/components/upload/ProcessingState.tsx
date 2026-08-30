@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CheckCircle2, CircleDashed, Loader2 } from "lucide-react"
+import { CheckCircle2, CircleDashed, Loader2, ArrowUp } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 
@@ -151,11 +151,11 @@ export function ProcessingState({ jobId, onComplete }: ProcessingStateProps) {
       ) : (
         <>
           <div className="flex flex-col items-center mb-10">
-            <div className="relative w-24 h-24 mb-6">
+            <div className="relative w-24 h-24 mb-6 flex items-center justify-center">
               <div className="absolute inset-0 border-4 dark:border-white/5 border-black/5 rounded-full"></div>
               <div className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <Loader2 className="w-8 h-8 text-primary animate-pulse" />
+                <ArrowUp className="w-8 h-8 text-[#DFFF00] animate-bounce" />
               </div>
             </div>
             

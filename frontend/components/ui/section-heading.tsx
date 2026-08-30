@@ -15,7 +15,7 @@ export function SectionHeading({
   return (
     <div className={cn("mb-6", className)}>
       <h2 
-        className="text-2xl font-bold tracking-tight text-foreground mb-1" 
+        className="text-2xl font-bold tracking-tight text-foreground mb-1 font-pixel" 
         {...props}
       >
         {title}

@@ -73,8 +73,16 @@ export const api = {
   },
 
   // Reports
-  getVideoReport: (videoId: string): Promise<AnalysisReport> => {
-    return fetchWrapper<AnalysisReport>(`/api/v1/videos/${videoId}/report`);
+  getVideoReport: async (videoId: string): Promise<AnalysisReport> => {
+    const report = await fetchWrapper<AnalysisReport>(`/api/v1/videos/${videoId}/report`);
+    
+    // Strip emojis from captions at the source
+    if (report?.recommendation?.caption && Array.isArray(report.recommendation.caption)) {
+      const emojiRegex = new RegExp('[\\u{1F300}-\\u{1F9FF}\\u{1F600}-\\u{1F64F}\\u{1F680}-\\u{1F6FF}\\u{2600}-\\u{26FF}\\u{2700}-\\u{27BF}]', 'gu');
+      report.recommendation.caption = report.recommendation.caption.map(c => c.replace(emojiRegex, '').trim());
+    }
+
+    return report;
   },
 
   // Trends

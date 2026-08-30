@@ -27,7 +27,6 @@ export function AiContent({ data }: AiContentProps) {
   return (
     <div className="w-full flex flex-col gap-6">
       <div className="flex items-center gap-2">
-        <Sparkles className="w-5 h-5 text-primary" />
         <SectionHeading title="AI-Generated Assets" description="Tailored content to boost reach and engagement." />
       </div>
 

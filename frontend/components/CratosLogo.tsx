@@ -33,7 +33,7 @@ export function CratosLogo({
         />
       </div>
       {!iconOnly && (
-        <span className={cn("text-xl font-bold tracking-tight text-foreground", textClassName)}>
+        <span className={cn("text-xl font-bold tracking-tight text-foreground font-cratos", textClassName)}>
           Cratos
         </span>
       )}
