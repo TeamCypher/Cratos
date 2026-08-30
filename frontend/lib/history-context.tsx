@@ -31,10 +31,10 @@ export function HistoryProvider({ children }: { children: ReactNode }) {
             thumbnail: "bg-blue-900/50",
             date: new Date(v.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
             duration: "00:00",
-            score: 0,
-            bestPlatform: "Unknown",
+            score: v.best_score || 0,
+            bestPlatform: v.best_platform || "Unknown",
             trendStatus: "stable",
-            category: "Technology",
+            category: v.category || "General",
             status: v.status // e.g. completed, processing, etc.
           })) as AnalysisHistoryItem[]
           setHistoryItems(formatted)

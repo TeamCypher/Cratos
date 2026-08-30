@@ -10,8 +10,9 @@ import { Loader2 } from "lucide-react"
 import { useHistory } from "@/lib/history-context"
 import { AnalysisHistoryItem } from "@/lib/mock-data"
 
-export default function ResultsDynamicPage({ params }: { params: { id: string } }) {
+export default function ResultsDynamicPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
+  const { id } = React.use(params)
   const [report, setReport] = React.useState<AnalysisReport | null>(null)
   const [isLoading, setIsLoading] = React.useState(true)
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null)
@@ -32,7 +33,7 @@ export default function ResultsDynamicPage({ params }: { params: { id: string } 
   React.useEffect(() => {
     const fetchReport = async () => {
       try {
-        const fetchedReport = await api.getVideoReport(params.id)
+        const fetchedReport = await api.getVideoReport(id)
         setReport(fetchedReport)
 
         if (fetchedReport) {
@@ -66,7 +67,7 @@ export default function ResultsDynamicPage({ params }: { params: { id: string } 
       }
     }
     fetchReport()
-  }, [params.id])
+  }, [id])
 
   const handleAnalyzeAnother = () => {
     router.push("/")
