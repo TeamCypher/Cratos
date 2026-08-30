@@ -185,7 +185,7 @@ export function FileUpload({ onAnalyze, disabled }: FileUploadProps) {
       
       <div 
         className={`relative flex flex-col items-center justify-center p-12 md:p-20 rounded-3xl border-2 border-dashed transition-all duration-300 w-full ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}
-          ${dragActive && !disabled ? "border-[#DFFF00] bg-[#DFFF00]/5 shadow-[0_0_35px_rgba(223,255,0,0.4)]" : "border-white/15 bg-card/50 hover:bg-card/80 hover:border-white/25 shadow-[0_0_15px_rgba(223,255,0,0.15),_0_0_30px_rgba(223,255,0,0.05)] hover:shadow-[0_0_20px_rgba(223,255,0,0.25),_0_0_40px_rgba(223,255,0,0.1)]"}`
+          ${dragActive && !disabled ? "border-[#DFFF00] bg-[#DFFF00]/5 shadow-[0_0_35px_rgba(223,255,0,0.4)]" : "border-white/15 bg-card/50 hover:bg-card/80 hover:border-white/25 shadow-[0_0_15px_rgba(223,255,0,0.15),_0_0_30px_rgba(223,255,0,0.05)] hover:shadow-[0_0_20px_rgba(223,255,0,0.25),_0_0_40px_rgba(223,255,0,0.1)]"}
         `}
         onDragEnter={disabled ? undefined : handleDrag}
         onDragLeave={disabled ? undefined : handleDrag}

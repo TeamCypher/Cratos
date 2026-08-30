@@ -49,36 +49,6 @@ const TypewriterText = ({ text }: { text: string }) => {
 
 type AppState = "idle" | "processing" | "completed"
 
-function TypewriterText({ text }: { text: string }) {
-  const [displayedText, setDisplayedText] = React.useState("")
-  const [isTyping, setIsTyping] = React.useState(true)
-
-  React.useEffect(() => {
-    let currentIndex = 0
-    let timeout: NodeJS.Timeout
-
-    const typeChar = () => {
-      if (currentIndex < text.length) {
-        setDisplayedText(text.substring(0, currentIndex + 1))
-        currentIndex++
-        timeout = setTimeout(typeChar, 80) // 80ms per character
-      } else {
-        setIsTyping(false)
-      }
-    }
-
-    timeout = setTimeout(typeChar, 300)
-    return () => clearTimeout(timeout)
-  }, [text])
-
-  return (
-    <span className="whitespace-nowrap text-[#DFFF00] text-3xl sm:text-4xl md:text-5xl lg:text-7xl">
-      {displayedText}
-      {isTyping && <span className="animate-pulse">|</span>}
-    </span>
-  )
-}
-
 export default function Home() {
   const [appState, setAppState] = React.useState<AppState>("idle")
   const [activeFile, setActiveFile] = React.useState<File | null>(null)
