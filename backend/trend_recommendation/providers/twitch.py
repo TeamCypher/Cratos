@@ -23,8 +23,7 @@ class TwitchTrendProvider:
     def _get_access_token(self) -> str:
         """Fetches an OAuth App Access Token via Client Credentials flow."""
         if not self.client_id or not self.client_secret or self.client_id == 'your_twitch_client_id_here':
-            return None
-            
+            raise ValueError("Missing TWITCH_CLIENT_ID or SECRET. False data will not be tolerated.")
         url = 'https://id.twitch.tv/oauth2/token'
         data = urllib.parse.urlencode({
             'client_id': self.client_id,
@@ -38,9 +37,7 @@ class TwitchTrendProvider:
                 result = json.loads(response.read().decode())
                 return result.get('access_token')
         except Exception as e:
-            print(f"Twitch OAuth Error: {e}")
-            return None
-
+            raise ValueError(f"Twitch OAuth Error: {e}. False data will not be tolerated.")
     async def get_trend_signals_async(self, topic: str) -> dict:
         import asyncio
         return await asyncio.to_thread(self.get_trend_signals, topic)
@@ -55,8 +52,7 @@ class TwitchTrendProvider:
             self.access_token = self._get_access_token()
             
         if not self.access_token:
-            print(f"Warning: Twitch credentials not valid. Using local fallback for topic '{topic}'.")
-            return self._get_fallback_data(topic)
+            raise ValueError("Twitch credentials not valid. False data will not be tolerated.")
 
         # Query Twitch Search Categories API
         query = urllib.parse.quote(topic)
@@ -140,8 +136,7 @@ class TwitchTrendProvider:
                 return api_result
                 
         except Exception as e:
-            print(f"Twitch API Error: {e}. Falling back to local data.")
-            return self._get_fallback_data(topic)
+            raise ValueError(f"Twitch API Error: {e}. False data will not be tolerated.")
 
     def _get_fallback_data(self, topic: str) -> dict:
         try:

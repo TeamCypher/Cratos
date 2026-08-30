@@ -29,9 +29,12 @@ class TrendEngine:
         # Check cache
         cached_signal = self.repo.get_latest_signal_by_topic(topic)
         if cached_signal:
-            captured_at_str = cached_signal['captured_at']
+            captured_at_val = cached_signal['captured_at']
             try:
-                captured_at = datetime.strptime(captured_at_str, '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc)
+                if isinstance(captured_at_val, str):
+                    captured_at = datetime.strptime(captured_at_val, '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc)
+                else:
+                    captured_at = captured_at_val.replace(tzinfo=timezone.utc)
                 
                 # If fresh (< 1 hour), return cache
                 if captured_at > fresh_threshold:

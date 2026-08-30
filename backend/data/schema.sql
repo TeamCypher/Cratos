@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Stores metadata about the uploaded video files
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS videos (
     resolution TEXT,
     language TEXT,
     status TEXT NOT NULL, -- QUEUED, VALIDATING, PROCESSING, FAILED, COMPLETED
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(user_id) REFERENCES users(id)
 );
 
@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS analysis_jobs (
     status TEXT NOT NULL, -- QUEUED, PROCESSING_MEDIA, AI_ANALYSIS, TREND_ANALYSIS, SCORING, RECOMMENDING, COMPLETED, FAILED
     progress INTEGER DEFAULT 0,
     error TEXT,
-    started_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    completed_at DATETIME,
+    started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    completed_at TIMESTAMP,
     FOREIGN KEY(video_id) REFERENCES videos(id)
 );
 
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS trend_signals (
     momentum TEXT,
     direction TEXT,
     embedding TEXT, -- JSON array of floats for semantic similarity
-    captured_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    captured_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Stores per-platform suitability predictions
@@ -104,6 +104,6 @@ CREATE TABLE IF NOT EXISTS competitor_analysis (
     overlap_score INTEGER,
     gap_topics TEXT, -- Store as JSON array string
     timing_gaps TEXT, -- Store as JSON array string
-    analyzed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    analyzed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(video_id) REFERENCES videos(id)
 );

@@ -80,7 +80,27 @@
         "direction": "falling"
     },
     "Archetype General": {
-        "score": 8,
+        "score": 9,
+        "momentum": "medium",
+        "direction": "rising"
+    },
+    "Park Scene": {
+        "score": 42,
+        "momentum": "medium",
+        "direction": "rising"
+    },
+    "Park": {
+        "score": 81,
+        "momentum": "medium",
+        "direction": "rising"
+    },
+    "Snack Storage": {
+        "score": 49,
+        "momentum": "medium",
+        "direction": "rising"
+    },
+    "Snack storage": {
+        "score": 49,
         "momentum": "medium",
         "direction": "rising"
     }

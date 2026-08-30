@@ -89,5 +89,11 @@
         "momentum": "high",
         "direction": "rising",
         "trending_descriptions": []
+    },
+    "Park": {
+        "score": 95,
+        "momentum": "high",
+        "direction": "rising",
+        "trending_descriptions": []
     }
 }

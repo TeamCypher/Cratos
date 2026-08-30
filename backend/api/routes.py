@@ -90,7 +90,7 @@ async def process_video_task(job_id: str):
             duration = extraction.get("metadata", {}).get("duration", 0)
             retention_curve = calculate_retention_curve(video_path, audio_path, speech_data, duration)
             for point in retention_curve:
-                retention_repo.create_curve_point(f"curve_{uuid.uuid4().hex[:12]}", video_id, point["timestamp_sec"], point["retention_score"])
+                retention_repo.create_curve_point(f"curve_{uuid.uuid4().hex[:12]}", video_id, int(point["timestamp_sec"]), float(point["retention_score"]))
                 
             archetype = ContentFingerprinter.fingerprint(hook_data, speech_data, visual_data, duration)
             

@@ -28,8 +28,7 @@ class YouTubeTrendProvider:
         Falls back to local mock data if the API key is missing or the API fails.
         """
         if not self.api_key or self.api_key == 'your_api_key_here':
-            print(f"Warning: YOUTUBE_API_KEY not set. Using local fallback for topic '{topic}'.")
-            return self._get_fallback_data(topic)
+            raise ValueError("Missing YOUTUBE_API_KEY. False data will not be tolerated.")
             
         try:
             youtube = build('youtube', 'v3', developerKey=self.api_key)
@@ -124,8 +123,7 @@ class YouTubeTrendProvider:
             return result
             
         except HttpError as e:
-            print(f"YouTube API Error: {e}. Falling back to local data.")
-            return self._get_fallback_data(topic)
+            raise ValueError(f"YouTube API Error: {e}. False data will not be tolerated.")
 
     def _get_fallback_data(self, topic: str) -> dict:
         # Semantic matching first
