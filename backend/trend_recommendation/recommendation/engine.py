@@ -2,7 +2,7 @@ import os
 import json
 import requests
 from tenacity import retry, stop_after_attempt, wait_exponential
-from reka.client import Reka
+from openai import OpenAI
 from typing import Dict, Any
 from dotenv import load_dotenv
 
@@ -12,16 +12,14 @@ load_dotenv()
 
 class RecommendationEngine:
     def __init__(self):
-        self.api_key = os.getenv("REKA_API_KEY")
+        self.api_key = os.getenv("OPENROUTER_API_KEY")
 
     def generate_recommendations(self, content_profile: Dict[str, Any], trend_signal: Dict[str, Any], prediction: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Calls the Reka API to generate tailored recommendations.
-        Falls back to a static heuristic generation if API fails or key is missing.
+        Calls the OpenRouter API to generate tailored recommendations.
         """
-        if not self.api_key or self.api_key == "your_reka_api_key_here":
-            print("Warning: Missing Reka API Key. Using local heuristic recommendations.")
-            return self._generate_heuristic_fallback(content_profile, prediction)
+        if not self.api_key or self.api_key == "your_openrouter_api_key":
+            raise ValueError("Missing OPENROUTER_API_KEY. System requires API to be connected; false data is not tolerated.")
         
         # Construct the user prompt with the JSON payload context
         input_data = {
@@ -34,12 +32,12 @@ class RecommendationEngine:
         
         @retry(stop=stop_after_attempt(5), wait=wait_exponential(multiplier=2, min=2, max=32), reraise=True)
         def _do_call():
-            client = Reka(api_key=self.api_key)
-            response = client.chat.create(
+            client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=self.api_key)
+            response = client.chat.completions.create(
                 messages=[{"role": "user", "content": f"{RECOMMENDATION_SYSTEM_PROMPT}\n\n{user_prompt}"}],
-                model="reka-flash"
+                model="nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"
             )
-            return response.responses[0].message.content.strip()
+            return response.choices[0].message.content.strip()
         
         try:
             result_text = _do_call()
@@ -54,38 +52,4 @@ class RecommendationEngine:
             return recommendations
                 
         except Exception as e:
-            print(f"All retries failed or Reka API Error: {e}")
-            print("Falling back to heuristics.")
-            return self._generate_heuristic_fallback(content_profile, prediction)
-
-    def _generate_heuristic_fallback(self, content_profile: Dict[str, Any], prediction: Dict[str, Any]) -> Dict[str, Any]:
-        """A safe fallback in case the AI API is unavailable."""
-        topic = content_profile.get("topic")
-        if not topic or topic.lower() == "unknown":
-            topic = "General Content"
-            
-        platform = prediction.get("platform", "this platform").replace("_", " ").title()
-        
-        return {
-            "video_description": f"Check out this amazing video about {topic}! Perfect for {platform}. Don't forget to like and subscribe for more content.",
-            "captions": [
-                f"Did you know this about {topic}? 👇",
-                f"The ultimate {topic} hack! 🤯",
-                f"Wait for the end... #{topic.replace(' ', '')}"
-            ],
-            "hashtags": [
-                f"#{topic.replace(' ', '')}",
-                "#viral",
-                "#trending",
-                f"#{content_profile.get('category', 'fyp').lower()}"
-            ],
-            "title_variations": [
-                f"The Truth About {topic}",
-                f"I tried the {topic} trend",
-                f"Best {topic} strategy in 2024"
-            ],
-            "optimization_tips": [
-                f"Your hook score is {content_profile.get('hook_score', 50)}/100. Try to introduce the main conflict within the first 3 seconds.",
-                f"Since pacing is {content_profile.get('pacing', 'average')}, consider adding jump cuts to maintain retention on {platform}."
-            ]
-        }
+            raise ValueError(f"AI Recommendation Generation Failed. False data is not tolerated. Error: {e}")

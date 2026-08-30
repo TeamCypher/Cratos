@@ -103,7 +103,8 @@ async def process_video_task(job_id: str):
             def progress_callback(status_str: str, pct: int):
                 job_repo.update_job_progress(job_id, status_str, pct)
                 
-            meta = generate_metadata_with_reka(transcript, ocr_text, keywords, progress_callback)
+            frame_paths = extraction.get("frame_paths", [])
+            meta = generate_metadata_with_reka(transcript, ocr_text, keywords, frame_paths=frame_paths, progress_callback=progress_callback)
             
             job_repo.update_job_progress(job_id, "SCORING", 85)
             # 6. Save real analysis

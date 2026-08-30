@@ -78,5 +78,10 @@
         "score": 74,
         "momentum": "medium",
         "direction": "falling"
+    },
+    "Archetype General": {
+        "score": 8,
+        "momentum": "medium",
+        "direction": "rising"
     }
 }
