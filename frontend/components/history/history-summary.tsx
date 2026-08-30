@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { MetricCard } from "@/components/ui/metric-card"
-import { HistorySummary as HistorySummaryType } from "@/lib/mock-data"
+import { HistorySummary as HistorySummaryType } from "@/lib/types"
 import { Layers, Activity, TrendingUp, Smartphone } from "lucide-react"
 
 export interface HistorySummaryProps {

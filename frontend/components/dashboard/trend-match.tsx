@@ -6,7 +6,7 @@ import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { SectionHeading } from "@/components/ui/section-heading"
 import { TrendingUp, TrendingDown, Minus } from "lucide-react"
-import { AnalysisResult } from "@/lib/mock-data"
+import { AnalysisResult } from "@/lib/types"
 
 export interface TrendMatchProps {
   data: AnalysisResult

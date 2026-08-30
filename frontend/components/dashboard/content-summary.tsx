@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Card } from "@/components/ui/card"
 import { SectionHeading } from "@/components/ui/section-heading"
-import { AnalysisResult } from "@/lib/mock-data"
+import { AnalysisResult } from "@/lib/types"
 
 export interface ContentSummaryProps {
   data: AnalysisResult

@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { HistoryCard } from "./history-card"
-import { AnalysisHistoryItem } from "@/lib/mock-data"
+import { AnalysisHistoryItem } from "@/lib/types"
 
 export interface HistoryListProps {
   items: AnalysisHistoryItem[]

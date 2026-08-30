@@ -1,12 +1,13 @@
 "use client"
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react"
-import { AnalysisHistoryItem } from "./mock-data"
+import { AnalysisHistoryItem } from "./types"
 import { api } from "./api/client"
 
 interface HistoryContextType {
   historyItems: AnalysisHistoryItem[]
   addHistoryItem: (item: AnalysisHistoryItem) => void
+  deleteHistoryItem: (id: string) => Promise<void>
   clearHistory: () => void
   isLoading: boolean
 }
@@ -27,7 +28,7 @@ export function HistoryProvider({ children }: { children: ReactNode }) {
         if (data && data.history) {
           const formatted = data.history.map((v: any) => ({
             id: v.video_id,
-            title: v.filename || "Uploaded Video",
+            title: v.title || v.filename || "Uploaded Video",
             thumbnail: "bg-blue-900/50",
             date: new Date(v.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
             duration: "00:00",
@@ -68,13 +69,23 @@ export function HistoryProvider({ children }: { children: ReactNode }) {
       return [item, ...prev]
     })
   }
+  
+  const deleteHistoryItem = async (id: string) => {
+    try {
+      await api.deleteUserHistory(id)
+      setHistoryItems(prev => prev.filter(item => item.id !== id))
+    } catch (e) {
+      console.error("Failed to delete history item", e)
+      // Ideally show a toast notification here
+    }
+  }
 
   const clearHistory = () => {
     setHistoryItems([])
   }
 
   return (
-    <HistoryContext.Provider value={{ historyItems, addHistoryItem, clearHistory, isLoading }}>
+    <HistoryContext.Provider value={{ historyItems, addHistoryItem, deleteHistoryItem, clearHistory, isLoading }}>
       {children}
     </HistoryContext.Provider>
   )

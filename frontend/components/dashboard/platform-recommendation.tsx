@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card"
 import { SectionHeading } from "@/components/ui/section-heading"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
-import { AnalysisResult } from "@/lib/mock-data"
+import { AnalysisResult } from "@/lib/types"
 import { Smartphone } from "lucide-react"
 
 export interface PlatformRecommendationProps {

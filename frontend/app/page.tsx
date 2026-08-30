@@ -10,7 +10,7 @@ import { ProcessingState } from "@/components/upload/ProcessingState"
 import { ResultsDashboard } from "@/components/dashboard/results-dashboard"
 import { api } from "@/lib/api/client"
 import { useHistory } from "@/lib/history-context"
-import { AnalysisHistoryItem } from "@/lib/mock-data"
+import { AnalysisHistoryItem } from "@/lib/types"
 
 const geometricFont = Jost({ subsets: ["latin"] })
 

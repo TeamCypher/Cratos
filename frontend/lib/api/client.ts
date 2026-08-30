@@ -104,4 +104,10 @@ export const api = {
   getUserHistory: (): Promise<{ history: any[] }> => {
     return fetchWrapper<{ history: any[] }>("/api/v1/users/history");
   },
+  
+  deleteUserHistory: (videoId: string): Promise<{ status: string, message: string }> => {
+    return fetchWrapper<{ status: string, message: string }>(`/api/v1/users/history/${videoId}`, {
+      method: "DELETE"
+    });
+  },
 };

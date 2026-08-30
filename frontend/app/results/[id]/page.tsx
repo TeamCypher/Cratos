@@ -8,7 +8,7 @@ import { api } from "@/lib/api/client"
 import { AnalysisReport } from "@/types/api"
 import { Loader2 } from "lucide-react"
 import { useHistory } from "@/lib/history-context"
-import { AnalysisHistoryItem } from "@/lib/mock-data"
+import { AnalysisHistoryItem } from "@/lib/types"
 
 export default function ResultsDynamicPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()

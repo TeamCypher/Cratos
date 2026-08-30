@@ -34,9 +34,7 @@ from backend.video_ai.video_processing.extractor import process_video
 from backend.video_ai.ai.speech import analyze_speech
 from backend.video_ai.ai.visual import analyze_visuals
 from backend.video_ai.ai.hook import analyze_hook
-from backend.video_ai.ai.retention import calculate_retention_curve
 from backend.video_ai.ai.fingerprint import ContentFingerprinter
-from backend.trend_recommendation.competitor.analyzer import CompetitorAnalyzer
 from backend.video_ai.profile_builder import generate_metadata_with_reka
 import traceback
 import tempfile
@@ -89,10 +87,6 @@ async def process_video_task(job_id: str):
             job_repo.update_job_progress(job_id, "TREND_ANALYSIS", 70)
             
             duration = extraction.get("metadata", {}).get("duration", 0)
-            retention_curve = calculate_retention_curve(video_path, audio_path, speech_data, duration)
-            for point in retention_curve:
-                retention_repo.create_curve_point(f"curve_{uuid.uuid4().hex[:12]}", video_id, int(point["timestamp_sec"]), float(point["retention_score"]))
-                
             archetype = ContentFingerprinter.fingerprint(hook_data, speech_data, visual_data, duration)
             
             # 5. Profile Generation via Reka
@@ -267,10 +261,6 @@ async def get_video_report(video_id: str):
     top_prediction = parsed_predictions[0] if parsed_predictions else {}
 
     # 4. Run Recommendation Engine
-    comp_analyzer = CompetitorAnalyzer()
-    competitor_gaps = comp_analyzer.analyze_gaps(video_id, content_profile.get("topic", ""), content_profile)
-    content_profile["competitor_gaps"] = competitor_gaps
-    
     recommendation = recommendation_repo.get_recommendation(video_id, top_prediction.get("platform", "youtube_shorts"))
     if not recommendation:
         rec_data = recommendation_engine.generate_recommendations(content_profile, trend_signal, top_prediction)
@@ -311,4 +301,13 @@ async def get_video_report(video_id: str):
 async def get_user_history_route(user: dict = Depends(get_current_user)):
     videos = video_repo.get_videos_for_user(user['id'])
     return {'history': videos}
+
+@router.delete('/api/v1/users/history/{video_id}')
+async def delete_video_history(video_id: str, user: dict = Depends(get_current_user)):
+    video = video_repo.get_video(video_id)
+    if not video or video['user_id'] != user['id']:
+        raise HTTPException(status_code=404, detail="Video not found or unauthorized")
+        
+    video_repo.delete_video(video_id)
+    return {"status": "success", "message": "Video history deleted"}
 

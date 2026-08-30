@@ -46,6 +46,28 @@ class VideoRepository:
         finally:
             conn.close()
 
+    def get_video(self, video_id: str) -> Dict[str, Any]:
+        conn = get_db_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("SELECT * FROM videos WHERE id = %s", (video_id,))
+                return cur.fetchone()
+        finally:
+            conn.close()
+
+    def delete_video(self, video_id: str) -> None:
+        conn = get_db_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("DELETE FROM recommendations WHERE video_id = %s", (video_id,))
+                cur.execute("DELETE FROM platform_predictions WHERE video_id = %s", (video_id,))
+                cur.execute("DELETE FROM video_analysis WHERE video_id = %s", (video_id,))
+                cur.execute("DELETE FROM analysis_jobs WHERE video_id = %s", (video_id,))
+                cur.execute("DELETE FROM videos WHERE id = %s", (video_id,))
+            conn.commit()
+        finally:
+            conn.close()
+
     def get_videos_for_user(self, user_id: str) -> list[Dict[str, Any]]:
         conn = get_db_connection()
         try:
@@ -55,6 +77,7 @@ class VideoRepository:
                     SELECT 
                         v.id as video_id, 
                         v.filename, 
+                        COALESCE(va.topic, v.filename) as title,
                         v.created_at, 
                         j.status, 
                         j.id as job_id,

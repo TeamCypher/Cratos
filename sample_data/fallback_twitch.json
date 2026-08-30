@@ -101,5 +101,24 @@
         "momentum": "medium",
         "direction": "rising",
         "trending_descriptions": []
+    },
+    "Game Stats": {
+        "score": 75,
+        "momentum": "medium",
+        "direction": "rising",
+        "trending_descriptions": []
+    },
+    "Gaming": {
+        "score": 75,
+        "momentum": "medium",
+        "direction": "rising",
+        "trending_descriptions": [
+            "Championship Sunday | 2026 Pok\u00e9mon World Championships",
+            "Championship Sunday | 2026 Pok\u00e9mon World Championships",
+            "2026 Pok\u00e9mon World Championships Co-Stream \ud83c\udfc6:D!! #ad #PokemonWorlds",
+            "\ud83d\ude31NOOB FRIENDLY 2026 Pok\u00e9mon World Championships | CO-STREAMER\ud83d\ude31",
+            "CAST FINALES WORLDS POK\u00c9MON (VGC plus tard chez @redemption)"
+        ],
+        "best_time": "15:00 - 16:00"
     }
 }

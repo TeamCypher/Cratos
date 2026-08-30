@@ -4,7 +4,7 @@ import * as React from "react"
 import { Card } from "@/components/ui/card"
 import { SectionHeading } from "@/components/ui/section-heading"
 import { Badge } from "@/components/ui/badge"
-import { AnalysisResult } from "@/lib/mock-data"
+import { AnalysisResult } from "@/lib/types"
 import { Lightbulb } from "lucide-react"
 
 export interface RecommendationsProps {

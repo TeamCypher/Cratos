@@ -12,7 +12,7 @@ import { BestMove } from "./best-move"
 import { Recommendations } from "./recommendations"
 import { AiContent } from "./ai-content"
 import { ContentSummary } from "./content-summary"
-import { AnalysisResult } from "@/lib/mock-data"
+import { AnalysisResult } from "@/lib/types"
 import { AnalysisReport } from "@/types/api"
 
 export interface ResultsDashboardProps {

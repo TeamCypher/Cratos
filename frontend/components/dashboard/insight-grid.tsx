@@ -3,7 +3,7 @@
 import * as React from "react"
 import { MetricCard } from "@/components/ui/metric-card"
 import { Activity, Target, Users, Zap } from "lucide-react"
-import { AnalysisResult } from "@/lib/mock-data"
+import { AnalysisResult } from "@/lib/types"
 
 export interface InsightGridProps {
   data: AnalysisResult

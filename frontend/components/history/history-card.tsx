@@ -4,15 +4,26 @@ import * as React from "react"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { AnalysisHistoryItem } from "@/lib/mock-data"
-import { TrendingUp, TrendingDown, Minus, PlayCircle, Clock, CalendarDays, Smartphone } from "lucide-react"
+import { AnalysisHistoryItem } from "@/lib/types"
+import { TrendingUp, TrendingDown, Minus, PlayCircle, Clock, CalendarDays, Smartphone, Trash2 } from "lucide-react"
 import Link from "next/link"
+import { useHistory } from "@/lib/history-context"
 
 export interface HistoryCardProps {
   item: AnalysisHistoryItem
 }
 
 export function HistoryCard({ item }: HistoryCardProps) {
+  const { deleteHistoryItem } = useHistory()
+  const [isDeleting, setIsDeleting] = React.useState(false)
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    setIsDeleting(true)
+    await deleteHistoryItem(item.id)
+    setIsDeleting(false)
+  }
+
   const TrendIcon = item.trendStatus === "rising" ? TrendingUp : item.trendStatus === "falling" ? TrendingDown : Minus
 
   return (
@@ -57,11 +68,22 @@ export function HistoryCard({ item }: HistoryCardProps) {
           <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground mt-1">Opportunity Score</span>
         </div>
         
-        <Link href={`/results/${item.id}`} className="w-full md:w-auto">
-          <Button variant="secondary" className="w-full md:w-auto font-semibold">
-            View Analysis
+        <div className="flex items-center gap-2 w-full md:w-auto">
+          <Button 
+            variant="ghost" 
+            size="icon"
+            className="text-muted-foreground hover:text-destructive hover:bg-destructive/10" 
+            onClick={handleDelete}
+            disabled={isDeleting}
+          >
+            <Trash2 className="w-4 h-4" />
           </Button>
-        </Link>
+          <Link href={`/results/${item.id}`} className="w-full md:w-auto flex-1">
+            <Button variant="secondary" className="w-full font-semibold">
+              View Analysis
+            </Button>
+          </Link>
+        </div>
       </div>
 
     </Card>

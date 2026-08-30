@@ -86,24 +86,3 @@ CREATE TABLE IF NOT EXISTS platform_predictions (
     reasons TEXT, -- Store as JSON array string
     FOREIGN KEY(video_id) REFERENCES videos(id)
 );
-
--- Stores predicted retention scores across time windows
-CREATE TABLE IF NOT EXISTS retention_curves (
-    id TEXT PRIMARY KEY,
-    video_id TEXT NOT NULL,
-    timestamp_sec INTEGER NOT NULL,
-    retention_score REAL NOT NULL,
-    FOREIGN KEY(video_id) REFERENCES videos(id)
-);
-
--- Stores competitor gap analysis
-CREATE TABLE IF NOT EXISTS competitor_analysis (
-    id TEXT PRIMARY KEY,
-    video_id TEXT NOT NULL,
-    channel_id TEXT NOT NULL,
-    overlap_score INTEGER,
-    gap_topics TEXT, -- Store as JSON array string
-    timing_gaps TEXT, -- Store as JSON array string
-    analyzed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY(video_id) REFERENCES videos(id)
-);
