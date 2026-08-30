@@ -4,7 +4,7 @@ import * as React from "react"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Trend } from "@/lib/mock-data"
-import { TrendingUp, TrendingDown, Minus, ChevronRight } from "lucide-react"
+import { TrendingUp, TrendingDown, Minus, ChevronRight, Youtube, Twitch } from "lucide-react"
 
 export interface TrendCardProps {
   trend: Trend
@@ -35,6 +35,12 @@ export function TrendCard({ trend, isSelected, onClick }: TrendCardProps) {
           <div className="flex items-center gap-3 mb-2">
             <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">{trend.name}</h3>
             <Badge variant="outline" className="text-[10px] uppercase font-semibold">{trend.category}</Badge>
+            {trend.platform?.toLowerCase() === 'youtube' && (
+              <Youtube className="w-5 h-5 text-red-500" />
+            )}
+            {trend.platform?.toLowerCase() === 'twitch' && (
+              <Twitch className="w-5 h-5 text-purple-500" />
+            )}
           </div>
           <p className="text-sm text-muted-foreground line-clamp-2 md:line-clamp-1 max-w-2xl">
             {trend.description}

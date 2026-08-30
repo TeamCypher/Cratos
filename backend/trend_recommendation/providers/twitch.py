@@ -166,3 +166,43 @@ class TwitchTrendProvider:
         os.makedirs(os.path.dirname(self.fallback_path), exist_ok=True)
         with open(self.fallback_path, 'w') as f:
             json.dump(self.fallback_data, f, indent=4)
+
+    def get_global_trends(self) -> list:
+        """Fetches current global trending streams using the Twitch API."""
+        if not self.access_token:
+            self.access_token = self._get_access_token()
+            
+        if not self.access_token:
+            return []
+            
+        url = "https://api.twitch.tv/helix/streams?first=10"
+        headers = {
+            'Client-ID': self.client_id,
+            'Authorization': f'Bearer {self.access_token}'
+        }
+        
+        try:
+            req = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req) as response:
+                result = json.loads(response.read().decode())
+                
+                trends = []
+                import uuid
+                for stream in result.get('data', []):
+                    viewers = int(stream.get('viewer_count', 0))
+                    score = min(int((viewers / 50000) * 100), 100)
+                    score = max(score, 50)
+                    
+                    trends.append({
+                        "id": str(uuid.uuid4()),
+                        "topic": stream.get('game_name', stream.get('user_name', 'Stream')),
+                        "source": "twitch_api",
+                        "platform": "Twitch",
+                        "trend_score": score,
+                        "momentum": "high" if score > 80 else "medium",
+                        "direction": "rising" if score > 80 else "stable",
+                    })
+                return trends
+        except Exception as e:
+            print(f"Twitch API Error fetching global trends: {e}")
+            return []

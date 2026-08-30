@@ -150,6 +150,41 @@ class YouTubeTrendProvider:
         
         # Ensure the directory exists
         os.makedirs(os.path.dirname(self.fallback_path), exist_ok=True)
-        
         with open(self.fallback_path, 'w') as f:
             json.dump(self.fallback_data, f, indent=4)
+
+    def get_global_trends(self) -> list:
+        """Fetches current global trending topics using the YouTube API."""
+        if not self.api_key or self.api_key == 'your_api_key_here':
+            return []
+            
+        try:
+            youtube = build('youtube', 'v3', developerKey=self.api_key)
+            request = youtube.videos().list(
+                part="snippet,statistics",
+                chart="mostPopular",
+                regionCode="US",
+                maxResults=10
+            )
+            response = request.execute()
+            
+            trends = []
+            import uuid
+            for item in response.get('items', []):
+                views = int(item['statistics'].get('viewCount', 0))
+                score = min(int((views / 500000) * 100), 100)
+                score = max(score, 50)
+                
+                trends.append({
+                    "id": str(uuid.uuid4()),
+                    "topic": item['snippet']['title'][:50],
+                    "source": "youtube_api",
+                    "platform": "YouTube",
+                    "trend_score": score,
+                    "momentum": "high" if score > 80 else "medium",
+                    "direction": "rising" if score > 80 else "stable",
+                })
+            return trends
+        except Exception as e:
+            print(f"YouTube API Error fetching global trends: {e}")
+            return []
