@@ -23,8 +23,8 @@ def test_recommendation_fallback():
     }
 
     # Temporarily remove API key to force fallback
-    original_key = os.environ.get("REKA_API_KEY")
-    os.environ["REKA_API_KEY"] = ""
+    original_key = os.environ.get("GEMINI_API_KEY")
+    os.environ["GEMINI_API_KEY"] = ""
 
     try:
         engine = RecommendationEngine()
@@ -47,39 +47,31 @@ def test_recommendation_fallback():
     finally:
         # Restore API key
         if original_key is not None:
-            os.environ["REKA_API_KEY"] = original_key
+            os.environ["GEMINI_API_KEY"] = original_key
         else:
-            del os.environ["REKA_API_KEY"]
+            del os.environ["GEMINI_API_KEY"]
 
-@patch('urllib.request.urlopen')
-def test_recommendation_api_success(mock_urlopen):
-    """Test that valid JSON from the Reka API is correctly parsed and returned."""
+@patch('google.genai.models.Models.generate_content')
+def test_recommendation_api_success(mock_generate_content):
+    """Test that valid JSON from the Gemini API is correctly parsed and returned."""
     mock_content_profile = {"topic": "AI Agents"}
     mock_prediction = {"platform": "youtube"}
     
-    # Create a fake Reka API response
-    fake_reka_response = {
-        "choices": [{
-            "message": {
-                "content": json.dumps({
-                    "video_description": "API description",
-                    "captions": ["API caption"],
-                    "hashtags": ["#api"],
-                    "title_variations": ["API title"],
-                    "optimization_tips": ["API tip"]
-                })
-            }
-        }]
+    # Create a fake Gemini API response
+    fake_gemini_response = {
+        "video_description": "API description",
+        "captions": ["API caption"],
+        "hashtags": ["#api"],
+        "title_variations": ["API title"],
+        "optimization_tips": ["API tip"]
     }
     
     mock_response = MagicMock()
-    mock_response.read.return_value = json.dumps(fake_reka_response).encode('utf-8')
-    # Required for context manager (with urllib.request.urlopen...)
-    mock_response.__enter__.return_value = mock_response
-    mock_urlopen.return_value = mock_response
+    mock_response.text = json.dumps(fake_gemini_response)
+    mock_generate_content.return_value = mock_response
 
-    original_key = os.environ.get("REKA_API_KEY")
-    os.environ["REKA_API_KEY"] = "fake_test_key"
+    original_key = os.environ.get("GEMINI_API_KEY")
+    os.environ["GEMINI_API_KEY"] = "fake_test_key"
     
     try:
         engine = RecommendationEngine()
@@ -87,24 +79,24 @@ def test_recommendation_api_success(mock_urlopen):
         
         assert recommendations["video_description"] == "API description"
         assert recommendations["hashtags"] == ["#api"]
-        assert mock_urlopen.called
+        assert mock_generate_content.called
     finally:
         if original_key is not None:
-            os.environ["REKA_API_KEY"] = original_key
+            os.environ["GEMINI_API_KEY"] = original_key
         else:
-            del os.environ["REKA_API_KEY"]
+            del os.environ["GEMINI_API_KEY"]
 
-@patch('urllib.request.urlopen')
-def test_recommendation_api_error_fallback(mock_urlopen):
+@patch('google.genai.models.Models.generate_content')
+def test_recommendation_api_error_fallback(mock_generate_content):
     """Test that the engine falls back to heuristic generation if the API throws an exception."""
     mock_content_profile = {"topic": "AI Agents"}
     mock_prediction = {"platform": "youtube"}
     
-    # Force an exception when opening URL
-    mock_urlopen.side_effect = Exception("API rate limit exceeded")
+    # Force an exception when generating content
+    mock_generate_content.side_effect = Exception("API rate limit exceeded")
 
-    original_key = os.environ.get("REKA_API_KEY")
-    os.environ["REKA_API_KEY"] = "fake_test_key"
+    original_key = os.environ.get("GEMINI_API_KEY")
+    os.environ["GEMINI_API_KEY"] = "fake_test_key"
     
     try:
         engine = RecommendationEngine()
@@ -115,6 +107,6 @@ def test_recommendation_api_error_fallback(mock_urlopen):
         assert "ai agents" in recommendations["video_description"].lower()
     finally:
         if original_key is not None:
-            os.environ["REKA_API_KEY"] = original_key
+            os.environ["GEMINI_API_KEY"] = original_key
         else:
-            del os.environ["REKA_API_KEY"]
+            del os.environ["GEMINI_API_KEY"]
