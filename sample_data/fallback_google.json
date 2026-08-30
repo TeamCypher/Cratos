@@ -50,9 +50,9 @@
         "direction": "rising"
     },
     "Pack": {
-        "score": 81,
+        "score": 82,
         "momentum": "medium",
-        "direction": "rising"
+        "direction": "falling"
     },
     "Minecraft Tips": {
         "score": 45,
