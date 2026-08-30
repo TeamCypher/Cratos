@@ -54,10 +54,34 @@ CREATE TABLE IF NOT EXISTS recommendations (
     video_id TEXT NOT NULL,
     platform TEXT NOT NULL, -- e.g., 'youtube_shorts', 'instagram_reels'
     best_time TEXT,
+    video_description TEXT,
     hashtags TEXT, -- Store as JSON array string
     caption TEXT,
     title TEXT,
     keywords TEXT, -- Store as JSON array string
     optimization TEXT, -- Store as JSON array string of suggestions
+    FOREIGN KEY(video_id) REFERENCES videos(id)
+);
+
+-- Stores trend observations/cache
+CREATE TABLE IF NOT EXISTS trend_signals (
+    id TEXT PRIMARY KEY,
+    topic TEXT NOT NULL,
+    source TEXT NOT NULL,
+    platform TEXT,
+    trend_score INTEGER,
+    momentum TEXT,
+    direction TEXT,
+    captured_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Stores per-platform suitability predictions
+CREATE TABLE IF NOT EXISTS platform_predictions (
+    id TEXT PRIMARY KEY,
+    video_id TEXT NOT NULL,
+    platform TEXT NOT NULL,
+    score INTEGER,
+    confidence REAL,
+    reasons TEXT, -- Store as JSON array string
     FOREIGN KEY(video_id) REFERENCES videos(id)
 );

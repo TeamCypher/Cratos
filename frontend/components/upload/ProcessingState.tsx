@@ -52,13 +52,13 @@ export function ProcessingState({ onComplete }: ProcessingStateProps) {
   }, [onComplete])
 
   return (
-    <Card className="w-full max-w-2xl mx-auto overflow-hidden bg-card/80 backdrop-blur-md border-white/10 shadow-2xl p-8 md:p-12 relative">
+    <Card className="w-full max-w-2xl mx-auto overflow-hidden bg-card/80 backdrop-blur-md dark:border-white/10 border-black/10 shadow-2xl p-8 md:p-12 relative">
       {/* Glowing accent top */}
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
       
       <div className="flex flex-col items-center mb-10">
         <div className="relative w-24 h-24 mb-6">
-          <div className="absolute inset-0 border-4 border-white/5 rounded-full"></div>
+          <div className="absolute inset-0 border-4 dark:border-white/5 border-black/5 rounded-full"></div>
           <div className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
           <div className="absolute inset-0 flex items-center justify-center">
             <Loader2 className="w-8 h-8 text-primary animate-pulse" />
@@ -78,7 +78,7 @@ export function ProcessingState({ onComplete }: ProcessingStateProps) {
           <span className="text-primary">{Math.round(progress)}%</span>
           <span className="text-muted-foreground">{currentStage + 1} of 4</span>
         </div>
-        <Progress value={progress} className="h-2 bg-white/5" />
+        <Progress value={progress} className="h-2 dark:bg-white/5 bg-black/5" />
       </div>
 
       <div className="space-y-4">

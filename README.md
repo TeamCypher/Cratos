@@ -1,16 +1,80 @@
-# Cratos
+# Cratos 🚀
+**Cross-Platform Content Intelligence for Creators**
 
-Welcome to the Cratos repository. 
+Cratos is an advanced, AI-powered backend system designed to analyze raw video content and provide data-driven publishing strategies. By aggregating real-time momentum from major platforms and leveraging generative AI, Cratos determines the optimal platform for your video and automatically generates viral metadata to maximize your reach.
 
-## Current Status
-**Stage: Foundation & Data Layer Complete**
+---
 
-The project is currently in the active development phase. 
-- The initial directory structure is set.
-- **Backend B** has completed the SQLite database setup, Python repositories (`backend/data/`), and defined the initial API contracts (`contracts/openapi.yaml`).
+## ✨ Key Features
+- **Intelligent Video Analysis:** Processes raw video uploads to extract topics, pacing, and emotional resonance using a localized AI pipeline (FFmpeg, OpenCV, Whisper).
+- **Multi-Platform Trend Aggregation:** Simultaneously queries the **YouTube API**, **Twitch API**, and **Google Trends** to build a comprehensive view of current market momentum.
+- **Predictive Platform Scoring:** A custom prediction engine evaluates your video's structural DNA against the aggregated market trends to determine whether it will perform better on **YouTube (VOD)** or **Twitch (Livestream)**.
+- **AI Recommendation Engine:** Generates highly optimized titles, captions, hashtags, and strategic posting times utilizing **Reka AI** (with a built-in heuristic safety fallback for rate-limit protection).
+- **Zero-Setup Database:** Utilizes a serverless SQLite data layer to ensure instant onboarding and zero Docker overhead during development.
 
-## Next Steps
-- **Frontend (Teammate 1):** Initialize frontend framework (e.g., Next.js/React with Tailwind).
-- **Backend A (Teammate 2):** Initialize FastAPI environment and build the `POST /api/v1/videos` upload flow.
-- **Backend B (Teammate 3):** Implement the YouTube API Trend Provider with local fallback.
-- Set up Docker environment for local development.
+---
+
+## 🏗 System Architecture
+
+The Cratos backend is built with **FastAPI** and is divided into three core intelligence engines:
+1. **Trend Engine:** Normalizes and aggregates multi-source search momentum.
+2. **Prediction Engine:** Calculates normalized confidence scores for cross-platform suitability.
+3. **Recommendation Engine:** Synthesizes the analysis and prediction data into a highly structured JSON strategy payload via Generative AI.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Python 3.9+
+- FFmpeg (Must be installed on your system path)
+- YouTube API Key
+- Twitch API Credentials
+- Reka AI API Key
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-org/cratos.git
+   cd cratos
+   ```
+
+2. **Set up your environment variables:**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your API keys
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Initialize the Database:**
+   ```bash
+   python -c "from backend.data.database import init_db; init_db()"
+   ```
+
+5. **Run the server:**
+   ```bash
+   uvicorn backend.main:app --reload
+   ```
+
+---
+
+## 📖 API Documentation
+
+Once the server is running, you can view the complete Swagger UI documentation for our endpoints at:
+- **`http://localhost:8000/docs`**
+
+You can also view our strict Open API contracts at `contracts/openapi.yaml`.
+
+---
+
+## 🛠 Current Development Status
+
+- ✅ **Backend Intelligence Pipeline:** Fully completed and integrated.
+- ✅ **Trend & Prediction Engines:** Live.
+- 🚧 **Frontend Dashboard:** Currently under active development (Next.js / Tailwind).
+- 🚧 **E2E Testing:** Pending final dashboard integration.

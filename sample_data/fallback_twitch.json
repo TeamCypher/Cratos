@@ -1,0 +1,50 @@
+{
+    "minecraft": {
+        "score": 92,
+        "momentum": "high",
+        "direction": "rising",
+        "platform": "twitch",
+        "source": "local_fallback"
+    },
+    "gaming": {
+        "score": 85,
+        "momentum": "medium",
+        "direction": "stable",
+        "platform": "twitch",
+        "source": "local_fallback"
+    },
+    "lifestyle": {
+        "score": 60,
+        "momentum": "stable",
+        "direction": "stable",
+        "platform": "twitch",
+        "source": "local_fallback"
+    },
+    "tech": {
+        "score": 75,
+        "momentum": "medium",
+        "direction": "stable",
+        "platform": "twitch",
+        "source": "local_fallback"
+    },
+    "Elden Ring": {
+        "score": 95,
+        "momentum": "high",
+        "direction": "rising"
+    },
+    "Generative AI": {
+        "score": 75,
+        "momentum": "medium",
+        "direction": "rising"
+    },
+    "SpaceX": {
+        "score": 75,
+        "momentum": "medium",
+        "direction": "rising"
+    },
+    "Minecraft": {
+        "score": 95,
+        "momentum": "high",
+        "direction": "rising"
+    }
+}

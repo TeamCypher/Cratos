@@ -23,5 +23,25 @@
         "score": 6,
         "momentum": "stable",
         "direction": "stable"
+    },
+    "Elden Ring": {
+        "score": 45,
+        "momentum": "medium",
+        "direction": "rising"
+    },
+    "Generative AI": {
+        "score": 5,
+        "momentum": "stable",
+        "direction": "stable"
+    },
+    "SpaceX": {
+        "score": 29,
+        "momentum": "medium",
+        "direction": "rising"
+    },
+    "Test Topic Unique Aggregation 12345": {
+        "score": 17,
+        "momentum": "medium",
+        "direction": "rising"
     }
 }
