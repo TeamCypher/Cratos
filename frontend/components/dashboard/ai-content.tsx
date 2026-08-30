@@ -55,16 +55,19 @@ export function AiContent({ data }: AiContentProps) {
             <Card className="p-6 bg-card/50 dark:border-white/10 border-black/10 hover:dark:bg-white/5 bg-black/5 transition-colors">
               <h4 className="text-sm font-semibold text-primary/70 uppercase tracking-wider mb-4">Suggested Captions</h4>
               <div className="flex flex-col gap-3">
-                {data.captions.map((cap, i) => (
-                  <div key={i} className="flex items-center justify-between gap-3 p-3 rounded-lg dark:bg-white/5 bg-black/5 border dark:border-white/10 border-black/10 group cursor-pointer hover:border-primary/50 transition-all" onClick={() => handleCopy(cap, `caption-${i}`)}>
-                    <span className="text-sm font-medium text-foreground">{cap}</span>
-                    {copiedSection === `caption-${i}` ? (
-                      <CheckCircle2 className="w-4 h-4 text-green-500" />
-                    ) : (
-                      <Copy className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                    )}
-                  </div>
-                ))}
+                {data.captions.map((rawCap, i) => {
+                  const cap = rawCap.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}⭐🔥💰✨🚀💡]+\s*/gu, '');
+                  return (
+                    <div key={i} className="flex items-center justify-between gap-3 p-3 rounded-lg dark:bg-white/5 bg-black/5 border dark:border-white/10 border-black/10 group cursor-pointer hover:border-primary/50 transition-all" onClick={() => handleCopy(cap, `caption-${i}`)}>
+                      <span className="text-sm font-medium text-foreground">{cap}</span>
+                      {copiedSection === `caption-${i}` ? (
+                        <CheckCircle2 className="w-4 h-4 text-green-500" />
+                      ) : (
+                        <Copy className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </Card>
           )}

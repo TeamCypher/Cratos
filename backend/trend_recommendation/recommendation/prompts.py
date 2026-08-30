@@ -17,9 +17,9 @@ REQUIRED OUTPUT JSON STRUCTURE:
 {
   "video_description": "Write a compelling description specifically about the topic in the `content_profile`. Use the structural style and engaging hooks found in the `trend_signal`'s trending_descriptions, but entirely replace their subject matter with our video's actual topic. Strictly remove any ads, sponsor plugs, merchandise links, patreon links, or irrelevant external links.",
   "captions": [
-    "Short, punchy caption option 1 about the video's actual topic, using trending hook structures",
-    "Engaging, question-based caption option 2 about the video's actual topic",
-    "Direct, value-driven caption option 3 about the video's actual topic"
+    "Short, punchy caption option 1 about the video's actual topic. DO NOT start with decorative emojis.",
+    "Engaging, question-based caption option 2 about the video's actual topic. DO NOT start with decorative emojis.",
+    "Direct, value-driven caption option 3 about the video's actual topic. DO NOT start with decorative emojis."
   ],
   "hashtags": [
     "Generate 5 viral hashtags relevant ONLY to the video's actual topic and the platform."

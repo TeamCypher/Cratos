@@ -25,9 +25,7 @@ export function NextMove({ trend }: NextMoveProps) {
         
         <div className="relative z-10 p-6">
           <div className="flex items-start gap-4 mb-6">
-            <div className="shrink-0 p-2.5 bg-primary/20 rounded-xl border border-primary/40 text-primary">
-              <Zap className="w-5 h-5" />
-            </div>
+
             <p className="text-lg md:text-xl font-bold text-foreground leading-snug">
               "{trend.nextMove.insight}"
             </p>

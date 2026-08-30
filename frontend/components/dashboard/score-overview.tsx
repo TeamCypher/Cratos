@@ -26,7 +26,7 @@ export function ScoreOverview({ score, insight }: ScoreOverviewProps) {
         </div>
         
         <div className="flex items-center gap-2 px-4 py-2 rounded-full dark:bg-white/5 bg-black/5 border dark:border-white/10 border-black/10">
-          <Sparkles className="w-4 h-4 text-primary" />
+
           <p className="text-sm md:text-base font-medium text-foreground">
             {insight}
           </p>

@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+python-multipart
+opencv-python
+pytest
+faster-whisper
+google-api-python-client==2.118.0
+python-dotenv==1.0.1
+pytesseract
+Pillow
+google-generativeai
+tenacity
+reka-api

@@ -73,5 +73,25 @@
         "score": 68,
         "momentum": "medium",
         "direction": "falling"
+    },
+    "Reaction": {
+        "score": 60,
+        "momentum": "stable",
+        "direction": "stable"
+    },
+    "Dreams": {
+        "score": 53,
+        "momentum": "medium",
+        "direction": "falling"
+    },
+    "Aspiration": {
+        "score": 36,
+        "momentum": "medium",
+        "direction": "falling"
+    },
+    "Wealth": {
+        "score": 79,
+        "momentum": "medium",
+        "direction": "rising"
     }
 }
