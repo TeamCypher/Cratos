@@ -68,5 +68,10 @@
         "score": 10,
         "momentum": "medium",
         "direction": "falling"
+    },
+    "Storage": {
+        "score": 69,
+        "momentum": "medium",
+        "direction": "falling"
     }
 }

@@ -70,5 +70,11 @@
         "momentum": "medium",
         "direction": "rising",
         "trending_descriptions": []
+    },
+    "Storage": {
+        "score": 75,
+        "momentum": "medium",
+        "direction": "rising",
+        "trending_descriptions": []
     }
 }
