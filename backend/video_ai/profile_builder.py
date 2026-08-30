@@ -96,8 +96,8 @@ def generate_metadata_with_gemini(transcript: str, ocr_text: list, keywords: lis
         {{
             "topic": "Main topic of the video (1-3 words) - Be precise and descriptive, DO NOT use 'Unknown'",
             "subtopic": "Specific subtopic (1-3 words)",
-            "category": "Broad category (e.g. Gaming, Tech, Cooking, Education)",
-            "emotion": "Primary emotion (e.g. excitement, calm, urgency)",
+            "category": "Must be exactly one of: Film & Animation, Autos & Vehicles, Music, Pets & Animals, Sports, Travel & Events, Gaming, People & Blogs, Comedy, Entertainment, News & Politics, Howto & Style, Education, Science & Technology, Nonprofits & Activism",
+            "emotion": "Must be exactly one of: Surprise, Excitement, Humor, Anger, Awe, Neutral, Calm, Sadness",
             "audience": "Target audience description (e.g. tech enthusiasts, young gamers)"
         }}
         """

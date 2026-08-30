@@ -12,14 +12,14 @@ The user will provide a JSON object containing:
 
 REQUIRED OUTPUT JSON STRUCTURE:
 {
-  "video_description": "Review the 'trending_descriptions' in the trend_signal. Make small edits and refine them to make them directly relevant to the video's content profile. Output one highly engaging, SEO-optimized description (max 2 paragraphs) based on these refined trends. Include a call to action.",
+  "video_description": "SELECT the single best-performing description from the 'trending_descriptions' provided in the trend_signal. You MUST use this exact description as your baseline, and ONLY make minor keyword swaps to make it directly relevant to the video's content profile. DO NOT invent a description from scratch. It must be tested data.",
   "captions": [
-    "Short, punchy caption option 1",
-    "Engaging, question-based caption option 2",
-    "Direct, value-driven caption option 3"
+    "Short, punchy caption option 1 based on trending hooks",
+    "Engaging, question-based caption option 2 based on trending hooks",
+    "Direct, value-driven caption option 3 based on trending hooks"
   ],
   "hashtags": [
-    "#hashtag1", "#hashtag2", "#hashtag3", "#hashtag4", "#hashtag5"
+    "Generate 5 viral hashtags relevant to the topic and the platform."
   ],
   "title_variations": [
     "High click-through rate title option 1",
