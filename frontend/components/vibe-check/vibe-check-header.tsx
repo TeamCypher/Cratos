@@ -12,7 +12,7 @@ export function VibeCheckHeader() {
       <p className="text-lg md:text-xl text-foreground font-medium mb-2">
         See what's gaining momentum and where your content fits.
       </p>
-      <p className="text-muted-foreground text-sm md:text-base">
+      <p className="text-muted-foreground flex items-center gap-1.5 text-sm md:text-base">
         Discover rising topics, understand their momentum and find opportunities worth creating around.
       </p>
     </header>
