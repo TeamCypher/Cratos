@@ -7,18 +7,58 @@ import { useRouter } from "next/navigation"
 import { api } from "@/lib/api/client"
 import { AnalysisReport } from "@/types/api"
 import { Loader2 } from "lucide-react"
+import { useHistory } from "@/lib/history-context"
+import { AnalysisHistoryItem } from "@/lib/mock-data"
 
 export default function ResultsDynamicPage({ params }: { params: { id: string } }) {
   const router = useRouter()
   const [report, setReport] = React.useState<AnalysisReport | null>(null)
   const [isLoading, setIsLoading] = React.useState(true)
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null)
+  const { addHistoryItem } = useHistory()
   
+  const [loadingText, setLoadingText] = React.useState("Loading Cratos Intel...")
+  
+  React.useEffect(() => {
+    let timer: NodeJS.Timeout
+    if (isLoading) {
+      timer = setTimeout(() => {
+        setLoadingText("Reconnecting to Reka API...")
+      }, 5000)
+    }
+    return () => clearTimeout(timer)
+  }, [isLoading])
+
   React.useEffect(() => {
     const fetchReport = async () => {
       try {
         const fetchedReport = await api.getVideoReport(params.id)
         setReport(fetchedReport)
+
+        if (fetchedReport) {
+          const sortedPredictions = [...(fetchedReport.predictions || [])].sort((a, b) => b.score - a.score);
+          const bestPred = sortedPredictions[0];
+          
+          const directionStr = (fetchedReport.trend_signal?.direction || "").toLowerCase();
+          let trendStatus: "rising" | "stable" | "falling" = "stable";
+          if (directionStr.includes("up") || directionStr.includes("ris")) trendStatus = "rising";
+          else if (directionStr.includes("down") || directionStr.includes("fall")) trendStatus = "falling";
+
+          const overallScore = Math.round(((bestPred?.score || 85) + (fetchedReport.content_profile?.hook_score || 80) + (fetchedReport.trend_signal?.score || 80)) / 3);
+
+          const historyItem: AnalysisHistoryItem = {
+            id: fetchedReport.video_id,
+            title: fetchedReport.recommendation?.title?.[0] || fetchedReport.content_profile?.topic || "Analyzed Video",
+            thumbnail: "bg-blue-900/50",
+            date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+            duration: "00:00", // Fallback, no duration exposed in AnalysisReport
+            score: overallScore,
+            bestPlatform: fetchedReport.recommendation?.platform || bestPred?.platform || "Unknown",
+            trendStatus: trendStatus,
+            category: (fetchedReport.content_profile?.category as any) || "Technology"
+          }
+          addHistoryItem(historyItem)
+        }
       } catch (err: any) {
         setErrorMsg("Failed to load analysis report.")
       } finally {
@@ -40,7 +80,7 @@ export default function ResultsDynamicPage({ params }: { params: { id: string } 
         {isLoading ? (
           <div className="w-full py-24 flex flex-col items-center justify-center space-y-4">
             <Loader2 className="w-10 h-10 text-primary animate-spin" />
-            <p className="text-muted-foreground font-medium animate-pulse">Loading Cratos Intel...</p>
+            <p className="text-muted-foreground font-medium animate-pulse">{loadingText}</p>
           </div>
         ) : errorMsg || !report ? (
           <div className="w-full py-24 flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-500">

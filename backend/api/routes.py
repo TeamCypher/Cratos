@@ -10,9 +10,11 @@ from backend.data.repositories import (
     AnalysisJobRepository, 
     VideoAnalysisRepository, 
     PlatformPredictionRepository, 
-    RecommendationRepository
+    RecommendationRepository,
+    RetentionRepository
 )
 from backend.trend_recommendation.prediction.engine import PredictionEngine
+from backend.trend_recommendation.prediction.normalizer import FeatureNormalizer
 from backend.trend_recommendation.trends.engine import TrendEngine
 from backend.trend_recommendation.recommendation.engine import RecommendationEngine
 
@@ -22,6 +24,7 @@ job_repo = AnalysisJobRepository()
 analysis_repo = VideoAnalysisRepository()
 prediction_repo = PlatformPredictionRepository()
 recommendation_repo = RecommendationRepository()
+retention_repo = RetentionRepository()
 
 trend_engine = TrendEngine()
 recommendation_engine = RecommendationEngine()
@@ -30,7 +33,10 @@ from backend.video_ai.video_processing.extractor import process_video
 from backend.video_ai.ai.speech import analyze_speech
 from backend.video_ai.ai.visual import analyze_visuals
 from backend.video_ai.ai.hook import analyze_hook
-from backend.video_ai.profile_builder import generate_metadata_with_gemini
+from backend.video_ai.ai.retention import calculate_retention_curve
+from backend.video_ai.ai.fingerprint import ContentFingerprinter
+from backend.trend_recommendation.competitor.analyzer import CompetitorAnalyzer
+from backend.video_ai.profile_builder import generate_metadata_with_reka
 import traceback
 import tempfile
 
@@ -80,12 +86,25 @@ async def process_video_task(job_id: str):
             quality_score = int((hook_score + pacing_score) / 2) # Arbitrary heuristic for quality
 
             job_repo.update_job_progress(job_id, "TREND_ANALYSIS", 70)
-            # 5. Profile Generation via Gemini
+            
+            duration = extraction.get("metadata", {}).get("duration", 0)
+            retention_curve = calculate_retention_curve(video_path, audio_path, speech_data, duration)
+            for point in retention_curve:
+                retention_repo.create_curve_point(f"curve_{uuid.uuid4().hex[:12]}", video_id, int(point["timestamp_sec"]), float(point["retention_score"]))
+                
+            archetype = ContentFingerprinter.fingerprint(hook_data, speech_data, visual_data, duration)
+            
+            # 5. Profile Generation via Reka
             transcript = speech_data.get("transcript", "")
             ocr_text = visual_data.get("ocr_text", [])
             keywords = speech_data.get("keywords", [])
+            keywords.append(f"archetype_{archetype}")
             
-            meta = generate_metadata_with_gemini(transcript, ocr_text, keywords)
+            def progress_callback(status_str: str, pct: int):
+                job_repo.update_job_progress(job_id, status_str, pct)
+                
+            frame_paths = extraction.get("frame_paths", [])
+            meta = generate_metadata_with_reka(transcript, ocr_text, keywords, frame_paths=frame_paths, progress_callback=progress_callback)
             
             job_repo.update_job_progress(job_id, "SCORING", 85)
             # 6. Save real analysis
@@ -197,7 +216,7 @@ def get_analysis_status(job_id: str):
 
 
 @router.get("/api/v1/videos/{video_id}/report")
-def get_video_report(video_id: str):
+async def get_video_report(video_id: str):
     """
     Returns the complete intelligence report for a video.
     Executes the trend, prediction, and recommendation engines Just-In-Time if not already cached.
@@ -210,16 +229,24 @@ def get_video_report(video_id: str):
     content_profile = dict(analysis)
     content_profile["keywords"] = json.loads(content_profile.get("keywords", "[]"))
     content_profile["pacing"] = "fast" if content_profile.get("pacing_score", 50) > 70 else "average"
+    
+    archetype = "general"
+    for kw in content_profile["keywords"]:
+        if kw.startswith("archetype_"):
+            archetype = kw.replace("archetype_", "")
+    content_profile["archetype"] = archetype
 
     # 2. Run Trend Engine
-    trend_signal = trend_engine.get_trends_for_topic(content_profile.get("topic", "Content"))
+    trend_signal = await trend_engine.get_trends_for_topic(content_profile.get("topic", "Content"))
 
     # 3. Run Prediction Engine
     # Check if we already have predictions
     predictions = prediction_repo.get_predictions_for_video(video_id)
+    best_time_cache = {}
     if not predictions:
         pred_results = PredictionEngine.score_platforms(video_id, content_profile, trend_signal)
         for p in pred_results:
+            best_time_cache[p["platform"]] = p.get("best_time", "Anytime")
             prediction_repo.create_prediction(
                 prediction_id=f"pred_{uuid.uuid4().hex[:12]}",
                 video_id=video_id,
@@ -234,6 +261,12 @@ def get_video_report(video_id: str):
     for p in predictions:
         pd = dict(p)
         pd["reasons"] = json.loads(pd.get("reasons", "[]"))
+        # Restore best_time from cache if just generated, else recalculate
+        if pd["platform"] in best_time_cache:
+            pd["best_time"] = best_time_cache[pd["platform"]]
+        else:
+            _, bt, _ = FeatureNormalizer.calculate_timing_score(content_profile, trend_signal, pd["platform"])
+            pd["best_time"] = bt
         parsed_predictions.append(pd)
 
     # Sort to find top prediction
@@ -241,6 +274,10 @@ def get_video_report(video_id: str):
     top_prediction = parsed_predictions[0] if parsed_predictions else {}
 
     # 4. Run Recommendation Engine
+    comp_analyzer = CompetitorAnalyzer()
+    competitor_gaps = comp_analyzer.analyze_gaps(video_id, content_profile.get("topic", ""), content_profile)
+    content_profile["competitor_gaps"] = competitor_gaps
+    
     recommendation = recommendation_repo.get_recommendation(video_id, top_prediction.get("platform", "youtube_shorts"))
     if not recommendation:
         rec_data = recommendation_engine.generate_recommendations(content_profile, trend_signal, top_prediction)
@@ -273,3 +310,28 @@ def get_video_report(video_id: str):
         "predictions": parsed_predictions,
         "recommendation": parsed_recommendation
     }
+
+@router.get("/api/v1/trends")
+def get_all_trends():
+    """
+    Returns latest trends from different platforms (YouTube and Twitch)
+    using actual real-time API calls. If APIs fail or are unconfigured, returns an empty list.
+    """
+    trends = []
+    
+    try:
+        from backend.trend_recommendation.providers.youtube import YouTubeTrendProvider
+        yt = YouTubeTrendProvider()
+        trends.extend(yt.get_global_trends())
+    except Exception as e:
+        print(f"Error getting YouTube global trends: {e}")
+        
+    try:
+        from backend.trend_recommendation.providers.twitch import TwitchTrendProvider
+        tw = TwitchTrendProvider()
+        trends.extend(tw.get_global_trends())
+    except Exception as e:
+        print(f"Error getting Twitch global trends: {e}")
+
+    trends.sort(key=lambda x: x.get("trend_score", 0), reverse=True)
+    return trends

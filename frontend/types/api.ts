@@ -8,6 +8,7 @@ export interface ContentProfile {
   hook_score: number;
   pacing: string;
   language?: string;
+  quality_score?: number;
 }
 
 export interface TrendSignal {

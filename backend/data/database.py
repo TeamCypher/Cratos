@@ -1,16 +1,19 @@
-import sqlite3
 import os
+import psycopg2
+from psycopg2.extras import RealDictCursor
+from dotenv import load_dotenv
 
-DB_PATH = os.path.join(os.path.dirname(__file__), 'hackathon.db')
+load_dotenv()
+
 SCHEMA_PATH = os.path.join(os.path.dirname(__file__), 'schema.sql')
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://cratos_user:cratos_password@localhost:5432/cratos_db")
 
-def get_db_connection() -> sqlite3.Connection:
+def get_db_connection():
     """
-    Establish a connection to the SQLite database.
-    Sets row_factory to sqlite3.Row for dictionary-like access to rows.
+    Establish a connection to the PostgreSQL database.
+    Sets cursor_factory to RealDictCursor for dictionary-like access to rows.
     """
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
+    conn = psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
     return conn
 
 def init_db():
@@ -25,11 +28,12 @@ def init_db():
         
     conn = get_db_connection()
     try:
-        conn.executescript(schema_script)
+        with conn.cursor() as cur:
+            cur.execute(schema_script)
         conn.commit()
     finally:
         conn.close()
 
 if __name__ == "__main__":
     init_db()
-    print(f"Database initialized successfully at {DB_PATH}")
+    print(f"Database initialized successfully at {DATABASE_URL}")

@@ -42,12 +42,20 @@ class FeatureNormalizer:
         return max(0, min(100, score))
 
     @staticmethod
-    def calculate_audience_match(content_profile: Dict[str, Any], platform: str) -> int:
+    def calculate_audience_match(content_profile: Dict[str, Any], platform: str, audience_profile: Dict[str, Any] = None) -> int:
         """
         Calculates a 0-100 score for audience demographic match.
         """
         score = 50
         audience = content_profile.get("audience", "").lower()
+        
+        # Audience Predictor profile matching
+        if audience_profile:
+            primary_age = audience_profile.get("primary_age", "")
+            if platform == "youtube" and primary_age in ["18-24", "25-34", "25-44", "18-34"]:
+                score += 15
+            elif platform == "twitch" and primary_age in ["13-17", "18-24", "13-24"]:
+                score += 15
         
         if platform == "youtube":
             if "general" in audience or "tech" in audience or "educational" in audience:
@@ -73,10 +81,13 @@ class FeatureNormalizer:
         return max(0, min(100, score))
 
     @staticmethod
-    def calculate_timing_score(content_profile: Dict[str, Any], platform: str) -> Tuple[int, str, str]:
+    def calculate_timing_score(content_profile: Dict[str, Any], trend_signal: Dict[str, Any], platform: str) -> Tuple[int, str, str]:
         """
         Returns a timing score, best time string, and an explanation.
         """
+        if "best_time" in trend_signal:
+            return 95, trend_signal["best_time"], "Calculated based on live peak upload times from top trending videos in this topic."
+            
         category = content_profile.get("category", "").lower()
         
         score = 70

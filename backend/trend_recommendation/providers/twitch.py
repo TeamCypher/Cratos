@@ -23,8 +23,7 @@ class TwitchTrendProvider:
     def _get_access_token(self) -> str:
         """Fetches an OAuth App Access Token via Client Credentials flow."""
         if not self.client_id or not self.client_secret or self.client_id == 'your_twitch_client_id_here':
-            return None
-            
+            raise ValueError("Missing TWITCH_CLIENT_ID or SECRET. False data will not be tolerated.")
         url = 'https://id.twitch.tv/oauth2/token'
         data = urllib.parse.urlencode({
             'client_id': self.client_id,
@@ -38,8 +37,10 @@ class TwitchTrendProvider:
                 result = json.loads(response.read().decode())
                 return result.get('access_token')
         except Exception as e:
-            print(f"Twitch OAuth Error: {e}")
-            return None
+            raise ValueError(f"Twitch OAuth Error: {e}. False data will not be tolerated.")
+    async def get_trend_signals_async(self, topic: str) -> dict:
+        import asyncio
+        return await asyncio.to_thread(self.get_trend_signals, topic)
 
     def get_trend_signals(self, topic: str) -> dict:
         """
@@ -51,8 +52,7 @@ class TwitchTrendProvider:
             self.access_token = self._get_access_token()
             
         if not self.access_token:
-            print(f"Warning: Twitch credentials not valid. Using local fallback for topic '{topic}'.")
-            return self._get_fallback_data(topic)
+            raise ValueError("Twitch credentials not valid. False data will not be tolerated.")
 
         # Query Twitch Search Categories API
         query = urllib.parse.quote(topic)
@@ -96,6 +96,7 @@ class TwitchTrendProvider:
                 
                 # Fetch live streams for this category to get titles (trending descriptions)
                 trending_descriptions = []
+                publish_hours = []
                 try:
                     streams_url = f"https://api.twitch.tv/helix/streams?game_id={category_id}&first=5"
                     streams_req = urllib.request.Request(streams_url, headers=headers)
@@ -105,8 +106,21 @@ class TwitchTrendProvider:
                             title = stream.get('title', '').strip()
                             if title:
                                 trending_descriptions.append(title[:500])
+                                
+                            started_at_str = stream.get('started_at')
+                            if started_at_str:
+                                from datetime import datetime
+                                started_at = datetime.fromisoformat(started_at_str.replace('Z', '+00:00'))
+                                publish_hours.append(started_at.hour)
                 except Exception as e:
                     print(f"Twitch Streams API Error: {e}")
+                    
+                if publish_hours:
+                    from collections import Counter
+                    most_common_hour = Counter(publish_hours).most_common(1)[0][0]
+                    best_time = f"{most_common_hour:02d}:00 - {(most_common_hour+1)%24:02d}:00"
+                else:
+                    best_time = None
                 
                 api_result = {
                     "score": score,
@@ -115,15 +129,34 @@ class TwitchTrendProvider:
                     "trending_descriptions": trending_descriptions,
                     "source": "twitch_api"
                 }
+                if best_time:
+                    api_result["best_time"] = best_time
                 
                 self._update_fallback_data(topic, api_result)
                 return api_result
                 
         except Exception as e:
-            print(f"Twitch API Error: {e}. Falling back to local data.")
-            return self._get_fallback_data(topic)
+            raise ValueError(f"Twitch API Error: {e}. False data will not be tolerated.")
 
     def _get_fallback_data(self, topic: str) -> dict:
+        try:
+            from backend.core.embeddings import semantic_matcher
+            best_match = None
+            best_score = 0.0
+            
+            for key in self.fallback_data.keys():
+                score = semantic_matcher.compute_similarity_text(topic, key)
+                if score > best_score:
+                    best_score = score
+                    best_match = key
+                    
+            if best_match and best_score > 0.6:
+                data = self.fallback_data[best_match].copy()
+                data["source"] = "local_fallback"
+                return data
+        except ImportError:
+            pass
+
         topic_lower = topic.lower()
         for key in self.fallback_data.keys():
             if key.lower() in topic_lower or topic_lower in key.lower():
@@ -150,3 +183,43 @@ class TwitchTrendProvider:
         os.makedirs(os.path.dirname(self.fallback_path), exist_ok=True)
         with open(self.fallback_path, 'w') as f:
             json.dump(self.fallback_data, f, indent=4)
+
+    def get_global_trends(self) -> list:
+        """Fetches current global trending streams using the Twitch API."""
+        if not self.access_token:
+            self.access_token = self._get_access_token()
+            
+        if not self.access_token:
+            return []
+            
+        url = "https://api.twitch.tv/helix/streams?first=10"
+        headers = {
+            'Client-ID': self.client_id,
+            'Authorization': f'Bearer {self.access_token}'
+        }
+        
+        try:
+            req = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req) as response:
+                result = json.loads(response.read().decode())
+                
+                trends = []
+                import uuid
+                for stream in result.get('data', []):
+                    viewers = int(stream.get('viewer_count', 0))
+                    score = min(int((viewers / 50000) * 100), 100)
+                    score = max(score, 50)
+                    
+                    trends.append({
+                        "id": str(uuid.uuid4()),
+                        "topic": stream.get('game_name', stream.get('user_name', 'Stream')),
+                        "source": "twitch_api",
+                        "platform": "Twitch",
+                        "trend_score": score,
+                        "momentum": "high" if score > 80 else "medium",
+                        "direction": "rising" if score > 80 else "stable",
+                    })
+                return trends
+        except Exception as e:
+            print(f"Twitch API Error fetching global trends: {e}")
+            return []

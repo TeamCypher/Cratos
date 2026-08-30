@@ -91,6 +91,7 @@ export interface Trend {
     platform: string;
   };
   relatedTrendIds: string[];
+  platform?: string;
 }
 
 export interface VibeCheckSummary {

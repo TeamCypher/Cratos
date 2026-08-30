@@ -45,7 +45,14 @@
     "Minecraft": {
         "score": 95,
         "momentum": "high",
-        "direction": "rising"
+        "direction": "rising",
+        "trending_descriptions": [
+            "\u9632\u5177\u306a\u3057\u30de\u30a4\u30f3\u30af\u30e9\u30d5\u30c8\u30cf\u30fc\u30c9\u30b3\u30a2\u3010\u76fe\u306f\u3042\u308a\u3011",
+            "RETURNING TO RANKED \ud83e\udd79",
+            "\u0433\u0435\u0439\u043c\u0435\u0440 \u2705 \u0438\u0433\u0440\u044b \u0438\u0433\u0440\u0430\u044e \u2705 \u0438\u043d\u043e\u0433\u0434\u0430 \u043e\u0431\u0449\u0430\u044e\u0441\u044c \u2705 | !\u0442\u0433 !magic",
+            "\ud83d\udc4aGEILER OWNER STREAMT\ud83d\udc4a OPCUP 10: XXL MONEY DROP, ACCOUNTS UPGRADEN, CREATOR WARS, 1800\u20ac COMMUNITYGRIEF und MEHR"
+        ],
+        "best_time": "12:00 - 13:00"
     },
     "Unknown": {
         "score": 95,
@@ -62,6 +69,30 @@
     "Minecraft Tips": {
         "score": 75,
         "momentum": "medium",
+        "direction": "rising",
+        "trending_descriptions": []
+    },
+    "Life Hacks": {
+        "score": 75,
+        "momentum": "medium",
+        "direction": "rising",
+        "trending_descriptions": []
+    },
+    "Storage": {
+        "score": 75,
+        "momentum": "medium",
+        "direction": "rising",
+        "trending_descriptions": []
+    },
+    "Archetype": {
+        "score": 95,
+        "momentum": "high",
+        "direction": "rising",
+        "trending_descriptions": []
+    },
+    "Park": {
+        "score": 95,
+        "momentum": "high",
         "direction": "rising",
         "trending_descriptions": []
     }

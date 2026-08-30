@@ -8,6 +8,8 @@ import { FileUpload } from "@/components/upload/FileUpload"
 import { ProcessingState } from "@/components/upload/ProcessingState"
 import { ResultsDashboard } from "@/components/dashboard/results-dashboard"
 import { api } from "@/lib/api/client"
+import { useHistory } from "@/lib/history-context"
+import { AnalysisHistoryItem } from "@/lib/mock-data"
 
 type AppState = "idle" | "processing" | "completed"
 
@@ -18,6 +20,7 @@ export default function Home() {
   const [report, setReport] = React.useState<any | null>(null)
   const [isUploading, setIsUploading] = React.useState(false)
   const [uploadError, setUploadError] = React.useState<string | null>(null)
+  const { addHistoryItem } = useHistory()
 
   const handleAnalyze = async (file: File) => {
     setActiveFile(file)
@@ -42,6 +45,31 @@ export default function Home() {
     try {
       const fetchedReport = await api.getVideoReport(videoId)
       setReport(fetchedReport)
+      
+      // Calculate derived fields for history
+      const sortedPredictions = [...(fetchedReport.predictions || [])].sort((a, b) => b.score - a.score);
+      const bestPred = sortedPredictions[0];
+      
+      const directionStr = (fetchedReport.trend_signal?.direction || "").toLowerCase();
+      let trendStatus: "rising" | "stable" | "falling" = "stable";
+      if (directionStr.includes("up") || directionStr.includes("ris")) trendStatus = "rising";
+      else if (directionStr.includes("down") || directionStr.includes("fall")) trendStatus = "falling";
+
+      const overallScore = Math.round(((bestPred?.score || 85) + (fetchedReport.content_profile?.hook_score || 80) + (fetchedReport.trend_signal?.score || 80)) / 3);
+
+      const historyItem: AnalysisHistoryItem = {
+        id: fetchedReport.video_id,
+        title: fetchedReport.recommendation?.title?.[0] || fetchedReport.content_profile?.topic || "Analyzed Video",
+        thumbnail: "bg-blue-900/50",
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        duration: "00:00", // Fallback, no duration exposed in AnalysisReport
+        score: overallScore,
+        bestPlatform: fetchedReport.recommendation?.platform || bestPred?.platform || "Unknown",
+        trendStatus: trendStatus,
+        category: (fetchedReport.content_profile?.category as any) || "Technology"
+      }
+      addHistoryItem(historyItem)
+      
       setAppState("completed")
     } catch (err: any) {
       console.error("Failed to fetch report", err)

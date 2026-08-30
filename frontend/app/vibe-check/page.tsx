@@ -46,7 +46,8 @@ export default function VibeCheckPage() {
             { id: `${t.id}-opp`, title: `Explore ${t.topic}`, explanation: `Create content around ${t.topic}`, relevance: 90 }
           ],
           nextMove: { insight: `Leverage ${t.topic} on ${t.platform}`, platform: t.platform },
-          relatedTrendIds: []
+          relatedTrendIds: [],
+          platform: t.platform
         }))
 
         setTrends(mappedTrends)

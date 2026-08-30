@@ -35,7 +35,7 @@
         "direction": "rising"
     },
     "Minecraft": {
-        "score": 74,
+        "score": 77,
         "momentum": "medium",
         "direction": "falling"
     },
@@ -50,12 +50,57 @@
         "direction": "rising"
     },
     "Pack": {
+        "score": 82,
+        "momentum": "medium",
+        "direction": "falling"
+    },
+    "Minecraft Tips": {
+        "score": 45,
+        "momentum": "medium",
+        "direction": "rising"
+    },
+    "Life Hacks": {
+        "score": 71,
+        "momentum": "medium",
+        "direction": "falling"
+    },
+    "Food Storage Hack": {
+        "score": 10,
+        "momentum": "medium",
+        "direction": "falling"
+    },
+    "Storage": {
+        "score": 67,
+        "momentum": "medium",
+        "direction": "falling"
+    },
+    "Archetype": {
+        "score": 74,
+        "momentum": "medium",
+        "direction": "falling"
+    },
+    "Archetype General": {
+        "score": 9,
+        "momentum": "medium",
+        "direction": "rising"
+    },
+    "Park Scene": {
+        "score": 42,
+        "momentum": "medium",
+        "direction": "rising"
+    },
+    "Park": {
         "score": 81,
         "momentum": "medium",
         "direction": "rising"
     },
-    "Minecraft Tips": {
-        "score": 45,
+    "Snack Storage": {
+        "score": 49,
+        "momentum": "medium",
+        "direction": "rising"
+    },
+    "Snack storage": {
+        "score": 49,
         "momentum": "medium",
         "direction": "rising"
     }

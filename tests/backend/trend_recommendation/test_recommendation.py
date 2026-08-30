@@ -23,8 +23,8 @@ def test_recommendation_fallback():
     }
 
     # Temporarily remove API key to force fallback
-    original_key = os.environ.get("GEMINI_API_KEY")
-    os.environ["GEMINI_API_KEY"] = ""
+    original_key = os.environ.get("REKA_API_KEY")
+    os.environ["REKA_API_KEY"] = ""
 
     try:
         engine = RecommendationEngine()
@@ -47,18 +47,18 @@ def test_recommendation_fallback():
     finally:
         # Restore API key
         if original_key is not None:
-            os.environ["GEMINI_API_KEY"] = original_key
+            os.environ["REKA_API_KEY"] = original_key
         else:
-            del os.environ["GEMINI_API_KEY"]
+            del os.environ["REKA_API_KEY"]
 
 @patch('google.genai.models.Models.generate_content')
 def test_recommendation_api_success(mock_generate_content):
-    """Test that valid JSON from the Gemini API is correctly parsed and returned."""
+    """Test that valid JSON from the Reka API is correctly parsed and returned."""
     mock_content_profile = {"topic": "AI Agents"}
     mock_prediction = {"platform": "youtube"}
     
-    # Create a fake Gemini API response
-    fake_gemini_response = {
+    # Create a fake Reka API response
+    fake_reka_response = {
         "video_description": "API description",
         "captions": ["API caption"],
         "hashtags": ["#api"],
@@ -70,8 +70,8 @@ def test_recommendation_api_success(mock_generate_content):
     mock_response.text = json.dumps(fake_gemini_response)
     mock_generate_content.return_value = mock_response
 
-    original_key = os.environ.get("GEMINI_API_KEY")
-    os.environ["GEMINI_API_KEY"] = "fake_test_key"
+    original_key = os.environ.get("REKA_API_KEY")
+    os.environ["REKA_API_KEY"] = "fake_test_key"
     
     try:
         engine = RecommendationEngine()
@@ -95,8 +95,8 @@ def test_recommendation_api_error_fallback(mock_generate_content):
     # Force an exception when generating content
     mock_generate_content.side_effect = Exception("API rate limit exceeded")
 
-    original_key = os.environ.get("GEMINI_API_KEY")
-    os.environ["GEMINI_API_KEY"] = "fake_test_key"
+    original_key = os.environ.get("REKA_API_KEY")
+    os.environ["REKA_API_KEY"] = "fake_test_key"
     
     try:
         engine = RecommendationEngine()
