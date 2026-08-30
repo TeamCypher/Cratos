@@ -7,30 +7,56 @@ import { Navbar } from "@/components/navigation/Navbar"
 import { FileUpload } from "@/components/upload/FileUpload"
 import { ProcessingState } from "@/components/upload/ProcessingState"
 import { ResultsDashboard } from "@/components/dashboard/results-dashboard"
-import { mockAnalysisResult } from "@/lib/mock-data"
+import { api } from "@/lib/api/client"
 
 type AppState = "idle" | "processing" | "completed"
 
 export default function Home() {
   const [appState, setAppState] = React.useState<AppState>("idle")
   const [activeFile, setActiveFile] = React.useState<File | null>(null)
+  const [jobId, setJobId] = React.useState<string | null>(null)
+  const [report, setReport] = React.useState<any | null>(null)
+  const [isUploading, setIsUploading] = React.useState(false)
+  const [uploadError, setUploadError] = React.useState<string | null>(null)
 
-  const handleAnalyze = (file: File) => {
+  const handleAnalyze = async (file: File) => {
     setActiveFile(file)
-    // In a real app, we would upload the file to the backend here.
-    // For now, we just transition to the mock processing state.
-    setAppState("processing")
+    setIsUploading(true)
+    setUploadError(null)
 
-    // Scroll to top to ensure processing state is visible
-    window.scrollTo({ top: 0, behavior: "smooth" })
+    try {
+      const response = await api.uploadVideo(file)
+      setJobId(response.job_id)
+      setAppState("processing")
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    } catch (err: any) {
+      console.error("Upload failed", err)
+      setUploadError(err.message || "Failed to upload video")
+      setActiveFile(null)
+    } finally {
+      setIsUploading(false)
+    }
   }
 
-  const handleProcessingComplete = () => {
-    setAppState("completed")
+  const handleProcessingComplete = async (videoId: string) => {
+    try {
+      const fetchedReport = await api.getVideoReport(videoId)
+      setReport(fetchedReport)
+      setAppState("completed")
+    } catch (err: any) {
+      console.error("Failed to fetch report", err)
+      // In a real app we might want to handle this explicitly, 
+      // but for MVP we will fallback to processing state with an error or handle gracefully.
+      setUploadError("Processing completed, but failed to fetch the report.")
+      setAppState("idle")
+    }
   }
 
   const resetFlow = () => {
     setActiveFile(null)
+    setJobId(null)
+    setReport(null)
+    setUploadError(null)
     setAppState("idle")
   }
 
@@ -86,22 +112,29 @@ export default function Home() {
 
           {/* UPLOAD SECTION */}
           <section className="w-full flex justify-center pb-24">
-            <FileUpload onAnalyze={handleAnalyze} />
+            <div className="w-full">
+              {uploadError && (
+                <div className="mb-4 p-4 rounded-lg bg-destructive/10 text-destructive text-center font-medium max-w-3xl mx-auto border border-destructive/20">
+                  {uploadError}
+                </div>
+              )}
+              <FileUpload onAnalyze={handleAnalyze} disabled={isUploading} />
+            </div>
           </section>
         </div>
 
         {/* PROCESSING SECTION */}
         <div className={`w-full flex justify-center transition-all duration-700 delay-300 ease-in-out ${appState === "processing" ? 'opacity-100 transform translate-y-0 relative' : 'opacity-0 transform translate-y-10 absolute pointer-events-none'}`}>
-          {appState === "processing" && (
-            <ProcessingState onComplete={handleProcessingComplete} />
+          {appState === "processing" && jobId && (
+            <ProcessingState jobId={jobId} onComplete={handleProcessingComplete} />
           )}
         </div>
 
         {/* RESULTS DASHBOARD */}
         <div className={`w-full flex justify-center transition-all duration-700 delay-300 ease-in-out ${appState === "completed" ? 'opacity-100 transform translate-y-0 relative' : 'opacity-0 transform translate-y-10 absolute pointer-events-none'}`}>
-          {appState === "completed" && (
+          {appState === "completed" && report && (
             <ResultsDashboard
-              data={mockAnalysisResult}
+              report={report}
               file={activeFile}
               onAnalyzeAnother={resetFlow}
             />
