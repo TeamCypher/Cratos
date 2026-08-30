@@ -12,7 +12,7 @@ The user will provide a JSON object containing:
 
 REQUIRED OUTPUT JSON STRUCTURE:
 {
-  "video_description": "SELECT the single best-performing description from the 'trending_descriptions' provided in the trend_signal. You MUST use this exact description as your baseline, and ONLY make minor keyword swaps to make it directly relevant to the video's content profile. DO NOT invent a description from scratch. It must be tested data.",
+  "video_description": "Analyze the 'trending_descriptions' provided in the trend_signal. Select the best-performing structure from them, but YOU MUST strictly remove any ads, sponsor plugs, merchandise links, patreon links, or irrelevant external links. Keep the core engaging hook and formatting, making small keyword edits to adapt it perfectly to the provided content profile. Do not output only hashtags; provide a full, meaningful description.",
   "captions": [
     "Short, punchy caption option 1 based on trending hooks",
     "Engaging, question-based caption option 2 based on trending hooks",
