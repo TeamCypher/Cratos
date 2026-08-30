@@ -96,6 +96,7 @@ class TwitchTrendProvider:
                 
                 # Fetch live streams for this category to get titles (trending descriptions)
                 trending_descriptions = []
+                publish_hours = []
                 try:
                     streams_url = f"https://api.twitch.tv/helix/streams?game_id={category_id}&first=5"
                     streams_req = urllib.request.Request(streams_url, headers=headers)
@@ -105,8 +106,21 @@ class TwitchTrendProvider:
                             title = stream.get('title', '').strip()
                             if title:
                                 trending_descriptions.append(title[:500])
+                                
+                            started_at_str = stream.get('started_at')
+                            if started_at_str:
+                                from datetime import datetime
+                                started_at = datetime.fromisoformat(started_at_str.replace('Z', '+00:00'))
+                                publish_hours.append(started_at.hour)
                 except Exception as e:
                     print(f"Twitch Streams API Error: {e}")
+                    
+                if publish_hours:
+                    from collections import Counter
+                    most_common_hour = Counter(publish_hours).most_common(1)[0][0]
+                    best_time = f"{most_common_hour:02d}:00 - {(most_common_hour+1)%24:02d}:00"
+                else:
+                    best_time = None
                 
                 api_result = {
                     "score": score,
@@ -115,6 +129,8 @@ class TwitchTrendProvider:
                     "trending_descriptions": trending_descriptions,
                     "source": "twitch_api"
                 }
+                if best_time:
+                    api_result["best_time"] = best_time
                 
                 self._update_fallback_data(topic, api_result)
                 return api_result

@@ -57,6 +57,7 @@ class YouTubeTrendProvider:
             total_views_per_day = 0
             valid_videos = 0
             trending_descriptions = []
+            published_dates = []
             
             for item in stats_response.get('items', []):
                 views = int(item['statistics'].get('viewCount', 0))
@@ -68,6 +69,7 @@ class YouTubeTrendProvider:
                     
                 # parse ISO format, handle Z for UTC
                 published_at = datetime.fromisoformat(published_at_str.replace('Z', '+00:00'))
+                published_dates.append(published_at)
                 
                 days_old = max((now - published_at).days, 1)
                 total_views_per_day += (views / days_old)
@@ -77,6 +79,15 @@ class YouTubeTrendProvider:
                 return self._get_fallback_data(topic)
                 
             avg_views_per_day = total_views_per_day / valid_videos
+            
+            # Find the best time by checking the most frequent publish hour
+            publish_hours = [dt.hour for dt in published_dates]
+            if publish_hours:
+                from collections import Counter
+                most_common_hour = Counter(publish_hours).most_common(1)[0][0]
+                best_time = f"{most_common_hour:02d}:00 - {(most_common_hour+1)%24:02d}:00"
+            else:
+                best_time = None
             
             # 3. Calculate an accurate 0-100 score based on avg views per day
             # Assuming 100,000 avg views/day is a viral/perfect score
@@ -100,6 +111,8 @@ class YouTubeTrendProvider:
                 "trending_descriptions": trending_descriptions[:5], # Keep top 5
                 "source": "youtube_api"
             }
+            if best_time:
+                result["best_time"] = best_time
             
             # Update local fallback to become more reliable over time
             self._update_fallback_data(topic, result)

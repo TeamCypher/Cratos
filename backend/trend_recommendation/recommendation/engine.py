@@ -35,21 +35,31 @@ class RecommendationEngine:
         
         user_prompt = f"Here is the data for the video:\n{json.dumps(input_data, indent=2)}\n\nPlease generate the JSON recommendations as instructed."
         
-        try:
-            response = self.client.models.generate_content(
-                model='gemini-3.5-flash',
-                contents=user_prompt,
-                config=types.GenerateContentConfig(
-                    system_instruction=RECOMMENDATION_SYSTEM_PROMPT,
-                    response_mime_type="application/json",
-                ),
-            )
-            recommendations = json.loads(response.text)
-            return recommendations
-                
-        except Exception as e:
-            print(f"Gemini API Error: {e}. Falling back to heuristics.")
-            return self._generate_heuristic_fallback(content_profile, prediction)
+        import time
+        max_retries = 5
+        delay = 2
+        
+        for attempt in range(max_retries):
+            try:
+                response = self.client.models.generate_content(
+                    model='gemini-3.5-flash',
+                    contents=user_prompt,
+                    config=types.GenerateContentConfig(
+                        system_instruction=RECOMMENDATION_SYSTEM_PROMPT,
+                        response_mime_type="application/json",
+                    ),
+                )
+                recommendations = json.loads(response.text)
+                return recommendations
+                    
+            except Exception as e:
+                print(f"Gemini API Error on attempt {attempt + 1}: {e}")
+                if attempt < max_retries - 1:
+                    time.sleep(delay)
+                    delay *= 2
+                else:
+                    print("All retries failed. Falling back to heuristics.")
+                    return self._generate_heuristic_fallback(content_profile, prediction)
 
     def _generate_heuristic_fallback(self, content_profile: Dict[str, Any], prediction: Dict[str, Any]) -> Dict[str, Any]:
         """A safe fallback in case the AI API is unavailable."""

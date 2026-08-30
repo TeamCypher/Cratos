@@ -66,8 +66,10 @@ def build_content_profile(
     
     return content_profile
 
-def generate_metadata_with_gemini(transcript: str, ocr_text: list, keywords: list) -> Dict[str, Any]:
-    """Uses Gemini API to infer high-level metadata if available."""
+def generate_metadata_with_gemini(transcript: str, ocr_text: list, keywords: list, progress_callback=None) -> Dict[str, Any]:
+    """Uses Gemini API to infer high-level metadata if available. Includes exponential backoff retry."""
+    import time
+    
     default_topic = keywords[0].capitalize() if keywords else "General Content"
     default_subtopic = keywords[1].capitalize() if len(keywords) > 1 else "Video"
     
@@ -84,43 +86,54 @@ def generate_metadata_with_gemini(transcript: str, ocr_text: list, keywords: lis
         logger.warning("No GEMINI_API_KEY found, using default metadata extraction.")
         return default_meta
         
-    try:
-        model = genai.GenerativeModel('gemini-3.5-flash')
-        prompt = f"""
-        Analyze this video content based on its transcript and text overlays (OCR).
-        Transcript: "{transcript[:2000]}"
-        Keywords: {keywords}
-        OCR Text: {ocr_text}
-        
-        Extract the following and return ONLY a valid JSON object matching this schema:
-        {{
-            "topic": "Main topic of the video (1-3 words) - Be precise and descriptive, DO NOT use 'Unknown'",
-            "subtopic": "Specific subtopic (1-3 words)",
-            "category": "Must be exactly one of: Film & Animation, Autos & Vehicles, Music, Pets & Animals, Sports, Travel & Events, Gaming, People & Blogs, Comedy, Entertainment, News & Politics, Howto & Style, Education, Science & Technology, Nonprofits & Activism",
-            "emotion": "Must be exactly one of: Surprise, Excitement, Humor, Anger, Awe, Neutral, Calm, Sadness",
-            "audience": "Target audience description (e.g. tech enthusiasts, young gamers)"
-        }}
-        """
-        response = model.generate_content(
-            prompt,
-            generation_config=genai.types.GenerationConfig(
-                response_mime_type="application/json",
+    prompt = f"""
+    Analyze this video content based on its transcript and text overlays (OCR).
+    Transcript: "{transcript[:2000]}"
+    Keywords: {keywords}
+    OCR Text: {ocr_text}
+    
+    Extract the following and return ONLY a valid JSON object matching this schema:
+    {{
+        "topic": "Main topic of the video (1-3 words) - Be precise and descriptive, DO NOT use 'Unknown'",
+        "subtopic": "Specific subtopic (1-3 words)",
+        "category": "Must be exactly one of: Film & Animation, Autos & Vehicles, Music, Pets & Animals, Sports, Travel & Events, Gaming, People & Blogs, Comedy, Entertainment, News & Politics, Howto & Style, Education, Science & Technology, Nonprofits & Activism",
+        "emotion": "Must be exactly one of: Surprise, Excitement, Humor, Anger, Awe, Neutral, Calm, Sadness",
+        "audience": "Target audience description (e.g. tech enthusiasts, young gamers)"
+    }}
+    """
+    
+    max_retries = 5
+    delay = 2
+    
+    for attempt in range(max_retries):
+        try:
+            model = genai.GenerativeModel('gemini-3.5-flash')
+            response = model.generate_content(
+                prompt,
+                generation_config=genai.types.GenerationConfig(
+                    response_mime_type="application/json",
+                )
             )
-        )
-        # Parse the JSON string
-        result_text = response.text.strip()
+            # Parse the JSON string
+            result_text = response.text.strip()
+                
+            result = json.loads(result_text)
             
-        result = json.loads(result_text)
-        
-        # Merge with keywords
-        result["keywords"] = keywords[:5] if keywords else []
-        
-        # Ensure 'topic' is never 'Unknown'
-        if result.get("topic", "Unknown").lower() == "unknown":
-            result["topic"] = default_topic
+            # Merge with keywords
+            result["keywords"] = keywords[:5] if keywords else []
             
-        return result
-        
-    except Exception as e:
-        logger.error(f"Gemini metadata extraction failed: {e}")
-        return default_meta
+            # Ensure 'topic' is never 'Unknown'
+            if result.get("topic", "Unknown").lower() == "unknown":
+                result["topic"] = default_topic
+                
+            return result
+            
+        except Exception as e:
+            logger.error(f"Gemini metadata extraction failed on attempt {attempt + 1}: {e}")
+            if attempt < max_retries - 1:
+                if progress_callback:
+                    progress_callback("RECONNECTING", 50)
+                time.sleep(delay)
+                delay *= 2
+            else:
+                return default_meta

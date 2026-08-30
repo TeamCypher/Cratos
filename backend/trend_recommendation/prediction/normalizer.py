@@ -73,10 +73,13 @@ class FeatureNormalizer:
         return max(0, min(100, score))
 
     @staticmethod
-    def calculate_timing_score(content_profile: Dict[str, Any], platform: str) -> Tuple[int, str, str]:
+    def calculate_timing_score(content_profile: Dict[str, Any], trend_signal: Dict[str, Any], platform: str) -> Tuple[int, str, str]:
         """
         Returns a timing score, best time string, and an explanation.
         """
+        if "best_time" in trend_signal:
+            return 95, trend_signal["best_time"], "Calculated based on live peak upload times from top trending videos in this topic."
+            
         category = content_profile.get("category", "").lower()
         
         score = 70

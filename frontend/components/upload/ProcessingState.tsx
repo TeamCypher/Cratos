@@ -19,12 +19,13 @@ const STAGES = [
   "Analysis complete"
 ]
 
-const STATUS_STAGE_MAP: Record<AnalysisStatusString, number> = {
+const STATUS_STAGE_MAP: Record<string, number> = {
   QUEUED: 0,
   RETRY_REQUESTED: 0,
   VALIDATING: 1,
   PROCESSING_MEDIA: 2,
   AI_ANALYSIS: 3,
+  RECONNECTING: 3,
   TREND_ANALYSIS: 4,
   SCORING: 5,
   RECOMMENDING: 6,
@@ -43,6 +44,7 @@ export function ProcessingState({ jobId, onComplete }: ProcessingStateProps) {
   const [hasFailed, setHasFailed] = React.useState(false)
   const [isRetrying, setIsRetrying] = React.useState(false)
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null)
+  const [status, setStatus] = React.useState<string>("QUEUED")
 
   React.useEffect(() => {
     if (hasFailed) return
@@ -67,6 +69,7 @@ export function ProcessingState({ jobId, onComplete }: ProcessingStateProps) {
           return
         }
 
+        setStatus(response.status)
         const stageIndex = STATUS_STAGE_MAP[response.status] || 0
         setCurrentStage(stageIndex)
         
@@ -157,7 +160,14 @@ export function ProcessingState({ jobId, onComplete }: ProcessingStateProps) {
             </div>
             
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2 text-center">
-              Analyzing your content...
+              {status === "RECONNECTING" ? (
+                <span className="flex items-center gap-3 text-amber-500 animate-pulse">
+                  <Loader2 className="w-6 h-6 animate-spin" />
+                  Reconnecting to Gemini API...
+                </span>
+              ) : (
+                "Analyzing your content..."
+              )}
             </h2>
             <p className="text-muted-foreground text-center">
               This usually takes a few seconds. Do not close this page.

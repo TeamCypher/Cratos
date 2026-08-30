@@ -58,5 +58,15 @@
         "score": 45,
         "momentum": "medium",
         "direction": "rising"
+    },
+    "Life Hacks": {
+        "score": 71,
+        "momentum": "medium",
+        "direction": "falling"
+    },
+    "Food Storage Hack": {
+        "score": 10,
+        "momentum": "medium",
+        "direction": "falling"
     }
 }

@@ -64,5 +64,11 @@
         "momentum": "medium",
         "direction": "rising",
         "trending_descriptions": []
+    },
+    "Life Hacks": {
+        "score": 75,
+        "momentum": "medium",
+        "direction": "rising",
+        "trending_descriptions": []
     }
 }

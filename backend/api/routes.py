@@ -13,6 +13,7 @@ from backend.data.repositories import (
     RecommendationRepository
 )
 from backend.trend_recommendation.prediction.engine import PredictionEngine
+from backend.trend_recommendation.prediction.normalizer import FeatureNormalizer
 from backend.trend_recommendation.trends.engine import TrendEngine
 from backend.trend_recommendation.recommendation.engine import RecommendationEngine
 
@@ -85,7 +86,10 @@ async def process_video_task(job_id: str):
             ocr_text = visual_data.get("ocr_text", [])
             keywords = speech_data.get("keywords", [])
             
-            meta = generate_metadata_with_gemini(transcript, ocr_text, keywords)
+            def progress_callback(status_str: str, pct: int):
+                job_repo.update_job_progress(job_id, status_str, pct)
+                
+            meta = generate_metadata_with_gemini(transcript, ocr_text, keywords, progress_callback)
             
             job_repo.update_job_progress(job_id, "SCORING", 85)
             # 6. Save real analysis
@@ -217,9 +221,11 @@ def get_video_report(video_id: str):
     # 3. Run Prediction Engine
     # Check if we already have predictions
     predictions = prediction_repo.get_predictions_for_video(video_id)
+    best_time_cache = {}
     if not predictions:
         pred_results = PredictionEngine.score_platforms(video_id, content_profile, trend_signal)
         for p in pred_results:
+            best_time_cache[p["platform"]] = p.get("best_time", "Anytime")
             prediction_repo.create_prediction(
                 prediction_id=f"pred_{uuid.uuid4().hex[:12]}",
                 video_id=video_id,
@@ -234,6 +240,12 @@ def get_video_report(video_id: str):
     for p in predictions:
         pd = dict(p)
         pd["reasons"] = json.loads(pd.get("reasons", "[]"))
+        # Restore best_time from cache if just generated, else recalculate
+        if pd["platform"] in best_time_cache:
+            pd["best_time"] = best_time_cache[pd["platform"]]
+        else:
+            _, bt, _ = FeatureNormalizer.calculate_timing_score(content_profile, trend_signal, pd["platform"])
+            pd["best_time"] = bt
         parsed_predictions.append(pd)
 
     # Sort to find top prediction

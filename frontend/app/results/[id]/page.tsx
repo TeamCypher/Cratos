@@ -14,6 +14,18 @@ export default function ResultsDynamicPage({ params }: { params: { id: string } 
   const [isLoading, setIsLoading] = React.useState(true)
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null)
   
+  const [loadingText, setLoadingText] = React.useState("Loading Cratos Intel...")
+  
+  React.useEffect(() => {
+    let timer: NodeJS.Timeout
+    if (isLoading) {
+      timer = setTimeout(() => {
+        setLoadingText("Reconnecting to Gemini API...")
+      }, 5000)
+    }
+    return () => clearTimeout(timer)
+  }, [isLoading])
+
   React.useEffect(() => {
     const fetchReport = async () => {
       try {
@@ -40,7 +52,7 @@ export default function ResultsDynamicPage({ params }: { params: { id: string } 
         {isLoading ? (
           <div className="w-full py-24 flex flex-col items-center justify-center space-y-4">
             <Loader2 className="w-10 h-10 text-primary animate-spin" />
-            <p className="text-muted-foreground font-medium animate-pulse">Loading Cratos Intel...</p>
+            <p className="text-muted-foreground font-medium animate-pulse">{loadingText}</p>
           </div>
         ) : errorMsg || !report ? (
           <div className="w-full py-24 flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-500">

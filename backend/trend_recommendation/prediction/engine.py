@@ -44,7 +44,7 @@ class PredictionEngine:
         reasons.append(f"Engagement Potential: {engagement_potential}/100")
         
         # 6. Timing (10%)
-        timing_score, best_time, timing_reason = FeatureNormalizer.calculate_timing_score(content_profile, platform)
+        timing_score, best_time, timing_reason = FeatureNormalizer.calculate_timing_score(content_profile, trend_signal, platform)
         reasons.append(f"Timing ({best_time}): {timing_score}/100. {timing_reason}")
         
         # Calculate final weighted score
