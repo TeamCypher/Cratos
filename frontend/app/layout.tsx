@@ -4,6 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { HistoryProvider } from "@/lib/history-context";
 
+import { AuthProvider } from "@/components/auth-provider";
+
 const inter = Inter({ subsets: ["latin"] });
 const archivoBlack = Archivo_Black({ weight: "400", subsets: ["latin"], variable: "--font-cratos" });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-chopin" });
@@ -23,15 +25,17 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} ${archivoBlack.variable} ${outfit.variable} ${spaceGrotesk.variable} ${pixelifySans.variable}`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem={false}
-        >
-          <HistoryProvider>
-            {children}
-          </HistoryProvider>
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem={false}
+          >
+            <HistoryProvider>
+              {children}
+            </HistoryProvider>
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

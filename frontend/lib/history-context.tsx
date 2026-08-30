@@ -2,49 +2,66 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react"
 import { AnalysisHistoryItem } from "./mock-data"
+import { api } from "./api/client"
 
 interface HistoryContextType {
   historyItems: AnalysisHistoryItem[]
   addHistoryItem: (item: AnalysisHistoryItem) => void
   clearHistory: () => void
+  isLoading: boolean
 }
 
 const HistoryContext = createContext<HistoryContextType | undefined>(undefined)
 
-const HISTORY_STORAGE_KEY = "cratos_session_history"
-
 export function HistoryProvider({ children }: { children: ReactNode }) {
   const [historyItems, setHistoryItems] = useState<AnalysisHistoryItem[]>([])
-  const [isLoaded, setIsLoaded] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
-  // Load from session storage on mount
-  useEffect(() => {
+  const loadHistory = async () => {
+    setIsLoading(true)
     try {
-      const stored = sessionStorage.getItem(HISTORY_STORAGE_KEY)
-      if (stored) {
-        setHistoryItems(JSON.parse(stored))
+      const token = localStorage.getItem('google_token')
+      if (token) {
+        const data = await api.getUserHistory()
+        // Map backend videos to AnalysisHistoryItem format
+        if (data && data.history) {
+          const formatted = data.history.map((v: any) => ({
+            id: v.video_id,
+            title: v.filename || "Uploaded Video",
+            thumbnail: "bg-blue-900/50",
+            date: new Date(v.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+            duration: "00:00",
+            score: v.best_score || 0,
+            bestPlatform: v.best_platform || "Unknown",
+            trendStatus: "stable",
+            category: v.category || "General",
+            status: v.status // e.g. completed, processing, etc.
+          })) as AnalysisHistoryItem[]
+          setHistoryItems(formatted)
+        }
+      } else {
+        setHistoryItems([])
       }
     } catch (e) {
-      console.error("Failed to load history from session storage", e)
+      console.error("Failed to load history from backend", e)
     } finally {
-      setIsLoaded(true)
+      setIsLoading(false)
     }
-  }, [])
+  }
 
-  // Save to session storage whenever it changes
+  // Load from backend on mount and when auth changes
   useEffect(() => {
-    if (isLoaded) {
-      try {
-        sessionStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(historyItems))
-      } catch (e) {
-        console.error("Failed to save history to session storage", e)
-      }
+    loadHistory()
+    
+    const handleAuthChange = () => {
+      loadHistory()
     }
-  }, [historyItems, isLoaded])
+    window.addEventListener('auth_changed', handleAuthChange)
+    return () => window.removeEventListener('auth_changed', handleAuthChange)
+  }, [])
 
   const addHistoryItem = (item: AnalysisHistoryItem) => {
     setHistoryItems((prev) => {
-      // Check if item already exists
       if (prev.some((i) => i.id === item.id)) {
         return prev
       }
@@ -54,11 +71,10 @@ export function HistoryProvider({ children }: { children: ReactNode }) {
 
   const clearHistory = () => {
     setHistoryItems([])
-    sessionStorage.removeItem(HISTORY_STORAGE_KEY)
   }
 
   return (
-    <HistoryContext.Provider value={{ historyItems, addHistoryItem, clearHistory }}>
+    <HistoryContext.Provider value={{ historyItems, addHistoryItem, clearHistory, isLoading }}>
       {children}
     </HistoryContext.Provider>
   )

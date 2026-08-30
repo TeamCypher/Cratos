@@ -20,11 +20,17 @@ class ApiClientError extends Error {
 async function fetchWrapper<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
   
+  let token = null;
+  if (typeof window !== 'undefined') {
+    token = localStorage.getItem('google_token');
+  }
+  
   try {
     const response = await fetch(url, {
       ...options,
       headers: {
         ...(options.body instanceof FormData ? {} : { "Content-Type": "application/json" }),
+        ...(token ? { "Authorization": `Bearer ${token}` } : {}),
         ...options.headers,
       },
     });
@@ -92,5 +98,10 @@ export const api = {
 
   getTrendsMatch: (videoId: string): Promise<TrendItem[]> => {
     return fetchWrapper<TrendItem[]>(`/api/v1/trends/match?video_id=${videoId}`);
+  },
+
+  // Users
+  getUserHistory: (): Promise<{ history: any[] }> => {
+    return fetchWrapper<{ history: any[] }>("/api/v1/users/history");
   },
 };

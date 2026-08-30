@@ -56,7 +56,8 @@ export function AiContent({ data }: AiContentProps) {
               <h4 className="text-sm font-semibold text-primary/70 uppercase tracking-wider mb-4">Suggested Captions</h4>
               <div className="flex flex-col gap-3">
                 {data.captions.map((rawCap, i) => {
-                  const cap = rawCap.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}⭐🔥💰✨🚀💡]+\s*/gu, '');
+                  const emojiRegex = new RegExp('^[\\p{Emoji_Presentation}\\p{Extended_Pictographic}⭐🔥💰✨🚀💡]+\\s*', 'gu');
+                  const cap = rawCap.replace(emojiRegex, '');
                   return (
                     <div key={i} className="flex items-center justify-between gap-3 p-3 rounded-lg dark:bg-white/5 bg-black/5 border dark:border-white/10 border-black/10 group cursor-pointer hover:border-primary/50 transition-all" onClick={() => handleCopy(cap, `caption-${i}`)}>
                       <span className="text-sm font-medium text-foreground">{cap}</span>

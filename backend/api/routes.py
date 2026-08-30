@@ -2,7 +2,7 @@ import os
 import uuid
 import json
 import asyncio
-from fastapi import APIRouter, UploadFile, File, HTTPException, status, BackgroundTasks
+from fastapi import APIRouter, UploadFile, File, HTTPException, status, BackgroundTasks, Depends
 
 from backend.data.repositories import (
     UserRepository, 
@@ -17,6 +17,7 @@ from backend.trend_recommendation.prediction.engine import PredictionEngine
 from backend.trend_recommendation.prediction.normalizer import FeatureNormalizer
 from backend.trend_recommendation.trends.engine import TrendEngine
 from backend.trend_recommendation.recommendation.engine import RecommendationEngine
+from backend.api.auth import get_current_user
 
 user_repo = UserRepository()
 video_repo = VideoRepository()
@@ -129,7 +130,7 @@ async def process_video_task(job_id: str):
 
 
 @router.post("/api/v1/videos", status_code=status.HTTP_202_ACCEPTED)
-async def upload_video(background_tasks: BackgroundTasks, file: UploadFile = File(...)):
+async def upload_video(background_tasks: BackgroundTasks, file: UploadFile = File(...), user: dict = Depends(get_current_user)):
     # 1. Validate Extension
     filename_str = file.filename if file.filename else "unknown"
     ext = os.path.splitext(filename_str)[1].lower()
@@ -167,18 +168,10 @@ async def upload_video(background_tasks: BackgroundTasks, file: UploadFile = Fil
             os.remove(file_path)
         raise HTTPException(status_code=500, detail="Could not save file")
 
-    # 4. Save to Database (Mocking user for MVP)
-    user_id = "creator_01"
+    # 4. Save to Database
+    user_id = user["id"]
 
     try:
-        # Create user if it doesn't exist (mocking login for hackathon)
-        if not user_repo.get_user(user_id):
-            user_repo.create_user(
-                user_id=user_id,
-                name="Test Creator",
-                email="creator@example.com"
-            )
-
         video_repo.create_video(
             video_id=video_id,
             user_id=user_id,
@@ -311,27 +304,11 @@ async def get_video_report(video_id: str):
         "recommendation": parsed_recommendation
     }
 
-@router.get("/api/v1/trends")
-def get_all_trends():
-    """
-    Returns latest trends from different platforms (YouTube and Twitch)
-    using actual real-time API calls. If APIs fail or are unconfigured, returns an empty list.
-    """
-    trends = []
-    
-    try:
-        from backend.trend_recommendation.providers.youtube import YouTubeTrendProvider
-        yt = YouTubeTrendProvider()
-        trends.extend(yt.get_global_trends())
-    except Exception as e:
-        print(f"Error getting YouTube global trends: {e}")
-        
-    try:
-        from backend.trend_recommendation.providers.twitch import TwitchTrendProvider
-        tw = TwitchTrendProvider()
-        trends.extend(tw.get_global_trends())
-    except Exception as e:
-        print(f"Error getting Twitch global trends: {e}")
 
-    trends.sort(key=lambda x: x.get("trend_score", 0), reverse=True)
-    return trends
+
+
+@router.get('/api/v1/users/history')
+async def get_user_history_route(user: dict = Depends(get_current_user)):
+    videos = video_repo.get_videos_for_user(user['id'])
+    return {'history': videos}
+

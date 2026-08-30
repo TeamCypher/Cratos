@@ -49,36 +49,6 @@ const TypewriterText = ({ text }: { text: string }) => {
 
 type AppState = "idle" | "processing" | "completed"
 
-function TypewriterText({ text }: { text: string }) {
-  const [displayedText, setDisplayedText] = React.useState("")
-  const [isTyping, setIsTyping] = React.useState(true)
-
-  React.useEffect(() => {
-    let currentIndex = 0
-    let timeout: NodeJS.Timeout
-
-    const typeChar = () => {
-      if (currentIndex < text.length) {
-        setDisplayedText(text.substring(0, currentIndex + 1))
-        currentIndex++
-        timeout = setTimeout(typeChar, 80) // 80ms per character
-      } else {
-        setIsTyping(false)
-      }
-    }
-
-    timeout = setTimeout(typeChar, 300)
-    return () => clearTimeout(timeout)
-  }, [text])
-
-  return (
-    <span className="whitespace-nowrap text-[#DFFF00] text-3xl sm:text-4xl md:text-5xl lg:text-7xl">
-      {displayedText}
-      {isTyping && <span className="animate-pulse">|</span>}
-    </span>
-  )
-}
-
 export default function Home() {
   const [appState, setAppState] = React.useState<AppState>("idle")
   const [activeFile, setActiveFile] = React.useState<File | null>(null)
@@ -192,9 +162,9 @@ export default function Home() {
               <span>AI-Powered Content Intelligence</span>
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-foreground max-w-3xl leading-[1.1]">
-              <span className={geometricFont.className}>Your content.</span><br />
-              <TypewriterText text="ANALYZE TREND REPORT" />
+            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-foreground max-w-3xl leading-[1.1] flex flex-col items-center">
+              <span className={geometricFont.className}>Your content.</span>
+              <TypewriterText text="ANALYZE TREND REPOST" />
             </h1>
 
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed">

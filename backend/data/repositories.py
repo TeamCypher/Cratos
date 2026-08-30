@@ -45,6 +45,40 @@ class VideoRepository:
                 return cur.fetchone()
         finally:
             conn.close()
+
+    def get_videos_for_user(self, user_id: str) -> list[Dict[str, Any]]:
+        conn = get_db_connection()
+        try:
+            with conn.cursor() as cur:
+                # Join with analysis_jobs, video_analysis, and platform_predictions to get full history metrics
+                query = """
+                    SELECT 
+                        v.id as video_id, 
+                        v.filename, 
+                        v.created_at, 
+                        j.status, 
+                        j.id as job_id,
+                        va.category,
+                        pp.platform as best_platform,
+                        pp.score as best_score
+                    FROM videos v
+                    LEFT JOIN analysis_jobs j ON v.id = j.video_id
+                    LEFT JOIN video_analysis va ON v.id = va.video_id
+                    LEFT JOIN (
+                        SELECT video_id, platform, score
+                        FROM (
+                            SELECT video_id, platform, score, 
+                                   ROW_NUMBER() OVER(PARTITION BY video_id ORDER BY score DESC) as rn
+                            FROM platform_predictions
+                        ) t WHERE t.rn = 1
+                    ) pp ON v.id = pp.video_id
+                    WHERE v.user_id = %s
+                    ORDER BY v.created_at DESC
+                """
+                cur.execute(query, (user_id,))
+                return cur.fetchall()
+        finally:
+            conn.close()
             
     def update_video_status(self, video_id: str, status: str) -> None:
         conn = get_db_connection()

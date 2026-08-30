@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import { ArrowLeft, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -23,10 +24,17 @@ export function DashboardHeader({ onAnalyzeAnother }: DashboardHeaderProps) {
         </p>
       </div>
 
-      <Button onClick={onAnalyzeAnother} variant="outline" className="font-semibold shadow-sm hover:dark:bg-white/5 bg-black/5 transition-colors">
-        <ArrowLeft className="w-4 h-4 mr-2" />
-        Analyze Another
-      </Button>
+      <div className="flex items-center gap-3">
+        <Button asChild variant="outline" className="font-semibold shadow-sm hover:dark:bg-white/5 bg-black/5 transition-colors">
+          <Link href="/history">
+            View History
+          </Link>
+        </Button>
+        <Button onClick={onAnalyzeAnother} variant="default" className="font-semibold shadow-sm transition-colors">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Analyze Another
+        </Button>
+      </div>
     </header>
   )
 }
