@@ -37,7 +37,7 @@ class RecommendationEngine:
         
         try:
             response = self.client.models.generate_content(
-                model='gemini-3.6-flash',
+                model='gemini-1.5-flash',
                 contents=user_prompt,
                 config=types.GenerateContentConfig(
                     system_instruction=RECOMMENDATION_SYSTEM_PROMPT,
@@ -53,7 +53,10 @@ class RecommendationEngine:
 
     def _generate_heuristic_fallback(self, content_profile: Dict[str, Any], prediction: Dict[str, Any]) -> Dict[str, Any]:
         """A safe fallback in case the AI API is unavailable."""
-        topic = content_profile.get("topic", "Content")
+        topic = content_profile.get("topic")
+        if not topic or topic.lower() == "unknown":
+            topic = "General Content"
+            
         platform = prediction.get("platform", "this platform").replace("_", " ").title()
         
         return {

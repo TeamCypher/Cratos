@@ -56,10 +56,16 @@ class YouTubeTrendProvider:
             now = datetime.now(timezone.utc)
             total_views_per_day = 0
             valid_videos = 0
+            trending_descriptions = []
             
             for item in stats_response.get('items', []):
                 views = int(item['statistics'].get('viewCount', 0))
                 published_at_str = item['snippet']['publishedAt']
+                description = item['snippet'].get('description', '').strip()
+                if description and len(description) > 20:
+                    # Keep it reasonably short for the prompt, max 500 chars
+                    trending_descriptions.append(description[:500])
+                    
                 # parse ISO format, handle Z for UTC
                 published_at = datetime.fromisoformat(published_at_str.replace('Z', '+00:00'))
                 
@@ -91,6 +97,7 @@ class YouTubeTrendProvider:
                 "score": score,
                 "momentum": momentum,
                 "direction": direction,
+                "trending_descriptions": trending_descriptions[:5], # Keep top 5
                 "source": "youtube_api"
             }
             

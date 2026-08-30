@@ -43,5 +43,10 @@
         "score": 5,
         "momentum": "stable",
         "direction": "stable"
+    },
+    "Unknown": {
+        "score": 71,
+        "momentum": "medium",
+        "direction": "rising"
     }
 }

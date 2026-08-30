@@ -84,15 +84,35 @@ class TwitchTrendProvider:
                 momentum = "medium"
                 direction = "rising"
                 
-                # Check exact match
-                if any(item.get('name', '').lower() == topic.lower() for item in items):
-                    score = 95
-                    momentum = "high"
+                
+                # Check exact match and get category ID
+                category_id = items[0]['id']
+                for item in items:
+                    if item.get('name', '').lower() == topic.lower():
+                        score = 95
+                        momentum = "high"
+                        category_id = item['id']
+                        break
+                
+                # Fetch live streams for this category to get titles (trending descriptions)
+                trending_descriptions = []
+                try:
+                    streams_url = f"https://api.twitch.tv/helix/streams?game_id={category_id}&first=5"
+                    streams_req = urllib.request.Request(streams_url, headers=headers)
+                    with urllib.request.urlopen(streams_req) as streams_response:
+                        streams_result = json.loads(streams_response.read().decode())
+                        for stream in streams_result.get('data', []):
+                            title = stream.get('title', '').strip()
+                            if title:
+                                trending_descriptions.append(title[:500])
+                except Exception as e:
+                    print(f"Twitch Streams API Error: {e}")
                 
                 api_result = {
                     "score": score,
                     "momentum": momentum,
                     "direction": direction,
+                    "trending_descriptions": trending_descriptions,
                     "source": "twitch_api"
                 }
                 
