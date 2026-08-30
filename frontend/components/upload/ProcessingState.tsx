@@ -47,7 +47,18 @@ export function ProcessingState({ jobId, onComplete }: ProcessingStateProps) {
   React.useEffect(() => {
     if (hasFailed) return
 
+    const startTime = Date.now()
+    const TIMEOUT_MS = 2 * 60 * 1000 // 2 minutes
+    
+    let timer: NodeJS.Timeout | null = null
+
     const poll = async () => {
+      if (Date.now() - startTime > TIMEOUT_MS) {
+        setHasFailed(true)
+        setErrorMsg("Analysis request timed out. Please try again.")
+        return
+      }
+
       try {
         const response = await api.getAnalysisStatus(jobId)
         
@@ -69,6 +80,7 @@ export function ProcessingState({ jobId, onComplete }: ProcessingStateProps) {
         }
 
         if (response.status === "COMPLETED" && response.video_id) {
+          if (timer) clearInterval(timer)
           setTimeout(() => onComplete(response.video_id!), 500)
         }
       } catch (err: any) {
@@ -81,8 +93,10 @@ export function ProcessingState({ jobId, onComplete }: ProcessingStateProps) {
     poll()
     
     // Poll every 2.5s
-    const timer = setInterval(poll, 2500)
-    return () => clearInterval(timer)
+    timer = setInterval(poll, 2500)
+    return () => {
+      if (timer) clearInterval(timer)
+    }
   }, [jobId, onComplete, hasFailed])
 
   const handleRetry = async () => {

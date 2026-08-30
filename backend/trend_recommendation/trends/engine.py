@@ -28,14 +28,6 @@ class TrendEngine:
             captured_at_str = cached_signal['captured_at']
             try:
                 captured_at = datetime.strptime(captured_at_str, '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc)
-                if captured_at > stale_threshold:
-                    return {
-                        "score": cached_signal["trend_score"],
-                        "momentum": cached_signal["momentum"],
-                        "direction": cached_signal["direction"],
-                        "source": "database_cache",
-                        "platform": cached_signal["platform"]
-                    }
             except ValueError:
                 pass # Fallback to fetching new data if parsing fails
         
@@ -69,6 +61,7 @@ class TrendEngine:
             "score": avg_score,
             "momentum": agg_momentum,
             "direction": agg_direction,
+            "trending_descriptions": yt_result.get("trending_descriptions", []) + tw_result.get("trending_descriptions", []),
             "source": "aggregated_api",
             "platform": "youtube_twitch_google"
         }

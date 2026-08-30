@@ -15,6 +15,10 @@ export interface AnalysisResult {
   bestMove: { insight: string; platform: string; time: string; trend: "rising" | "stable" | "falling"; };
   recommendations: { id: number; title: string; explanation: string; priority?: boolean }[];
   contentSummary: { topic: string; tone: string; format: string; audience: string; };
+  videoDescription?: string;
+  hashtags?: string[];
+  captions?: string[];
+  titleVariations?: string[];
 }
 
 export const mockAnalysisResult: AnalysisResult = {

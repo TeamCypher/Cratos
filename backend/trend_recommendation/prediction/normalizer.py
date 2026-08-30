@@ -31,13 +31,13 @@ class FeatureNormalizer:
             if pacing == "medium" or pacing == "slow": score += 15
             elif pacing == "fast": score += 5
             
-            if category in ["education", "gaming", "lifestyle", "tech"]: score += 20
+            if category in ["education", "gaming", "howto & style", "science & technology", "entertainment"]: score += 20
             
         elif platform == "twitch":
             if pacing == "fast": score += 15
             elif pacing == "slow": score -= 10
             
-            if category in ["gaming", "live", "just chatting", "esports"]: score += 25
+            if category in ["gaming", "people & blogs", "entertainment", "music"]: score += 25
             
         return max(0, min(100, score))
 
@@ -75,22 +75,28 @@ class FeatureNormalizer:
     @staticmethod
     def calculate_timing_score(content_profile: Dict[str, Any], platform: str) -> Tuple[int, str, str]:
         """
-        Returns a timing score, best time string, and an explanation. Adds a small random variance
-        to simulate dynamic 'best time to post' predictions for the hackathon demo.
+        Returns a timing score, best time string, and an explanation.
         """
-        # Base logic:
-        # Gaming -> Late afternoon / evening
-        # Lifestyle -> Morning / lunch
         category = content_profile.get("category", "").lower()
         
-        score = 70 + random.randint(-10, 20) # Dynamic variance for demo impression
+        score = 70
         
         if category == "gaming":
             best_time = "18:00 - 21:00"
             reason = "Late evening aligns perfectly with gaming audience active hours."
-        elif category in ["lifestyle", "fitness"]:
+            score = 90
+        elif category in ["howto & style", "people & blogs", "travel & events"]:
             best_time = "08:00 - 10:00"
-            reason = "Morning hours show highest engagement for lifestyle content."
+            reason = "Morning hours show highest engagement for lifestyle and vlogging content."
+            score = 85
+        elif category in ["education", "science & technology"]:
+            best_time = "12:00 - 14:00"
+            reason = "Mid-day posts work well for educational content."
+            score = 80
+        elif category in ["music", "entertainment", "comedy"]:
+            best_time = "20:00 - 22:00"
+            reason = "Evening hours peak for entertainment consumption."
+            score = 85
         else:
             best_time = "15:00 - 17:00"
             reason = "Standard afternoon peak engagement window."

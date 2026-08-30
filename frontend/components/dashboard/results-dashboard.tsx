@@ -10,6 +10,7 @@ import { TrendMatch } from "./trend-match"
 import { HookAnalysis } from "./hook-analysis"
 import { BestMove } from "./best-move"
 import { Recommendations } from "./recommendations"
+import { AiContent } from "./ai-content"
 import { ContentSummary } from "./content-summary"
 import { AnalysisResult } from "@/lib/mock-data"
 import { AnalysisReport } from "@/types/api"
@@ -66,13 +67,13 @@ function mapReportToUI(report: AnalysisReport): AnalysisResult {
     hookLabel,
     hookInsight: "Your opening creates curiosity.",
     bestMove: { 
-      insight: report.recommendation?.video_description || "Publish while this topic is gaining momentum.", 
+      insight: "Publish while this topic is gaining momentum.", 
       platform: report.recommendation?.platform || bestPred.platform, 
       time: report.recommendation?.best_time || "Peak Hours", 
       trend: trendStatus 
     },
     recommendations: (report.recommendation?.optimization || []).map((opt, i) => ({
-      id: i,
+      id: i + 1,
       title: `Optimization ${i+1}`,
       explanation: opt,
       priority: i === 0
@@ -82,7 +83,11 @@ function mapReportToUI(report: AnalysisReport): AnalysisResult {
       tone: report.content_profile?.emotion || "Neutral", 
       format: report.content_profile?.category || "General", 
       audience: report.content_profile?.audience || "General Audience"
-    }
+    },
+    videoDescription: report.recommendation?.video_description,
+    hashtags: report.recommendation?.hashtags,
+    captions: report.recommendation?.caption,
+    titleVariations: report.recommendation?.title,
   }
 }
 
@@ -105,6 +110,9 @@ export function ResultsDashboard({ report, file, onAnalyzeAnother }: ResultsDash
 
       {/* Key Insights */}
       <InsightGrid data={data} />
+
+      {/* AI Generated Content Assets */}
+      <AiContent data={data} />
 
       {/* Main Analysis Body */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">

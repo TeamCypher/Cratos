@@ -46,5 +46,23 @@
         "score": 95,
         "momentum": "high",
         "direction": "rising"
+    },
+    "Unknown": {
+        "score": 95,
+        "momentum": "high",
+        "direction": "rising",
+        "trending_descriptions": []
+    },
+    "Pack": {
+        "score": 95,
+        "momentum": "high",
+        "direction": "rising",
+        "trending_descriptions": []
+    },
+    "Minecraft Tips": {
+        "score": 75,
+        "momentum": "medium",
+        "direction": "rising",
+        "trending_descriptions": []
     }
 }
