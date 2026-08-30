@@ -35,10 +35,27 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30 flex flex-col">
-      <Navbar />
+    <div className="relative min-h-screen bg-background text-foreground font-sans selection:bg-primary/30 flex flex-col overflow-hidden">
+      {/* Background Video */}
+      <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline 
+          src="/cratos_homepage.mp4"
+          className="w-full h-full object-cover motion-reduce:hidden"
+        />
+        {/* Overlay to ensure readability and maintain dark theme aesthetic */}
+        <div className="absolute inset-0 bg-background/70 dark:bg-[#090D0A]/75 backdrop-blur-[2px]" />
+      </div>
 
-      <main className="flex-1 container mx-auto px-6 py-12 md:py-24 max-w-6xl flex flex-col justify-center">
+      {/* Wrap Navbar in a relative container with high z-index to ensure it sits above the video */}
+      <div className="relative z-50">
+        <Navbar />
+      </div>
+
+      <main className="relative flex-1 container mx-auto px-6 py-12 md:py-24 max-w-6xl flex flex-col justify-center z-10">
 
         {/* HERO SECTION - Only show if idle */}
         <div className={`transition-all duration-700 ease-in-out ${appState === "idle" ? 'opacity-100 transform translate-y-0 relative' : 'opacity-0 transform -translate-y-10 absolute pointer-events-none'}`}>
