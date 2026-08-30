@@ -37,7 +37,7 @@ class RecommendationEngine:
         
         try:
             response = self.client.models.generate_content(
-                model='gemini-1.5-flash',
+                model='gemini-3.5-flash',
                 contents=user_prompt,
                 config=types.GenerateContentConfig(
                     system_instruction=RECOMMENDATION_SYSTEM_PROMPT,

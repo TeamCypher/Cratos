@@ -48,5 +48,15 @@
         "score": 71,
         "momentum": "medium",
         "direction": "rising"
+    },
+    "Pack": {
+        "score": 81,
+        "momentum": "medium",
+        "direction": "rising"
+    },
+    "Minecraft Tips": {
+        "score": 45,
+        "momentum": "medium",
+        "direction": "rising"
     }
 }

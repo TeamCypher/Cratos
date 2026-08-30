@@ -85,7 +85,7 @@ def generate_metadata_with_gemini(transcript: str, ocr_text: list, keywords: lis
         return default_meta
         
     try:
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('gemini-3.5-flash')
         prompt = f"""
         Analyze this video content based on its transcript and text overlays (OCR).
         Transcript: "{transcript[:2000]}"
