@@ -41,8 +41,8 @@ export function VideoSummary({ file }: VideoSummaryProps) {
   }
 
   return (
-    <Card className="w-full overflow-hidden bg-card/50 border-white/10 flex flex-col shadow-sm">
-      <div className="relative w-full aspect-video bg-black flex items-center justify-center border-b border-white/10">
+    <Card className="w-full overflow-hidden bg-card/50 dark:border-white/10 border-black/10 flex flex-col shadow-sm">
+      <div className="relative w-full aspect-video bg-black flex items-center justify-center border-b dark:border-white/10 border-black/10">
         {previewUrl ? (
           <video 
             ref={videoRef}
@@ -65,11 +65,11 @@ export function VideoSummary({ file }: VideoSummaryProps) {
         </h3>
         <div className="flex items-center gap-3 text-sm text-muted-foreground font-medium">
           <span>{file ? formatFileSize(file.size) : "12.4 MB"}</span>
-          <span className="w-1 h-1 rounded-full bg-slate-600"></span>
+          <span className="w-1 h-1 rounded-full bg-muted-foreground/50"></span>
           <span>{file?.type || "video/mp4"}</span>
           {duration && (
             <>
-              <span className="w-1 h-1 rounded-full bg-slate-600"></span>
+              <span className="w-1 h-1 rounded-full bg-muted-foreground/50"></span>
               <span>{duration}</span>
             </>
           )}

@@ -52,7 +52,7 @@ export default function VibeCheckPage() {
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30 flex flex-col">
       <Navbar />
 
-      <main className="flex-1 container mx-auto px-6 py-8 md:py-12 max-w-7xl">
+      <main className="flex-1 container mx-auto px-4 sm:px-6 py-8 md:py-16 max-w-5xl">
         <VibeCheckHeader />
         
         {isLoading ? (
@@ -61,37 +61,47 @@ export default function VibeCheckPage() {
             <p className="text-muted-foreground font-medium animate-pulse">Loading trend intelligence...</p>
           </div>
         ) : (
-          <div className="animate-in fade-in duration-500">
-            <TopSummary data={mockVibeCheckSummary} />
+          <div className="animate-in fade-in duration-700 flex flex-col gap-16 md:gap-24 mt-12">
             
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 relative">
-              
-              {/* Left Column: Filters and List */}
-              <div className="lg:col-span-4 flex flex-col gap-2">
-                <TrendFilter 
-                  searchQuery={searchQuery}
-                  setSearchQuery={setSearchQuery}
-                  directionFilter={directionFilter}
-                  setDirectionFilter={setDirectionFilter}
-                  categoryFilter={categoryFilter}
-                  setCategoryFilter={setCategoryFilter}
-                />
-                
-                <TrendList 
-                  trends={filteredTrends} 
-                  selectedTrendId={selectedTrend?.id || null} 
-                  onSelectTrend={setSelectedTrend} 
-                />
+            {/* 1. What's Happening Summary */}
+            <section>
+              <TopSummary data={mockVibeCheckSummary} />
+            </section>
+            
+            {/* 2. Discover Trends Filters */}
+            <section className="scroll-m-20">
+              <div className="mb-6">
+                <h2 className="text-3xl font-extrabold tracking-tight text-foreground">Discover Trends</h2>
+                <p className="text-muted-foreground mt-2 text-lg">Search and filter the latest movements in your niche.</p>
               </div>
+              <TrendFilter 
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                directionFilter={directionFilter}
+                setDirectionFilter={setDirectionFilter}
+                categoryFilter={categoryFilter}
+                setCategoryFilter={setCategoryFilter}
+              />
+            </section>
+            
+            {/* 3. Trending Now List */}
+            <section>
+              <div className="mb-6">
+                <h2 className="text-3xl font-extrabold tracking-tight text-foreground">Trending Now</h2>
+                <p className="text-muted-foreground mt-2 text-lg">Explore topics currently gaining attention.</p>
+              </div>
+              <TrendList 
+                trends={filteredTrends} 
+                selectedTrendId={selectedTrend?.id || null} 
+                onSelectTrend={setSelectedTrend} 
+              />
+            </section>
 
-              {/* Right Column: Detailed View */}
-              <div className="lg:col-span-8">
-                <div className="sticky top-24">
-                  <TrendDetail trend={selectedTrend} />
-                </div>
-              </div>
-              
-            </div>
+            {/* 4. Selected Trend Details */}
+            <section className="pt-8 border-t border-border">
+              <TrendDetail trend={selectedTrend} />
+            </section>
+            
           </div>
         )}
       </main>

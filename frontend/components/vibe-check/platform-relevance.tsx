@@ -30,8 +30,8 @@ export function PlatformRelevance({ relevance }: PlatformRelevanceProps) {
         <p className="text-sm text-muted-foreground">Platform performance alignment.</p>
       </div>
       
-      <Card className="p-5 bg-card/50 border-white/10">
-        <div className="flex items-center gap-3 mb-6 p-3 bg-white/5 rounded-xl border border-white/5">
+      <Card className="p-5 bg-card/50 dark:border-white/10 border-black/10">
+        <div className="flex items-center gap-3 mb-6 p-3 dark:bg-white/5 bg-black/5 rounded-xl border dark:border-white/5 border-black/5">
           <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
             <Smartphone className="w-5 h-5 text-primary" />
           </div>
@@ -47,7 +47,7 @@ export function PlatformRelevance({ relevance }: PlatformRelevanceProps) {
                 {platform.name}
               </span>
               <div className="flex-1">
-                <Progress value={platform.score} className={`h-2 ${idx === 0 ? "bg-white/10" : "bg-black/40"}`} />
+                <Progress value={platform.score} className={`h-2 ${idx === 0 ? "dark:bg-white/10 bg-black/10" : "dark:bg-black/40 bg-black/5"}`} />
               </div>
               <span className={`text-sm font-bold w-12 text-right ${idx === 0 ? "text-primary" : "text-muted-foreground"}`}>
                 {platform.score}%

@@ -46,7 +46,7 @@ export function Score({
       {...props}
     >
       <span className={cn(sizeClasses[size])}>{value}</span>
-      <span className={cn(denominatorClasses[size], size === "hero" ? "text-slate-500" : "")}>
+      <span className={cn(denominatorClasses[size], size === "hero" ? "text-muted-foreground" : "")}>
         / {max}
       </span>
     </div>

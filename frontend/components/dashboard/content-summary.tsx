@@ -21,10 +21,10 @@ export function ContentSummary({ data }: ContentSummaryProps) {
     <div className="w-full">
       <SectionHeading title="What Cratos Understood" description="The core profile extracted from your media." />
       
-      <Card className="bg-card/50 border-white/10 p-6">
+      <Card className="bg-card/50 dark:border-white/10 border-black/10 p-6">
         <div className="flex flex-wrap gap-4">
           {summaryItems.map((item, idx) => (
-            <div key={idx} className="flex-1 min-w-[120px] p-3 rounded-lg bg-white/5 border border-white/5">
+            <div key={idx} className="flex-1 min-w-[120px] p-3 rounded-lg dark:bg-white/5 bg-black/5 border dark:border-white/5 border-black/5">
               <span className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
                 {item.label}
               </span>
