@@ -162,9 +162,9 @@ export default function Home() {
               <span>AI-Powered Content Intelligence</span>
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-foreground max-w-3xl leading-[1.1]">
-              <span className={geometricFont.className}>Your content.</span><br />
-              <TypewriterText text="ANALYZE TREND REPORT" />
+            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-foreground max-w-3xl leading-[1.1] flex flex-col items-center">
+              <span className={geometricFont.className}>Your content.</span>
+              <TypewriterText text="ANALYZE TREND REPOST" />
             </h1>
 
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed">
