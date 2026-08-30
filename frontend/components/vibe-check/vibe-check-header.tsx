@@ -13,7 +13,7 @@ export function VibeCheckHeader() {
         See what's gaining momentum and where your content fits.
       </p>
       <p className="text-muted-foreground flex items-center gap-1.5 text-sm md:text-base">
-        <Sparkles className="w-4 h-4 text-primary" />
+
         Discover rising topics, understand their momentum and find opportunities worth creating around.
       </p>
     </header>

@@ -17,7 +17,7 @@ export function TrendDetail({ trend }: TrendDetailProps) {
   if (!trend) {
     return (
       <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center text-muted-foreground bg-card/10 rounded-3xl border border-dashed dark:border-white/10 border-black/10 p-8 text-center mt-12">
-        <Target className="w-12 h-12 mb-4 opacity-20" />
+
         <h3 className="text-xl font-bold mb-2">Select a Trend</h3>
         <p className="max-w-xs text-sm">Click on a trend from the list to view deep insights, relevance, and content opportunities.</p>
       </div>

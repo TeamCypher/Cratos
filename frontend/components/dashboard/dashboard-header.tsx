@@ -18,10 +18,6 @@ export function DashboardHeader({ onAnalyzeAnother }: DashboardHeaderProps) {
           <CratosLogo width={32} height={32} iconOnly imageClassName="rounded-lg shadow-md shadow-primary/10" />
           <h1 className="text-2xl font-bold tracking-tight text-foreground">Cratos Intel</h1>
         </div>
-        <p className="text-muted-foreground flex items-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5 text-secondary" />
-          Here's what your content is telling us.
-        </p>
       </div>
 
       <Button onClick={onAnalyzeAnother} variant="outline" className="font-semibold shadow-sm hover:dark:bg-white/5 bg-black/5 transition-colors">

@@ -32,9 +32,7 @@ export function PlatformRelevance({ relevance }: PlatformRelevanceProps) {
       
       <Card className="p-5 bg-card/50 dark:border-white/10 border-black/10">
         <div className="flex items-center gap-3 mb-6 p-3 dark:bg-white/5 bg-black/5 rounded-xl border dark:border-white/5 border-black/5">
-          <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
-            <Smartphone className="w-5 h-5 text-primary" />
-          </div>
+
           <p className="text-sm text-foreground font-medium leading-snug">
             <span className="font-bold text-primary">{topPlatform.name}</span> currently shows stronger alignment with this trend and your content profile.
           </p>

@@ -23,7 +23,7 @@ export function ContentOpportunities({ opportunities }: ContentOpportunitiesProp
           <Card key={opp.id} className="p-4 bg-card/50 dark:border-white/10 border-black/10 flex flex-col hover:dark:bg-white/5 bg-black/5 transition-colors">
             <div className="flex justify-between items-start mb-2">
               <div className="flex items-center gap-2">
-                <Lightbulb className="w-4 h-4 text-primary" />
+
                 <h4 className="font-semibold text-foreground">{opp.title}</h4>
               </div>
               <Badge variant="outline" className="flex items-center gap-1 text-[10px] dark:bg-white/5 bg-black/5 dark:border-white/10 border-black/10">

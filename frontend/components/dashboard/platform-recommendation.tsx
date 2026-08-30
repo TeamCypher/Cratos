@@ -23,9 +23,7 @@ export function PlatformRecommendation({ data }: PlatformRecommendationProps) {
           <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent pointer-events-none"></div>
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-xl bg-primary/20 flex items-center justify-center shadow-inner border border-primary/30">
-                <Smartphone className="w-7 h-7 text-primary" />
-              </div>
+
               <div>
                 <h3 className="text-2xl font-bold text-foreground">{data.bestPlatform.name}</h3>
                 <Badge variant="success" className="mt-1">{data.bestPlatform.fit}</Badge>

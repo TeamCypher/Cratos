@@ -2,15 +2,31 @@
 
 import * as React from "react"
 import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
 import { Menu, X, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { CratosLogo } from "@/components/CratosLogo"
+import { Outfit } from "next/font/google"
+import { cn } from "@/lib/utils"
+
+const rizoFont = Outfit({ subsets: ["latin"] })
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
+  const pathname = usePathname()
+  const router = useRouter()
 
   const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen)
+
+  const scrollToUpload = () => {
+    if (pathname !== '/') {
+      router.push('/#upload-section')
+    } else {
+      document.getElementById('upload-section')?.scrollIntoView({ behavior: 'smooth' })
+    }
+    if (isMobileMenuOpen) setIsMobileMenuOpen(false)
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-md">
@@ -22,15 +38,15 @@ export function Navbar() {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-          <Link href="/" className="hover:text-foreground transition-colors">Analyze</Link>
-          <Link href="/vibe-check" className="hover:text-foreground transition-colors">Vibe Check</Link>
-          <Link href="/history" className="hover:text-foreground transition-colors">History</Link>
+          <Link href="/" className={cn("hover:text-foreground transition-colors", rizoFont.className)}>Analyze</Link>
+          <Link href="/vibe-check" className={cn("hover:text-foreground transition-colors", rizoFont.className)}>Vibe Check</Link>
+          <Link href="/history" className={cn("hover:text-foreground transition-colors", rizoFont.className)}>History</Link>
         </nav>
 
         {/* Desktop CTA & Theme Toggle */}
         <div className="hidden md:flex items-center gap-4">
           <ThemeToggle />
-          <Button variant="default" className="font-semibold shadow-md shadow-primary/10">
+          <Button variant="default" className="font-semibold shadow-md shadow-primary/10" onClick={scrollToUpload}>
             Analyze Video
           </Button>
         </div>
@@ -48,11 +64,11 @@ export function Navbar() {
       {isMobileMenuOpen && (
         <div className="md:hidden border-t border-border/50 bg-background/95 backdrop-blur-md absolute w-full left-0 top-16 shadow-2xl">
           <nav className="flex flex-col p-6 gap-6 text-base font-medium text-muted-foreground">
-            <Link href="/" className="hover:text-foreground transition-colors" onClick={toggleMenu}>Analyze</Link>
-            <Link href="/vibe-check" className="hover:text-foreground transition-colors" onClick={toggleMenu}>Vibe Check</Link>
-            <Link href="/history" className="hover:text-foreground transition-colors" onClick={toggleMenu}>History</Link>
+            <Link href="/" className={cn("hover:text-foreground transition-colors", rizoFont.className)} onClick={toggleMenu}>Analyze</Link>
+            <Link href="/vibe-check" className={cn("hover:text-foreground transition-colors", rizoFont.className)} onClick={toggleMenu}>Vibe Check</Link>
+            <Link href="/history" className={cn("hover:text-foreground transition-colors", rizoFont.className)} onClick={toggleMenu}>History</Link>
             <div className="pt-4 border-t border-border/50">
-              <Button variant="default" className="w-full font-semibold" onClick={toggleMenu}>
+              <Button variant="default" className="w-full font-semibold" onClick={scrollToUpload}>
                 Analyze Video
               </Button>
             </div>
