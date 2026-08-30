@@ -63,6 +63,8 @@ export function Navbar() {
 
         {/* Desktop Navigation */}
         <nav className={cn("hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground", rizoFont.className)}>
+          <Link href="/" className="hover:text-foreground transition-colors">Analyze</Link>
+          <Link href="/history" className="hover:text-foreground transition-colors">History</Link>
         </nav>
 
         {/* Desktop CTA & Theme Toggle */}
@@ -114,7 +116,6 @@ export function Navbar() {
               <Button variant="outline" className="w-full" onClick={handleLogout}>Logout</Button>
             )}
             <Link href="/" className={cn("hover:text-foreground transition-colors", rizoFont.className)} onClick={toggleMenu}>Analyze</Link>
-            <Link href="/vibe-check" className={cn("hover:text-foreground transition-colors", rizoFont.className)} onClick={toggleMenu}>Vibe Check</Link>
             <Link href="/history" className={cn("hover:text-foreground transition-colors", rizoFont.className)} onClick={toggleMenu}>History</Link>
             <div className="pt-4 border-t border-border/50">
               <Button variant="default" className="w-full font-semibold" onClick={() => { toggleMenu(); scrollToUpload(); }}>

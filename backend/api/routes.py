@@ -304,30 +304,7 @@ async def get_video_report(video_id: str):
         "recommendation": parsed_recommendation
     }
 
-@router.get("/api/v1/trends")
-def get_all_trends():
-    """
-    Returns latest trends from different platforms (YouTube and Twitch)
-    using actual real-time API calls. If APIs fail or are unconfigured, returns an empty list.
-    """
-    trends = []
-    
-    try:
-        from backend.trend_recommendation.providers.youtube import YouTubeTrendProvider
-        yt = YouTubeTrendProvider()
-        trends.extend(yt.get_global_trends())
-    except Exception as e:
-        print(f"Error getting YouTube global trends: {e}")
-        
-    try:
-        from backend.trend_recommendation.providers.twitch import TwitchTrendProvider
-        tw = TwitchTrendProvider()
-        trends.extend(tw.get_global_trends())
-    except Exception as e:
-        print(f"Error getting Twitch global trends: {e}")
 
-    trends.sort(key=lambda x: x.get("trend_score", 0), reverse=True)
-    return trends
 
 
 @router.get('/api/v1/users/history')
