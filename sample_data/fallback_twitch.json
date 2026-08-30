@@ -95,5 +95,11 @@
         "momentum": "high",
         "direction": "rising",
         "trending_descriptions": []
+    },
+    "Minecraft tips": {
+        "score": 75,
+        "momentum": "medium",
+        "direction": "rising",
+        "trending_descriptions": []
     }
 }
