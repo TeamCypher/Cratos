@@ -70,7 +70,12 @@
         "direction": "falling"
     },
     "Storage": {
-        "score": 68,
+        "score": 67,
+        "momentum": "medium",
+        "direction": "falling"
+    },
+    "Archetype": {
+        "score": 74,
         "momentum": "medium",
         "direction": "falling"
     }

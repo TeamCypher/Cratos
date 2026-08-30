@@ -18,6 +18,10 @@ class YouTubeTrendProvider:
         except FileNotFoundError:
             self.fallback_data = {}
             
+    async def get_trend_signals_async(self, topic: str) -> dict:
+        import asyncio
+        return await asyncio.to_thread(self.get_trend_signals, topic)
+
     def get_trend_signals(self, topic: str) -> dict:
         """
         Attempts to fetch real trend data for a topic using YouTube Data API.
@@ -124,6 +128,26 @@ class YouTubeTrendProvider:
             return self._get_fallback_data(topic)
 
     def _get_fallback_data(self, topic: str) -> dict:
+        # Semantic matching first
+        try:
+            from backend.core.embeddings import semantic_matcher
+            best_match = None
+            best_score = 0.0
+            
+            for key in self.fallback_data.keys():
+                score = semantic_matcher.compute_similarity_text(topic, key)
+                if score > best_score:
+                    best_score = score
+                    best_match = key
+                    
+            if best_match and best_score > 0.6:
+                data = self.fallback_data[best_match].copy()
+                data["source"] = "local_fallback"
+                return data
+        except ImportError:
+            pass
+
+        # String matching fallback
         topic_lower = topic.lower()
         for key in self.fallback_data.keys():
             if key.lower() in topic_lower or topic_lower in key.lower():

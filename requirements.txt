@@ -12,3 +12,7 @@ pytrends
 google-generativeai
 tenacity
 reka-api
+sentence-transformers
+httpx
+numpy
+scikit-learn

@@ -12,6 +12,7 @@ The user will provide a JSON object containing:
 - content_profile: Understanding of the actual video (topic, category, hook_score, pacing, etc.)
 - trend_signal: Current market trend context (momentum, direction, trending_descriptions).
 - prediction: The highest scoring platform prediction
+- competitor_gaps: Topics and timings not covered by competitors (if available)
 
 REQUIRED OUTPUT JSON STRUCTURE:
 {
@@ -32,7 +33,7 @@ REQUIRED OUTPUT JSON STRUCTURE:
   "optimization_tips": [
     "Genuine, actionable recommendation to improve the video based on visual pacing, hook score, and other signals in the content profile",
     "Actionable tip specific to the recommended platform",
-    "Another genuine recommendation to optimize the content for the trend"
+    "Strategy to exploit a competitor gap or retention weakness"
   ]
 }
 

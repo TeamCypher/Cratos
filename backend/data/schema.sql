@@ -72,6 +72,7 @@ CREATE TABLE IF NOT EXISTS trend_signals (
     trend_score INTEGER,
     momentum TEXT,
     direction TEXT,
+    embedding TEXT, -- JSON array of floats for semantic similarity
     captured_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -83,5 +84,26 @@ CREATE TABLE IF NOT EXISTS platform_predictions (
     score INTEGER,
     confidence REAL,
     reasons TEXT, -- Store as JSON array string
+    FOREIGN KEY(video_id) REFERENCES videos(id)
+);
+
+-- Stores predicted retention scores across time windows
+CREATE TABLE IF NOT EXISTS retention_curves (
+    id TEXT PRIMARY KEY,
+    video_id TEXT NOT NULL,
+    timestamp_sec INTEGER NOT NULL,
+    retention_score REAL NOT NULL,
+    FOREIGN KEY(video_id) REFERENCES videos(id)
+);
+
+-- Stores competitor gap analysis
+CREATE TABLE IF NOT EXISTS competitor_analysis (
+    id TEXT PRIMARY KEY,
+    video_id TEXT NOT NULL,
+    channel_id TEXT NOT NULL,
+    overlap_score INTEGER,
+    gap_topics TEXT, -- Store as JSON array string
+    timing_gaps TEXT, -- Store as JSON array string
+    analyzed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(video_id) REFERENCES videos(id)
 );

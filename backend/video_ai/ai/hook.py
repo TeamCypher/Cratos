@@ -12,15 +12,19 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-def calculate_audio_energy(audio_path: str, duration_sec: float = 3.0) -> float:
-    """Calculates normalized RMS energy of the first few seconds of audio."""
+def calculate_audio_energy(audio_path: str, start_sec: float = 0.0, duration_sec: float = 3.0) -> float:
+    """Calculates normalized RMS energy of a specific time window of audio."""
     if not audio_path or not os.path.exists(audio_path) or np is None:
         return 0.0
         
     try:
         with wave.open(audio_path, 'rb') as wf:
             framerate = wf.getframerate()
+            start_frame = int(framerate * start_sec)
             n_frames_to_read = int(framerate * duration_sec)
+            
+            # Seek to start
+            wf.setpos(min(start_frame, wf.getnframes()))
             
             raw_data = wf.readframes(n_frames_to_read)
             if not raw_data:
@@ -40,8 +44,8 @@ def calculate_audio_energy(audio_path: str, duration_sec: float = 3.0) -> float:
         logger.warning(f"Error calculating audio energy: {e}")
         return 0.0
 
-def calculate_visual_pacing(video_path: str, duration_sec: float = 3.0) -> float:
-    """Calculates normalized frame difference over the first few seconds."""
+def calculate_visual_pacing(video_path: str, start_sec: float = 0.0, duration_sec: float = 3.0) -> float:
+    """Calculates normalized frame difference over a specific time window."""
     if not video_path or not os.path.exists(video_path) or cv2 is None or np is None:
         return 0.0
         
@@ -51,7 +55,11 @@ def calculate_visual_pacing(video_path: str, duration_sec: float = 3.0) -> float
         if fps <= 0:
             fps = 30.0
             
+        start_frame_idx = int(fps * start_sec)
         max_frames = int(fps * duration_sec)
+        
+        # Seek to start
+        cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame_idx)
         
         prev_frame = None
         total_diff = 0.0

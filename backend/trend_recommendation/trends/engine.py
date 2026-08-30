@@ -14,13 +14,17 @@ class TrendEngine:
         self.twitch_provider = TwitchTrendProvider()
         self.google_provider = GoogleTrendProvider()
 
-    def get_trends_for_topic(self, topic: str) -> Dict[str, Any]:
+    async def get_trends_for_topic(self, topic: str) -> Dict[str, Any]:
         """
         Retrieves trend data for a topic. 
-        Checks local database cache first. If stale or missing, fetches from providers
-        and aggregates the results.
+        Uses stale-while-revalidate logic and parallel async fetching.
         """
-        stale_threshold = datetime.now(timezone.utc) - timedelta(hours=24)
+        import asyncio
+        from backend.core.embeddings import semantic_matcher
+        
+        now = datetime.now(timezone.utc)
+        fresh_threshold = now - timedelta(hours=1)
+        warm_threshold = now - timedelta(hours=6)
         
         # Check cache
         cached_signal = self.repo.get_latest_signal_by_topic(topic)
@@ -28,13 +32,36 @@ class TrendEngine:
             captured_at_str = cached_signal['captured_at']
             try:
                 captured_at = datetime.strptime(captured_at_str, '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc)
+                
+                # If fresh (< 1 hour), return cache
+                if captured_at > fresh_threshold:
+                    return dict(cached_signal)
+                    
+                # If warm (1-6 hours), return cache but trigger background refresh
+                if captured_at > warm_threshold:
+                    # Trigger background fetch (asyncio.create_task or via BackgroundTasks in router)
+                    # For MVP, we will just return cache here, assuming the router handles background trigger, 
+                    # but let's actually just do it here if possible or return a flag.
+                    # We'll just fetch asynchronously in the background.
+                    asyncio.create_task(self._fetch_and_aggregate_async(topic))
+                    return dict(cached_signal)
+                    
             except ValueError:
                 pass # Fallback to fetching new data if parsing fails
         
-        # Fetching new data from providers concurrently (serial for MVP simplicity)
-        yt_result = self.youtube_provider.get_trend_signals(topic)
-        tw_result = self.twitch_provider.get_trend_signals(topic)
-        go_result = self.google_provider.get_trend_signals(topic)
+        # If stale or missing, fetch synchronously
+        return await self._fetch_and_aggregate_async(topic)
+
+    async def _fetch_and_aggregate_async(self, topic: str) -> Dict[str, Any]:
+        import asyncio
+        from backend.core.embeddings import semantic_matcher
+        
+        # Fetching new data from providers concurrently
+        yt_task = self.youtube_provider.get_trend_signals_async(topic)
+        tw_task = self.twitch_provider.get_trend_signals_async(topic)
+        go_task = self.google_provider.get_trend_signals_async(topic)
+        
+        yt_result, tw_result, go_result = await asyncio.gather(yt_task, tw_task, go_task)
         
         # Aggregate logic
         avg_score = int((yt_result.get("score", 50) + tw_result.get("score", 50) + go_result.get("score", 50)) / 3)
@@ -66,6 +93,13 @@ class TrendEngine:
             "platform": "youtube_twitch_google"
         }
         
+        # Generate embedding for the topic
+        try:
+            embedding_vector = semantic_matcher.embed_text(topic)
+            embedding_str = semantic_matcher.serialize_embedding(embedding_vector)
+        except Exception:
+            embedding_str = None
+        
         # Save to database
         signal_id = str(uuid.uuid4())
         self.repo.create_signal(
@@ -75,7 +109,8 @@ class TrendEngine:
             platform=agg_result["platform"],
             trend_score=agg_result["score"],
             momentum=agg_result["momentum"],
-            direction=agg_result["direction"]
+            direction=agg_result["direction"],
+            embedding=embedding_str
         )
         
         return agg_result

@@ -84,5 +84,11 @@
         "momentum": "medium",
         "direction": "rising",
         "trending_descriptions": []
+    },
+    "Archetype": {
+        "score": 95,
+        "momentum": "high",
+        "direction": "rising",
+        "trending_descriptions": []
     }
 }

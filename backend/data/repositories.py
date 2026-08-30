@@ -103,12 +103,12 @@ class VideoAnalysisRepository:
             conn.close()
 
 class TrendSignalRepository:
-    def create_signal(self, signal_id: str, topic: str, source: str, platform: str, trend_score: int, momentum: str, direction: str) -> None:
+    def create_signal(self, signal_id: str, topic: str, source: str, platform: str, trend_score: int, momentum: str, direction: str, embedding: Optional[str] = None) -> None:
         conn = get_db_connection()
         try:
             conn.execute(
-                "INSERT INTO trend_signals (id, topic, source, platform, trend_score, momentum, direction) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                (signal_id, topic, source, platform, trend_score, momentum, direction)
+                "INSERT INTO trend_signals (id, topic, source, platform, trend_score, momentum, direction, embedding) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                (signal_id, topic, source, platform, trend_score, momentum, direction, embedding)
             )
             conn.commit()
         finally:
@@ -127,6 +127,14 @@ class TrendSignalRepository:
         try:
             cur = conn.execute("SELECT * FROM trend_signals WHERE topic = ? ORDER BY captured_at DESC LIMIT 1", (topic,))
             return cur.fetchone()
+        finally:
+            conn.close()
+
+    def get_historical_signals_by_topic(self, topic: str, limit: int = 10) -> list[sqlite3.Row]:
+        conn = get_db_connection()
+        try:
+            cur = conn.execute("SELECT * FROM trend_signals WHERE topic = ? ORDER BY captured_at DESC LIMIT ?", (topic, limit))
+            return cur.fetchall()
         finally:
             conn.close()
 
@@ -166,6 +174,46 @@ class RecommendationRepository:
         conn = get_db_connection()
         try:
             cur = conn.execute("SELECT * FROM recommendations WHERE video_id = ? AND platform = ?", (video_id, platform))
+            return cur.fetchone()
+        finally:
+            conn.close()
+
+class RetentionRepository:
+    def create_curve_point(self, curve_id: str, video_id: str, timestamp_sec: int, retention_score: float) -> None:
+        conn = get_db_connection()
+        try:
+            conn.execute(
+                "INSERT INTO retention_curves (id, video_id, timestamp_sec, retention_score) VALUES (?, ?, ?, ?)",
+                (curve_id, video_id, timestamp_sec, retention_score)
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
+    def get_curve_for_video(self, video_id: str) -> list[sqlite3.Row]:
+        conn = get_db_connection()
+        try:
+            cur = conn.execute("SELECT * FROM retention_curves WHERE video_id = ? ORDER BY timestamp_sec ASC", (video_id,))
+            return cur.fetchall()
+        finally:
+            conn.close()
+
+class CompetitorRepository:
+    def create_analysis(self, analysis_id: str, video_id: str, channel_id: str, overlap_score: int, gap_topics: str, timing_gaps: str) -> None:
+        conn = get_db_connection()
+        try:
+            conn.execute(
+                "INSERT INTO competitor_analysis (id, video_id, channel_id, overlap_score, gap_topics, timing_gaps) VALUES (?, ?, ?, ?, ?, ?)",
+                (analysis_id, video_id, channel_id, overlap_score, gap_topics, timing_gaps)
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
+    def get_analysis_for_video(self, video_id: str) -> Optional[sqlite3.Row]:
+        conn = get_db_connection()
+        try:
+            cur = conn.execute("SELECT * FROM competitor_analysis WHERE video_id = ? ORDER BY analyzed_at DESC LIMIT 1", (video_id,))
             return cur.fetchone()
         finally:
             conn.close()

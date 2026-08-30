@@ -42,12 +42,20 @@ class FeatureNormalizer:
         return max(0, min(100, score))
 
     @staticmethod
-    def calculate_audience_match(content_profile: Dict[str, Any], platform: str) -> int:
+    def calculate_audience_match(content_profile: Dict[str, Any], platform: str, audience_profile: Dict[str, Any] = None) -> int:
         """
         Calculates a 0-100 score for audience demographic match.
         """
         score = 50
         audience = content_profile.get("audience", "").lower()
+        
+        # Audience Predictor profile matching
+        if audience_profile:
+            primary_age = audience_profile.get("primary_age", "")
+            if platform == "youtube" and primary_age in ["18-24", "25-34", "25-44", "18-34"]:
+                score += 15
+            elif platform == "twitch" and primary_age in ["13-17", "18-24", "13-24"]:
+                score += 15
         
         if platform == "youtube":
             if "general" in audience or "tech" in audience or "educational" in audience:
