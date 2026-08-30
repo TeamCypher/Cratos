@@ -7,34 +7,66 @@ import { TopSummary } from "@/components/vibe-check/top-summary"
 import { TrendFilter, TrendDirectionFilter, TrendCategoryFilter } from "@/components/vibe-check/trend-filter"
 import { TrendList } from "@/components/vibe-check/trend-list"
 import { TrendDetail } from "@/components/vibe-check/trend-detail"
-import { mockTrends, mockVibeCheckSummary, Trend } from "@/lib/mock-data"
+import { mockVibeCheckSummary, Trend } from "@/lib/mock-data"
 import { Loader2 } from "lucide-react"
+import { api } from "@/lib/api/client"
+import { TrendItem } from "@/types/api"
 
 export default function VibeCheckPage() {
   const [searchQuery, setSearchQuery] = React.useState("")
   const [directionFilter, setDirectionFilter] = React.useState<TrendDirectionFilter>("All")
   const [categoryFilter, setCategoryFilter] = React.useState<TrendCategoryFilter>("All")
+  
+  const [trends, setTrends] = React.useState<Trend[]>([])
   const [selectedTrend, setSelectedTrend] = React.useState<Trend | null>(null)
+  const [errorMsg, setErrorMsg] = React.useState<string | null>(null)
   
   // Simulate loading state
   const [isLoading, setIsLoading] = React.useState(true)
   
   React.useEffect(() => {
-    // Simulate network request
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-      // Auto-select first trend if available
-      if (mockTrends.length > 0) {
-        setSelectedTrend(mockTrends[0])
+    const fetchTrends = async () => {
+      try {
+        const rawTrends: TrendItem[] = await api.getTrends()
+        
+        // Map backend TrendItem to frontend Trend model
+        const mappedTrends: Trend[] = rawTrends.map(t => ({
+          id: t.id,
+          name: t.topic,
+          score: t.trend_score,
+          momentum: (t.momentum.charAt(0).toUpperCase() + t.momentum.slice(1).toLowerCase()) as "High" | "Medium" | "Low",
+          direction: t.direction.toLowerCase() as "rising" | "stable" | "falling",
+          category: "Technology", // Backend doesn't provide category yet, default to Tech
+          description: `Trend observed on ${t.platform} from ${t.source}`,
+          whyItMatters: "This trend is currently showing significant momentum.",
+          relevanceMatch: 85,
+          opportunityScore: "HIGH",
+          platformRelevance: { youtubeShorts: 90, instagramReels: 85, tiktok: 75 },
+          opportunities: [
+            { id: `${t.id}-opp`, title: `Explore ${t.topic}`, explanation: `Create content around ${t.topic}`, relevance: 90 }
+          ],
+          nextMove: { insight: `Leverage ${t.topic} on ${t.platform}`, platform: t.platform },
+          relatedTrendIds: []
+        }))
+
+        setTrends(mappedTrends)
+        if (mappedTrends.length > 0) {
+          setSelectedTrend(mappedTrends[0])
+        }
+      } catch (err: any) {
+        console.error("Failed to fetch trends", err)
+        setErrorMsg("Trend intelligence is currently unavailable.")
+      } finally {
+        setIsLoading(false)
       }
-    }, 800)
-    
-    return () => clearTimeout(timer)
+    }
+
+    fetchTrends()
   }, [])
 
   // Filter logic
   const filteredTrends = React.useMemo(() => {
-    return mockTrends.filter((trend) => {
+    return trends.filter((trend) => {
       const matchesSearch = trend.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                             trend.description.toLowerCase().includes(searchQuery.toLowerCase())
       
@@ -46,7 +78,7 @@ export default function VibeCheckPage() {
       
       return matchesSearch && matchesDirection && matchesCategory
     })
-  }, [searchQuery, directionFilter, categoryFilter])
+  }, [trends, searchQuery, directionFilter, categoryFilter])
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30 flex flex-col">
@@ -59,6 +91,14 @@ export default function VibeCheckPage() {
           <div className="w-full py-24 flex flex-col items-center justify-center space-y-4">
             <Loader2 className="w-10 h-10 text-primary animate-spin" />
             <p className="text-muted-foreground font-medium animate-pulse">Loading trend intelligence...</p>
+          </div>
+        ) : errorMsg ? (
+          <div className="w-full py-24 flex flex-col items-center justify-center space-y-4 animate-in fade-in zoom-in duration-500">
+            <div className="text-destructive w-16 h-16 mb-2 bg-destructive/10 rounded-full flex items-center justify-center border-4 border-destructive/20 text-3xl font-bold">
+              !
+            </div>
+            <h2 className="text-2xl font-bold text-destructive">Trends Unavailable</h2>
+            <p className="text-muted-foreground font-medium text-lg">{errorMsg}</p>
           </div>
         ) : (
           <div className="animate-in fade-in duration-700 flex flex-col gap-16 md:gap-24 mt-12">

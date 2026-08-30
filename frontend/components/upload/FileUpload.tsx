@@ -11,9 +11,10 @@ const SUPPORTED_FORMATS = ["video/mp4", "video/quicktime", "video/webm"]
 
 export interface FileUploadProps {
   onAnalyze: (file: File) => void
+  disabled?: boolean
 }
 
-export function FileUpload({ onAnalyze }: FileUploadProps) {
+export function FileUpload({ onAnalyze, disabled }: FileUploadProps) {
   const [dragActive, setDragActive] = React.useState(false)
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(null)
@@ -171,8 +172,9 @@ export function FileUpload({ onAnalyze }: FileUploadProps) {
             size="lg" 
             className="w-full max-w-xl text-lg font-bold py-6 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all hover:-translate-y-1"
             onClick={() => onAnalyze(selectedFile)}
+            disabled={disabled}
           >
-            Analyze Video
+            {disabled ? "Uploading..." : "Analyze Video"}
           </Button>
         </div>
       </Card>
@@ -184,20 +186,21 @@ export function FileUpload({ onAnalyze }: FileUploadProps) {
       <div className="absolute inset-0 bg-primary/5 rounded-3xl blur-2xl transition-opacity opacity-0 group-hover:opacity-100 duration-700 pointer-events-none"></div>
       
       <div 
-        className={`relative flex flex-col items-center justify-center p-12 md:p-20 rounded-3xl border-2 border-dashed transition-colors duration-300 w-full cursor-pointer
-          ${dragActive ? "border-primary bg-primary/5" : "border-white/15 bg-card/50 hover:bg-card/80 hover:border-white/25"}
+        className={`relative flex flex-col items-center justify-center p-12 md:p-20 rounded-3xl border-2 border-dashed transition-colors duration-300 w-full ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}
+          ${dragActive && !disabled ? "border-primary bg-primary/5" : "border-white/15 bg-card/50 hover:bg-card/80 hover:border-white/25"}
         `}
-        onDragEnter={handleDrag}
-        onDragLeave={handleDrag}
-        onDragOver={handleDrag}
-        onDrop={handleDrop}
-        onClick={() => inputRef.current?.click()}
+        onDragEnter={disabled ? undefined : handleDrag}
+        onDragLeave={disabled ? undefined : handleDrag}
+        onDragOver={disabled ? undefined : handleDrag}
+        onDrop={disabled ? undefined : handleDrop}
+        onClick={() => { if (!disabled) inputRef.current?.click() }}
       >
         <input 
           ref={inputRef}
           type="file" 
           accept={SUPPORTED_FORMATS.join(",")} 
           className="hidden" 
+          disabled={disabled}
           onChange={handleChange}
         />
         
