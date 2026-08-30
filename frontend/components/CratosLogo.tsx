@@ -1,5 +1,11 @@
 import Image from "next/image"
 import { cn } from "@/lib/utils"
+import { Press_Start_2P } from "next/font/google"
+
+const pixelFont = Press_Start_2P({
+  weight: '400',
+  subsets: ['latin'],
+})
 
 interface CratosLogoProps {
   className?: string
@@ -33,7 +39,7 @@ export function CratosLogo({
         />
       </div>
       {!iconOnly && (
-        <span className={cn("text-xl font-bold tracking-tight text-foreground", textClassName)}>
+        <span className={cn("text-xl font-bold tracking-tight text-foreground font-cratos", pixelFont.className, textClassName)}>
           Cratos
         </span>
       )}

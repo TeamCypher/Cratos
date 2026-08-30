@@ -18,9 +18,9 @@ REQUIRED OUTPUT JSON STRUCTURE:
 {
   "video_description": "Write a compelling description specifically about the video using its data from the `content_profile` (like topic, keywords, emotion). Draw heavy structural and hook inspiration from the `trend_signal`'s trending_descriptions. Mix them together into a viral but accurate description. Strictly remove any ads, sponsor plugs, merchandise links, patreon links, or irrelevant external links found in the trending inspirations.",
   "captions": [
-    "Short, punchy caption option 1 about the video's actual topic, using trending hook structures",
-    "Engaging, question-based caption option 2 about the video's actual topic",
-    "Direct, value-driven caption option 3 about the video's actual topic"
+    "Short, punchy caption option 1 about the video's actual topic. DO NOT start with decorative emojis.",
+    "Engaging, question-based caption option 2 about the video's actual topic. DO NOT start with decorative emojis.",
+    "Direct, value-driven caption option 3 about the video's actual topic. DO NOT start with decorative emojis."
   ],
   "hashtags": [
     "Generate 5 viral hashtags relevant ONLY to the video's actual topic (from content_profile) and the platform."

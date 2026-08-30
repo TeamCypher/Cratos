@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Archivo_Black, Outfit, Space_Grotesk, Pixelify_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { HistoryProvider } from "@/lib/history-context";
 
 const inter = Inter({ subsets: ["latin"] });
+const archivoBlack = Archivo_Black({ weight: "400", subsets: ["latin"], variable: "--font-cratos" });
+const outfit = Outfit({ subsets: ["latin"], variable: "--font-chopin" });
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-rizo" });
+const pixelifySans = Pixelify_Sans({ subsets: ["latin"], variable: "--font-pixel" });
 
 export const metadata: Metadata = {
   title: "Cratos - Creator Content Intelligence",
@@ -18,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${inter.className} ${archivoBlack.variable} ${outfit.variable} ${spaceGrotesk.variable} ${pixelifySans.variable}`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

@@ -141,9 +141,7 @@ export function FileUpload({ onAnalyze, disabled }: FileUploadProps) {
           
           <div className="w-full max-w-xl flex flex-col md:flex-row items-center justify-between gap-6 dark:bg-white/5 bg-black/5 p-4 rounded-xl border dark:border-white/5 border-black/5 mb-8">
             <div className="flex items-center gap-4 w-full overflow-hidden">
-              <div className="p-3 dark:bg-white/10 bg-black/10 rounded-lg">
-                <FileVideo className="w-6 h-6 text-primary" />
-              </div>
+
               <div className="min-w-0 flex-1">
                 <h4 className="font-semibold text-foreground truncate">{selectedFile.name}</h4>
                 <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
@@ -186,8 +184,8 @@ export function FileUpload({ onAnalyze, disabled }: FileUploadProps) {
       <div className="absolute inset-0 bg-primary/5 rounded-3xl blur-2xl transition-opacity opacity-0 group-hover:opacity-100 duration-700 pointer-events-none"></div>
       
       <div 
-        className={`relative flex flex-col items-center justify-center p-12 md:p-20 rounded-3xl border-2 border-dashed transition-colors duration-300 w-full ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}
-          ${dragActive && !disabled ? "border-primary bg-primary/5" : "border-white/15 bg-card/50 hover:bg-card/80 hover:border-white/25"}
+        className={`relative flex flex-col items-center justify-center p-12 md:p-20 rounded-3xl border-2 border-dashed transition-all duration-300 w-full ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}
+          ${dragActive && !disabled ? "border-[#DFFF00] bg-[#DFFF00]/5 shadow-[0_0_35px_rgba(223,255,0,0.4)]" : "border-white/15 bg-card/50 hover:bg-card/80 hover:border-white/25 shadow-[0_0_15px_rgba(223,255,0,0.15),_0_0_30px_rgba(223,255,0,0.05)] hover:shadow-[0_0_20px_rgba(223,255,0,0.25),_0_0_40px_rgba(223,255,0,0.1)]"}`
         `}
         onDragEnter={disabled ? undefined : handleDrag}
         onDragLeave={disabled ? undefined : handleDrag}

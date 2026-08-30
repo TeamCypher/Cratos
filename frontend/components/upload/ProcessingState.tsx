@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CheckCircle2, CircleDashed, Loader2 } from "lucide-react"
+import { CheckCircle2, CircleDashed, Loader2, ArrowUp } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 
@@ -51,7 +51,7 @@ export function ProcessingState({ jobId, onComplete }: ProcessingStateProps) {
 
     const startTime = Date.now()
     const TIMEOUT_MS = 2 * 60 * 1000 // 2 minutes
-    
+
     let timer: NodeJS.Timeout | null = null
 
     const poll = async () => {
@@ -63,7 +63,7 @@ export function ProcessingState({ jobId, onComplete }: ProcessingStateProps) {
 
       try {
         const response = await api.getAnalysisStatus(jobId)
-        
+
         if (response.status === "FAILED") {
           setHasFailed(true)
           return
@@ -72,7 +72,7 @@ export function ProcessingState({ jobId, onComplete }: ProcessingStateProps) {
         setStatus(response.status)
         const stageIndex = STATUS_STAGE_MAP[response.status] || 0
         setCurrentStage(stageIndex)
-        
+
         // Use backend progress if available, otherwise fake it based on stage
         if (response.progress !== undefined) {
           setProgress(response.progress)
@@ -94,7 +94,7 @@ export function ProcessingState({ jobId, onComplete }: ProcessingStateProps) {
 
     // Initial poll
     poll()
-    
+
     // Poll every 2.5s
     timer = setInterval(poll, 2500)
     return () => {
@@ -121,13 +121,13 @@ export function ProcessingState({ jobId, onComplete }: ProcessingStateProps) {
     <Card className="w-full max-w-2xl mx-auto overflow-hidden bg-card/80 backdrop-blur-md dark:border-white/10 border-black/10 shadow-2xl p-8 md:p-12 relative">
       {/* Glowing accent top */}
       <div className={`absolute top-0 left-0 w-full h-1 opacity-50 ${hasFailed ? 'bg-destructive' : 'bg-gradient-to-r from-transparent via-primary to-transparent'}`}></div>
-      
+
       {hasFailed ? (
         <div className="flex flex-col items-center mb-10 animate-in fade-in zoom-in duration-500">
           <div className="relative w-24 h-24 mb-6 flex items-center justify-center rounded-full bg-destructive/10 border-4 border-destructive/20">
             <CheckCircle2 className="w-10 h-10 text-destructive" />
           </div>
-          
+
           <h2 className="text-2xl md:text-3xl font-bold text-destructive mb-2 text-center">
             Analysis Failed
           </h2>
@@ -135,8 +135,8 @@ export function ProcessingState({ jobId, onComplete }: ProcessingStateProps) {
             {errorMsg || "An unexpected error occurred while analyzing your video."}
           </p>
 
-          <button 
-            onClick={handleRetry} 
+          <button
+            onClick={handleRetry}
             disabled={isRetrying}
             className="px-8 py-3 rounded-full font-bold bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors disabled:opacity-50"
           >
@@ -151,14 +151,14 @@ export function ProcessingState({ jobId, onComplete }: ProcessingStateProps) {
       ) : (
         <>
           <div className="flex flex-col items-center mb-10">
-            <div className="relative w-24 h-24 mb-6">
+            <div className="relative w-24 h-24 mb-6 flex items-center justify-center">
               <div className="absolute inset-0 border-4 dark:border-white/5 border-black/5 rounded-full"></div>
               <div className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <Loader2 className="w-8 h-8 text-primary animate-pulse" />
+                <ArrowUp className="w-8 h-8 text-[#DFFF00] animate-bounce" />
               </div>
             </div>
-            
+
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2 text-center">
               {status === "RECONNECTING" ? (
                 <span className="flex items-center gap-3 text-amber-500 animate-pulse">
@@ -188,8 +188,8 @@ export function ProcessingState({ jobId, onComplete }: ProcessingStateProps) {
               const isActive = index === currentStage
 
               return (
-                <div 
-                  key={index} 
+                <div
+                  key={index}
                   className={`flex items-center gap-4 p-3 rounded-lg transition-colors duration-500
                     ${isActive ? 'bg-primary/10 border border-primary/20' : 'border border-transparent'}
                   `}
