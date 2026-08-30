@@ -6,11 +6,11 @@ import Link from "next/link"
 import { FolderSearch, SearchX } from "lucide-react"
 
 export interface HistoryEmptyStateProps {
-  isSearchEmpty: boolean
-  onClearFilters: () => void
+  isSearchEmpty?: boolean
+  onClearFilters?: () => void
 }
 
-export function HistoryEmptyState({ isSearchEmpty, onClearFilters }: HistoryEmptyStateProps) {
+export function HistoryEmptyState({ isSearchEmpty = false, onClearFilters }: HistoryEmptyStateProps) {
   if (isSearchEmpty) {
     return (
       <div className="w-full py-20 flex flex-col items-center justify-center text-center bg-card/20 rounded-3xl border border-dashed dark:border-white/10 border-black/10">

@@ -1,6 +1,8 @@
 import os
 import json
 import requests
+from tenacity import retry, stop_after_attempt, wait_exponential
+from reka.client import Reka
 from typing import Dict, Any
 from dotenv import load_dotenv
 
@@ -30,50 +32,31 @@ class RecommendationEngine:
         
         user_prompt = f"Here is the data for the video:\n{json.dumps(input_data, indent=2)}\n\nPlease generate the JSON recommendations as instructed."
         
-        import time
-        max_retries = 5
-        delay = 2
+        @retry(stop=stop_after_attempt(5), wait=wait_exponential(multiplier=2, min=2, max=32), reraise=True)
+        def _do_call():
+            client = Reka(api_key=self.api_key)
+            response = client.chat.create(
+                messages=[{"role": "user", "content": f"{RECOMMENDATION_SYSTEM_PROMPT}\n\n{user_prompt}"}],
+                model="reka-flash"
+            )
+            return response.responses[0].message.content.strip()
         
-        url = "https://api.reka.ai/v1/chat"
-        headers = {
-            "Content-Type": "application/json",
-            "X-Api-Key": self.api_key
-        }
-        payload = {
-            "messages": [
-                {
-                    "role": "user",
-                    "content": f"{RECOMMENDATION_SYSTEM_PROMPT}\n\n{user_prompt}"
-                }
-            ],
-            "model": "reka-flash"
-        }
-        
-        for attempt in range(max_retries):
-            try:
-                response = requests.post(url, headers=headers, json=payload, timeout=30)
-                response.raise_for_status()
+        try:
+            result_text = _do_call()
+            
+            # Parse the JSON string
+            if result_text.startswith("```json"):
+                result_text = result_text.split("```json")[1].split("```")[0].strip()
+            elif result_text.startswith("```"):
+                result_text = result_text.split("```")[1].strip()
                 
-                data = response.json()
-                result_text = data.get("responses", [{}])[0].get("message", {}).get("content", "").strip()
+            recommendations = json.loads(result_text)
+            return recommendations
                 
-                # Parse the JSON string
-                if result_text.startswith("```json"):
-                    result_text = result_text.split("```json")[1].split("```")[0].strip()
-                elif result_text.startswith("```"):
-                    result_text = result_text.split("```")[1].strip()
-                    
-                recommendations = json.loads(result_text)
-                return recommendations
-                    
-            except Exception as e:
-                print(f"Reka API Error on attempt {attempt + 1}: {e}")
-                if attempt < max_retries - 1:
-                    time.sleep(delay)
-                    delay *= 2
-                else:
-                    print("All retries failed. Falling back to heuristics.")
-                    return self._generate_heuristic_fallback(content_profile, prediction)
+        except Exception as e:
+            print(f"All retries failed or Reka API Error: {e}")
+            print("Falling back to heuristics.")
+            return self._generate_heuristic_fallback(content_profile, prediction)
 
     def _generate_heuristic_fallback(self, content_profile: Dict[str, Any], prediction: Dict[str, Any]) -> Dict[str, Any]:
         """A safe fallback in case the AI API is unavailable."""

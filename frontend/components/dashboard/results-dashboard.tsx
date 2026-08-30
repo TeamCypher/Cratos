@@ -49,8 +49,8 @@ function mapReportToUI(report: AnalysisReport): AnalysisResult {
     overallInsight: `Strong potential on ${bestPred.platform} with room to improve.`,
     trendMatch: trendScore,
     hookStrength: hookScore,
-    audienceFit: 85, // Static fallback since API doesn't provide specific fit score
-    contentQuality: 90, // Static fallback
+    audienceFit: Math.min(100, Math.round(bestPred.score * 0.95 + 5)), // Approximate audience fit from best prediction score
+    contentQuality: report.content_profile?.quality_score || 90,
     bestPlatform: { 
       name: bestPred.platform, 
       score: bestPred.score, 

@@ -163,7 +163,7 @@ export function ProcessingState({ jobId, onComplete }: ProcessingStateProps) {
               {status === "RECONNECTING" ? (
                 <span className="flex items-center gap-3 text-amber-500 animate-pulse">
                   <Loader2 className="w-6 h-6 animate-spin" />
-                  Reconnecting to Gemini API...
+                  Reconnecting to Reka API...
                 </span>
               ) : (
                 "Analyzing your content..."

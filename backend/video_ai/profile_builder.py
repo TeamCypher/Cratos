@@ -62,6 +62,8 @@ def build_content_profile(
     return content_profile
 
 import requests
+from tenacity import retry, stop_after_attempt, wait_exponential
+from reka.client import Reka
 
 def generate_metadata_with_reka(transcript: str, ocr_text: list, keywords: list, progress_callback=None) -> Dict[str, Any]:
     """Uses Reka API to infer high-level metadata if available. Includes exponential backoff retry."""
@@ -100,59 +102,37 @@ def generate_metadata_with_reka(transcript: str, ocr_text: list, keywords: list,
     }}
     """
     
-    max_retries = 5
-    delay = 2
-    
-    url = "https://chat.reka.ai/api/chat" # The typical endpoint for reka chat completions, or https://api.reka.ai/v1/chat/completions
-    # actually, the official reka API endpoint is: https://api.reka.ai/v1/chat
-    url = "https://api.reka.ai/v1/chat"
-    
-    headers = {
-        "Content-Type": "application/json",
-        "X-Api-Key": reka_api_key
-    }
-    
-    payload = {
-        "messages": [
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ],
-        "model": "reka-flash"
-    }
-    
-    for attempt in range(max_retries):
-        try:
-            response = requests.post(url, headers=headers, json=payload, timeout=30)
-            response.raise_for_status()
+    @retry(stop=stop_after_attempt(5), wait=wait_exponential(multiplier=2, min=2, max=32), reraise=True)
+    def _do_call():
+        if progress_callback:
+            progress_callback("CONNECTING_TO_REKA", 50)
+        client = Reka(api_key=reka_api_key)
+        response = client.chat.create(
+            messages=[{"role": "user", "content": prompt}],
+            model="reka-flash"
+        )
+        return response.responses[0].message.content.strip()
+
+    try:
+        result_text = _do_call()
+        
+        # Parse the JSON string
+        if result_text.startswith("```json"):
+            result_text = result_text.split("```json")[1].split("```")[0].strip()
+        elif result_text.startswith("```"):
+            result_text = result_text.split("```")[1].strip()
             
-            data = response.json()
-            result_text = data.get("responses", [{}])[0].get("message", {}).get("content", "").strip()
+        result = json.loads(result_text)
+        
+        # Merge with keywords
+        result["keywords"] = keywords[:5] if keywords else []
+        
+        # Ensure 'topic' is never 'Unknown'
+        if result.get("topic", "Unknown").lower() == "unknown":
+            result["topic"] = default_topic
             
-            # Parse the JSON string
-            if result_text.startswith("```json"):
-                result_text = result_text.split("```json")[1].split("```")[0].strip()
-            elif result_text.startswith("```"):
-                result_text = result_text.split("```")[1].strip()
-                
-            result = json.loads(result_text)
-            
-            # Merge with keywords
-            result["keywords"] = keywords[:5] if keywords else []
-            
-            # Ensure 'topic' is never 'Unknown'
-            if result.get("topic", "Unknown").lower() == "unknown":
-                result["topic"] = default_topic
-                
-            return result
-            
-        except Exception as e:
-            logger.error(f"Reka metadata extraction failed on attempt {attempt + 1}: {e}")
-            if attempt < max_retries - 1:
-                if progress_callback:
-                    progress_callback("RECONNECTING", 50)
-                time.sleep(delay)
-                delay *= 2
-            else:
-                return default_meta
+        return result
+        
+    except Exception as e:
+        logger.error(f"Reka metadata extraction failed after retries: {e}")
+        return default_meta

@@ -45,7 +45,15 @@
     "Minecraft": {
         "score": 95,
         "momentum": "high",
-        "direction": "rising"
+        "direction": "rising",
+        "trending_descriptions": [
+            "\ud83d\udd34Live HugoSMP | Clan Fights | 5M Giveway |  Road To Media\ud83d\udfe3 | !wt | !followage | !dc | !lurk |",
+            "\u9632\u5177\u306a\u3057\u30de\u30a4\u30f3\u30af\u30e9\u30d5\u30c8\u30cf\u30fc\u30c9\u30b3\u30a2\u3010\u76fe\u306f\u3042\u308a\u3011",
+            "Sunday Morning Hermitcraft",
+            "72\u6642\u9593\u914d\u4fe1  \u203b\u5bdd\u307e\u3059",
+            "24 HRS DE LIVE AMANHA? 1 ANO DE PARCERIA"
+        ],
+        "best_time": "10:00 - 11:00"
     },
     "Unknown": {
         "score": 95,
