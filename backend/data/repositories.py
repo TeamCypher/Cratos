@@ -45,6 +45,23 @@ class VideoRepository:
                 return cur.fetchone()
         finally:
             conn.close()
+
+    def get_videos_for_user(self, user_id: str) -> list[Dict[str, Any]]:
+        conn = get_db_connection()
+        try:
+            with conn.cursor() as cur:
+                # Join with analysis_jobs to get the status of the job
+                query = """
+                    SELECT v.id as video_id, v.filename, v.created_at, j.status, j.id as job_id
+                    FROM videos v
+                    LEFT JOIN analysis_jobs j ON v.id = j.video_id
+                    WHERE v.user_id = %s
+                    ORDER BY v.created_at DESC
+                """
+                cur.execute(query, (user_id,))
+                return cur.fetchall()
+        finally:
+            conn.close()
             
     def update_video_status(self, video_id: str, status: str) -> None:
         conn = get_db_connection()

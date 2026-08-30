@@ -9,13 +9,22 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { CratosLogo } from "@/components/CratosLogo"
 import { Outfit } from "next/font/google"
 import { cn } from "@/lib/utils"
+import { GoogleLogin, googleLogout } from '@react-oauth/google'
 
 const rizoFont = Outfit({ subsets: ["latin"] })
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false)
   const pathname = usePathname()
   const router = useRouter()
+  
+  React.useEffect(() => {
+    const token = localStorage.getItem('google_token')
+    if (token) {
+      setIsAuthenticated(true)
+    }
+  }, [])
 
   const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen)
 
@@ -26,6 +35,22 @@ export function Navbar() {
       document.getElementById('upload-section')?.scrollIntoView({ behavior: 'smooth' })
     }
     if (isMobileMenuOpen) setIsMobileMenuOpen(false)
+  }
+
+  const handleLoginSuccess = (credentialResponse: any) => {
+    if (credentialResponse.credential) {
+      localStorage.setItem('google_token', credentialResponse.credential)
+      setIsAuthenticated(true)
+      // trigger history reload?
+      window.dispatchEvent(new Event('auth_changed'))
+    }
+  }
+
+  const handleLogout = () => {
+    googleLogout()
+    localStorage.removeItem('google_token')
+    setIsAuthenticated(false)
+    window.dispatchEvent(new Event('auth_changed'))
   }
 
   return (
@@ -42,6 +67,22 @@ export function Navbar() {
 
         {/* Desktop CTA & Theme Toggle */}
         <div className="hidden md:flex items-center gap-4">
+          {!isAuthenticated ? (
+            <GoogleLogin
+              onSuccess={handleLoginSuccess}
+              onError={() => console.error('Login Failed')}
+              useOneTap
+              theme="outline"
+              type="standard"
+              size="medium"
+              text="signin_with"
+              shape="rectangular"
+            />
+          ) : (
+            <Button variant="outline" size="sm" onClick={handleLogout}>
+              Logout
+            </Button>
+          )}
           <ThemeToggle />
           <Button variant="default" className="font-semibold shadow-md shadow-primary/10" onClick={scrollToUpload}>
             Analyze Video
@@ -61,6 +102,17 @@ export function Navbar() {
       {isMobileMenuOpen && (
         <div className="md:hidden border-t border-border/50 bg-background/95 backdrop-blur-md absolute w-full left-0 top-16 shadow-2xl">
           <nav className={cn("flex flex-col p-6 gap-6 text-base font-medium text-muted-foreground", rizoFont.className)}>
+            {!isAuthenticated ? (
+              <div className="flex justify-center mb-4">
+                <GoogleLogin
+                  onSuccess={handleLoginSuccess}
+                  onError={() => console.error('Login Failed')}
+                  useOneTap
+                />
+              </div>
+            ) : (
+              <Button variant="outline" className="w-full" onClick={handleLogout}>Logout</Button>
+            )}
             <Link href="/" className={cn("hover:text-foreground transition-colors", rizoFont.className)} onClick={toggleMenu}>Analyze</Link>
             <Link href="/vibe-check" className={cn("hover:text-foreground transition-colors", rizoFont.className)} onClick={toggleMenu}>Vibe Check</Link>
             <Link href="/history" className={cn("hover:text-foreground transition-colors", rizoFont.className)} onClick={toggleMenu}>History</Link>

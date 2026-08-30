@@ -28,7 +28,7 @@ class RecommendationEngine:
             "prediction": prediction
         }
         
-        user_prompt = f"Here is the data for the video:\n{json.dumps(input_data, indent=2)}\n\nPlease generate the JSON recommendations as instructed."
+        user_prompt = f"Here is the data for the video:\n{json.dumps(input_data, indent=2, default=str)}\n\nPlease generate the JSON recommendations as instructed."
         
         @retry(stop=stop_after_attempt(5), wait=wait_exponential(multiplier=2, min=2, max=32), reraise=True)
         def _do_call():
