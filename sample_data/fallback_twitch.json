@@ -84,5 +84,17 @@
         "momentum": "medium",
         "direction": "rising",
         "trending_descriptions": []
+    },
+    "Aspiration": {
+        "score": 75,
+        "momentum": "medium",
+        "direction": "rising",
+        "trending_descriptions": []
+    },
+    "Exploration": {
+        "score": 95,
+        "momentum": "high",
+        "direction": "rising",
+        "trending_descriptions": []
     }
 }

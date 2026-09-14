@@ -73,5 +73,20 @@
         "score": 68,
         "momentum": "medium",
         "direction": "falling"
+    },
+    "Golds": {
+        "score": 77,
+        "momentum": "medium",
+        "direction": "falling"
+    },
+    "Aspiration": {
+        "score": 36,
+        "momentum": "medium",
+        "direction": "falling"
+    },
+    "Exploration": {
+        "score": 58,
+        "momentum": "medium",
+        "direction": "falling"
     }
 }
